@@ -7,628 +7,146 @@
     <meta name="description" content="AI-powered smart contract security auditor. Detect vulnerabilities, gas optimizations, and security risks in Solidity contracts. Free, no API key required.">
     <meta property="og:title" content="SmartAudit — AI Smart Contract Auditor">
     <meta property="og:description" content="Free AI-powered smart contract security auditor. No API key needed.">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡</text></svg>">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: #1a1a25;
-            --bg-input: #15151f;
-            --border: #2a2a3a;
-            --border-hover: #3a3a5a;
-            --text-primary: #e8e8f0;
-            --text-secondary: #8888a0;
-            --text-muted: #555568;
-            --accent: #6c5ce7;
-            --accent-hover: #7d6ff0;
-            --accent-glow: rgba(108, 92, 231, 0.3);
-            --success: #00d68f;
-            --success-bg: rgba(0, 214, 143, 0.1);
-            --warning: #ffaa00;
-            --warning-bg: rgba(255, 170, 0, 0.1);
-            --danger: #ff4757;
-            --danger-bg: rgba(255, 71, 87, 0.1);
-            --info: #3498db;
-            --info-bg: rgba(52, 152, 219, 0.1);
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        
-        /* Header */
-        header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(20px);
-        }
-        
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        
-        .logo-icon {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, var(--accent), #a855f7);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-        }
-        
-        .logo-text {
-            font-size: 24px; font-weight: 700;
-            background: linear-gradient(135deg, var(--accent), #a855f7);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        
-        .header-badges { display: flex; gap: 8px; }
-        
-        .header-badge {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        
-        .header-badge.free {
-            background: var(--success-bg);
-            border-color: rgba(0, 214, 143, 0.3);
-            color: var(--success);
-        }
-        
-        /* Hero */
-        .hero { text-align: center; padding: 80px 0 40px; }
-        
-        .hero h1 {
-            font-size: 48px; font-weight: 800; margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--text-primary), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        
-        .hero p { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
-        
-        .hero-stats {
-            display: flex; justify-content: center; gap: 40px;
-            margin-top: 32px; flex-wrap: wrap;
-        }
-        
-        .hero-stat { text-align: center; }
-        
-        .hero-stat-value {
-            font-size: 32px; font-weight: 800;
-            background: linear-gradient(135deg, var(--accent), #a855f7);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        
-        .hero-stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-        
-        /* Input Section */
-        .input-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 40px;
-        }
-        
-        .input-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
-        
-        .input-tab {
-            padding: 10px 20px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--bg-input);
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        
-        .input-tab.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-        
-        .input-tab:hover:not(.active) {
-            border-color: var(--border-hover);
-            color: var(--text-primary);
-        }
-        
-        .input-group { display: none; }
-        .input-group.active { display: block; }
-        
-        .input-label {
-            display: block;
-            font-size: 14px; font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-        
-        .input-help {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-        }
-        
-        .input-field {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 15px;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            transition: border-color 0.2s;
-            resize: vertical;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-        
-        .input-field::placeholder { color: var(--text-muted); }
-        textarea.input-field { min-height: 200px; }
-        
-        .input-row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
-        
-        .chain-select {
-            flex: 1; min-width: 150px;
-            padding: 14px 16px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 14px;
-            cursor: pointer;
-        }
-        
-        .chain-select:focus { outline: none; border-color: var(--accent); }
-        
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px; font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent), #a855f7);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px var(--accent-glow);
-        }
-        
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .btn-secondary {
-            background: var(--bg-input);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-        
-        .btn-secondary:hover { border-color: var(--border-hover); }
-        
-        /* Sample contracts */
-        .samples {
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-        }
-        
-        .samples-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-        
-        .sample-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-        
-        .sample-chip {
-            padding: 6px 12px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .sample-chip:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-        
-        /* Loading */
-        .loading { display: none; text-align: center; padding: 60px 0; }
-        .loading.active { display: block; }
-        
-        .spinner {
-            width: 48px; height: 48px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
-        }
-        
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .loading-text { color: var(--text-secondary); font-size: 16px; }
-        
-        .loading-steps {
-            margin-top: 20px;
-            text-align: left;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .loading-step {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 0;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-        
-        .loading-step.active { color: var(--accent); }
-        .loading-step.done { color: var(--success); }
-        .loading-step-icon { width: 20px; text-align: center; }
-        
-        /* Report */
-        .report { display: none; }
-        .report.active { display: block; }
-        
-        .report-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        
-        .report-title { font-size: 24px; font-weight: 700; }
-        .report-meta { font-size: 13px; color: var(--text-muted); }
-        
-        /* Risk Score */
-        .risk-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 24px;
-        }
-        
-        .risk-score-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-        
-        .risk-score-circle {
-            width: 160px; height: 160px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        
-        .risk-score-circle::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            border: 6px solid var(--border);
-        }
-        
-        .risk-score-circle.critical::before { border-color: var(--danger); }
-        .risk-score-circle.high::before { border-color: #ff6b6b; }
-        .risk-score-circle.medium::before { border-color: var(--warning); }
-        .risk-score-circle.low::before { border-color: var(--success); }
-        .risk-score-circle.info::before { border-color: var(--info); }
-        
-        .risk-score-value {
-            font-size: 48px; font-weight: 800; line-height: 1;
-        }
-        
-        .risk-score-label {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        
-        .risk-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .risk-stat {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 16px;
-            background: var(--bg-input);
-            border-radius: 10px;
-            min-width: 200px;
-        }
-        
-        .risk-stat-dot {
-            width: 10px; height: 10px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        
-        .risk-stat-dot.critical { background: var(--danger); }
-        .risk-stat-dot.high { background: #ff6b6b; }
-        .risk-stat-dot.medium { background: var(--warning); }
-        .risk-stat-dot.low { background: var(--success); }
-        .risk-stat-dot.info { background: var(--info); }
-        
-        .risk-stat-count { font-weight: 700; min-width: 24px; }
-        .risk-stat-label { color: var(--text-secondary); font-size: 14px; }
-        
-        /* Findings */
-        .findings-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        
-        .findings-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        
-        .findings-title { font-size: 18px; font-weight: 700; }
-        
-        .finding {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 12px;
-            transition: border-color 0.2s;
-        }
-        
-        .finding:hover { border-color: var(--border-hover); }
-        
-        .finding-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        
-        .finding-severity {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px; font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .finding-severity.critical { background: var(--danger-bg); color: var(--danger); }
-        .finding-severity.high { background: rgba(255, 107, 107, 0.1); color: #ff6b6b; }
-        .finding-severity.medium { background: var(--warning-bg); color: var(--warning); }
-        .finding-severity.low { background: var(--success-bg); color: var(--success); }
-        .finding-severity.info { background: var(--info-bg); color: var(--info); }
-        
-        .finding-title { font-weight: 600; font-size: 15px; }
-        
-        .finding-location {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            margin-bottom: 10px;
-        }
-        
-        .finding-description {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-        
-        .finding-code {
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 13px;
-            color: var(--text-primary);
-            overflow-x: auto;
-            margin-bottom: 12px;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-        
-        .finding-fix {
-            background: var(--success-bg);
-            border: 1px solid rgba(0, 214, 143, 0.2);
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 13px;
-        }
-        
-        .finding-fix-label {
-            font-weight: 600;
-            color: var(--success);
-            margin-bottom: 4px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .finding-fix-text {
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-        
-        /* Summary */
-        .summary-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        
-        .summary-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
-        .summary-text {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.8;
-            white-space: pre-wrap;
-        }
-        
-        /* Gas */
-        .gas-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        
-        .gas-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
-        
-        .gas-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .gas-item:last-child { border-bottom: none; }
-        .gas-icon { font-size: 18px; margin-top: 2px; }
-        .gas-content { flex: 1; }
-        .gas-label { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-        .gas-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
-        
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-            margin-top: 60px;
-        }
-        
-        .footer-text { font-size: 13px; color: var(--text-muted); }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 32px; }
-            .hero p { font-size: 16px; }
-            .input-section { padding: 20px; }
-            .risk-score-container { flex-direction: column; }
-            .risk-stats { width: 100%; }
-            .risk-stat { min-width: auto; }
-            .header-badges { display: none; }
-        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a0a0f;--bg2:#12121a;--card:#1a1a25;--input:#15151f;--border:#2a2a3a;--border2:#3a3a5a;--text:#e8e8f0;--text2:#8888a0;--text3:#555568;--accent:#6c5ce7;--glow:rgba(108,92,231,.3);--ok:#00d68f;--ok-bg:rgba(0,214,143,.1);--warn:#ffaa00;--warn-bg:rgba(255,170,0,.1);--err:#ff4757;--err-bg:rgba(255,71,87,.1);--info:#3498db;--info-bg:rgba(52,152,219,.1)}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+        .c{max-width:1200px;margin:0 auto;padding:0 24px}
+        header{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px)}
+        .hdr{display:flex;align-items:center;justify-content:space-between}
+        .logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+        .logo-i{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#a855f7);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+        .logo-t{font-size:24px;font-weight:700;background:linear-gradient(135deg,var(--accent),#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .badges{display:flex;gap:8px}
+        .badge{background:var(--card);border:1px solid var(--border);padding:6px 14px;border-radius:20px;font-size:12px;color:var(--text2)}
+        .badge.free{background:var(--ok-bg);border-color:rgba(0,214,143,.3);color:var(--ok)}
+        .hero{text-align:center;padding:80px 0 40px}
+        .hero h1{font-size:48px;font-weight:800;margin-bottom:16px;background:linear-gradient(135deg,var(--text),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .hero p{font-size:18px;color:var(--text2);max-width:600px;margin:0 auto}
+        .stats{display:flex;justify-content:center;gap:40px;margin-top:32px;flex-wrap:wrap}
+        .stat{text-align:center}
+        .stat-v{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--accent),#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .stat-l{font-size:13px;color:var(--text3);margin-top:4px}
+        .sec{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:40px}
+        .tabs{display:flex;gap:8px;margin-bottom:24px}
+        .tab{padding:10px 20px;border:1px solid var(--border);border-radius:8px;background:var(--input);color:var(--text2);cursor:pointer;font-size:14px;transition:.2s}
+        .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+        .tab:hover:not(.active){border-color:var(--border2);color:var(--text)}
+        .ig{display:none}.ig.active{display:block}
+        .lbl{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
+        .help{font-size:12px;color:var(--text3);margin-bottom:12px}
+        .inp{width:100%;padding:14px 16px;background:var(--input);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;font-family:'SF Mono','Fira Code',monospace;transition:border-color .2s;resize:vertical}
+        .inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+        .inp::placeholder{color:var(--text3)}
+        textarea.inp{min-height:200px}
+        .row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+        .sel{flex:1;min-width:150px;padding:14px 16px;background:var(--input);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;cursor:pointer}
+        .sel:focus{outline:none;border-color:var(--accent)}
+        .btn{padding:14px 28px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+        .btn-p{background:linear-gradient(135deg,var(--accent),#a855f7);color:#fff}
+        .btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 20px var(--glow)}
+        .btn-s{background:var(--input);color:var(--text);border:1px solid var(--border)}
+        .btn-s:hover{border-color:var(--border2)}
+        .samp{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+        .samp-l{font-size:12px;color:var(--text3);margin-bottom:8px}
+        .chips{display:flex;gap:8px;flex-wrap:wrap}
+        .chip{padding:6px 12px;background:var(--input);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text2);cursor:pointer;transition:.2s}
+        .chip:hover{border-color:var(--accent);color:var(--accent)}
+        .ld{display:none;text-align:center;padding:60px 0}.ld.active{display:block}
+        .spin{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 16px}
+        @keyframes sp{to{transform:rotate(360deg)}}
+        .ld-t{color:var(--text2);font-size:16px}
+        .ld-s{margin-top:20px;text-align:left;max-width:400px;margin-left:auto;margin-right:auto}
+        .ld-i{display:flex;align-items:center;gap:10px;padding:8px 0;color:var(--text3);font-size:14px}
+        .ld-i.active{color:var(--accent)}.ld-i.done{color:var(--ok)}
+        .ld-ic{width:20px;text-align:center}
+        .rpt{display:none}.rpt.active{display:block}
+        .rpt-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+        .rpt-t{font-size:24px;font-weight:700}
+        .rpt-m{font-size:13px;color:var(--text3)}
+        .risk{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:24px}
+        .risk-c{display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap}
+        .risk-sc{width:160px;height:160px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+        .risk-sc::before{content:'';position:absolute;inset:0;border-radius:50%;border:6px solid var(--border)}
+        .risk-sc.critical::before{border-color:var(--err)}.risk-sc.high::before{border-color:#ff6b6b}.risk-sc.medium::before{border-color:var(--warn)}.risk-sc.low::before{border-color:var(--ok)}.risk-sc.info::before{border-color:var(--info)}
+        .risk-sv{font-size:48px;font-weight:800;line-height:1}
+        .risk-sl{font-size:14px;color:var(--text2);margin-top:4px}
+        .risk-st{display:flex;flex-direction:column;gap:12px}
+        .risk-si{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--input);border-radius:10px;min-width:200px}
+        .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+        .dot.critical{background:var(--err)}.dot.high{background:#ff6b6b}.dot.medium{background:var(--warn)}.dot.low{background:var(--ok)}.dot.info{background:var(--info)}
+        .cnt{font-weight:700;min-width:24px}
+        .slbl{color:var(--text2);font-size:14px}
+        .sec2{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
+        .sec2-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+        .sec2-t{font-size:18px;font-weight:700}
+        .find{background:var(--input);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;transition:border-color .2s}
+        .find:hover{border-color:var(--border2)}
+        .find-h{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+        .sev{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+        .sev.critical{background:var(--err-bg);color:var(--err)}.sev.high{background:rgba(255,107,107,.1);color:#ff6b6b}.sev.medium{background:var(--warn-bg);color:var(--warn)}.sev.low{background:var(--ok-bg);color:var(--ok)}.sev.info{background:var(--info-bg);color:var(--info)}
+        .find-t{font-weight:600;font-size:15px}
+        .find-loc{font-size:12px;color:var(--text3);font-family:'SF Mono','Fira Code',monospace;margin-bottom:10px}
+        .find-d{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:12px}
+        .find-c{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;color:var(--text);overflow-x:auto;margin-bottom:12px;white-space:pre-wrap;word-break:break-all}
+        .find-f{background:var(--ok-bg);border:1px solid rgba(0,214,143,.2);border-radius:8px;padding:12px 16px;font-size:13px}
+        .find-fl{font-weight:600;color:var(--ok);margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+        .find-ft{color:var(--text2);line-height:1.5}
+        .sum{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
+        .sum-t{font-size:18px;font-weight:700;margin-bottom:16px}
+        .sum-txt{font-size:14px;color:var(--text2);line-height:1.8;white-space:pre-wrap}
+        .gas{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
+        .gas-t{font-size:18px;font-weight:700;margin-bottom:16px}
+        .gas-i{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+        .gas-i:last-child{border-bottom:none}
+        .gas-ic{font-size:18px;margin-top:2px}
+        .gas-c{flex:1}
+        .gas-l{font-weight:600;font-size:14px;margin-bottom:4px}
+        .gas-d{font-size:13px;color:var(--text2);line-height:1.5}
+        footer{text-align:center;padding:40px 0;border-top:1px solid var(--border);margin-top:60px}
+        .ft{font-size:13px;color:var(--text3)}
+        @media(max-width:768px){.hero h1{font-size:32px}.hero p{font-size:16px}.sec{padding:20px}.risk-c{flex-direction:column}.risk-st{width:100%}.risk-si{min-width:auto}.badges{display:none}}
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-content">
+        <div class="c hdr">
             <a href="#" class="logo">
-                <div class="logo-icon">🛡</div>
-                <span class="logo-text">SmartAudit</span>
+                <div class="logo-i">🛡</div>
+                <span class="logo-t">SmartAudit</span>
             </a>
-            <div class="header-badges">
-                <span class="header-badge">Powered by Xiaomi MiMo</span>
-                <span class="header-badge free">✓ 100% Free — No API Key</span>
+            <div class="badges">
+                <span class="badge">Powered by Xiaomi MiMo</span>
+                <span class="badge free">✓ 100% Free — No API Key</span>
             </div>
         </div>
     </header>
     
-    <main class="container">
+    <main class="c">
         <section class="hero">
             <h1>AI Smart Contract Auditor</h1>
             <p>Detect vulnerabilities, optimize gas, and secure your smart contracts — powered by Xiaomi MiMo. Free, instant, no API key required.</p>
-            <div class="hero-stats">
-                <div class="hero-stat">
-                    <div class="hero-stat-value">40+</div>
-                    <div class="hero-stat-label">Detection Rules</div>
-                </div>
-                <div class="hero-stat">
-                    <div class="hero-stat-value">8</div>
-                    <div class="hero-stat-label">Chains Supported</div>
-                </div>
-                <div class="hero-stat">
-                    <div class="hero-stat-value">$0</div>
-                    <div class="hero-stat-label">Cost</div>
-                </div>
-                <div class="hero-stat">
-                    <div class="hero-stat-value">0</div>
-                    <div class="hero-stat-label">API Keys Needed</div>
-                </div>
+            <div class="stats">
+                <div class="stat"><div class="stat-v">50+</div><div class="stat-l">Detection Rules</div></div>
+                <div class="stat"><div class="stat-v">8</div><div class="stat-l">Chains</div></div>
+                <div class="stat"><div class="stat-v">$0</div><div class="stat-l">Cost</div></div>
+                <div class="stat"><div class="stat-v">0</div><div class="stat-l">API Keys</div></div>
             </div>
         </section>
         
-        <section class="input-section">
-            <div class="input-tabs">
-                <button class="input-tab active" data-tab="address">Contract Address</button>
-                <button class="input-tab" data-tab="source">Source Code</button>
+        <section class="sec">
+            <div class="tabs">
+                <button class="tab active" data-tab="address">Contract Address</button>
+                <button class="tab" data-tab="source">Source Code</button>
             </div>
             
-            <div class="input-group active" id="tab-address">
-                <label class="input-label">Contract Address</label>
-                <p class="input-help">Enter a verified contract address to fetch source code automatically</p>
-                <input type="text" class="input-field" id="contractAddress" placeholder="0x..." spellcheck="false">
-                <div class="input-row">
-                    <select class="chain-select" id="chainSelect">
+            <div class="ig active" id="tab-address">
+                <label class="lbl">Contract Address</label>
+                <p class="help">Enter a verified contract address to fetch source code automatically</p>
+                <input type="text" class="inp" id="contractAddress" placeholder="0x..." spellcheck="false">
+                <div class="row">
+                    <select class="sel" id="chainSelect">
                         <option value="eth">Ethereum</option>
                         <option value="base">Base</option>
                         <option value="arb">Arbitrum</option>
@@ -638,137 +156,111 @@
                         <option value="avax">Avalanche</option>
                         <option value="zksync">zkSync</option>
                     </select>
-                    <button class="btn btn-primary" id="btnFetch" onclick="fetchAndAnalyze()">
-                        🔍 Fetch & Analyze
-                    </button>
+                    <button class="btn btn-p" onclick="fetchAndAnalyze()">🔍 Fetch & Analyze</button>
                 </div>
-                <div class="samples">
-                    <div class="samples-label">Try sample contracts:</div>
-                    <div class="sample-chips">
-                        <span class="sample-chip" onclick="loadSample('vulnerable')">Vulnerable Contract</span>
-                        <span class="sample-chip" onclick="loadSample('erc20')">ERC-20 Token</span>
-                        <span class="sample-chip" onclick="loadSample('reentrancy')">Reentrancy Example</span>
+                <div class="samp">
+                    <div class="samp-l">Try sample contracts:</div>
+                    <div class="chips">
+                        <span class="chip" onclick="loadSample('vulnerable')">Vulnerable Contract</span>
+                        <span class="chip" onclick="loadSample('erc20')">ERC-20 Token</span>
+                        <span class="chip" onclick="loadSample('reentrancy')">Reentrancy Example</span>
                     </div>
                 </div>
             </div>
             
-            <div class="input-group" id="tab-source">
-                <label class="input-label">Solidity Source Code</label>
-                <p class="input-help">Paste your smart contract source code directly</p>
-                <textarea class="input-field" id="sourceCode" placeholder="// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
-contract MyContract {
-    // Paste your contract here...
-}"></textarea>
-                <div class="input-row">
-                    <button class="btn btn-primary" onclick="analyzeSource()">
-                        🔍 Analyze Contract
-                    </button>
+            <div class="ig" id="tab-source">
+                <label class="lbl">Solidity Source Code</label>
+                <p class="help">Paste your smart contract source code directly</p>
+                <textarea class="inp" id="sourceCode" placeholder="// SPDX-License-Identifier: MIT&#10;pragma solidity ^0.8.0;&#10;&#10;contract MyContract {&#10;    // Paste your contract here...&#10;}"></textarea>
+                <div class="row">
+                    <button class="btn btn-p" onclick="analyzeSource()">🔍 Analyze Contract</button>
                 </div>
             </div>
         </section>
         
-        <section class="loading" id="loading">
-            <div class="spinner"></div>
-            <div class="loading-text" id="loadingText">Analyzing smart contract...</div>
-            <div class="loading-steps">
-                <div class="loading-step" id="step-fetch">
-                    <span class="loading-step-icon">⏳</span>
-                    <span>Fetching contract source code</span>
-                </div>
-                <div class="loading-step" id="step-parse">
-                    <span class="loading-step-icon">⏳</span>
-                    <span>Parsing Solidity code</span>
-                </div>
-                <div class="loading-step" id="step-analyze">
-                    <span class="loading-step-icon">⏳</span>
-                    <span>Running security analysis</span>
-                </div>
-                <div class="loading-step" id="step-report">
-                    <span class="loading-step-icon">⏳</span>
-                    <span>Generating security report</span>
-                </div>
+        <section class="ld" id="loading">
+            <div class="spin"></div>
+            <div class="ld-t" id="loadingText">Analyzing smart contract...</div>
+            <div class="ld-s">
+                <div class="ld-i" id="step-fetch"><span class="ld-ic">⏳</span><span>Fetching contract source code</span></div>
+                <div class="ld-i" id="step-parse"><span class="ld-ic">⏳</span><span>Parsing Solidity code & building AST</span></div>
+                <div class="ld-i" id="step-analyze"><span class="ld-ic">⏳</span><span>Running security analysis</span></div>
+                <div class="ld-i" id="step-report"><span class="ld-ic">⏳</span><span>Generating security report</span></div>
             </div>
         </section>
         
-        <section class="report" id="report">
-            <div class="report-header">
+        <section class="rpt" id="report">
+            <div class="rpt-h">
                 <div>
-                    <div class="report-title">Security Audit Report</div>
-                    <div class="report-meta" id="reportMeta"></div>
+                    <div class="rpt-t">Security Audit Report</div>
+                    <div class="rpt-m" id="reportMeta"></div>
                 </div>
-                <button class="btn btn-secondary" onclick="downloadReport()">📥 Download Report</button>
+                <button class="btn btn-s" onclick="downloadReport()">📥 Download Report</button>
             </div>
             
-            <div class="risk-card">
-                <div class="risk-score-container">
-                    <div class="risk-score-circle" id="riskCircle">
-                        <div class="risk-score-value" id="riskScore">-</div>
-                        <div class="risk-score-label">Risk Score</div>
+            <div class="risk">
+                <div class="risk-c">
+                    <div class="risk-sc" id="riskCircle">
+                        <div class="risk-sv" id="riskScore">-</div>
+                        <div class="risk-sl">Risk Score</div>
                     </div>
-                    <div class="risk-stats" id="riskStats"></div>
+                    <div class="risk-st" id="riskStats"></div>
                 </div>
             </div>
             
-            <div class="summary-card">
-                <div class="summary-title">📋 Executive Summary</div>
-                <div class="summary-text" id="summaryText"></div>
+            <div class="sum">
+                <div class="sum-t">📋 Executive Summary</div>
+                <div class="sum-txt" id="summaryText"></div>
             </div>
             
-            <div class="findings-section">
-                <div class="findings-header">
-                    <div class="findings-title">🔍 Findings</div>
-                    <div class="report-meta" id="findingsCount"></div>
+            <div class="sec2">
+                <div class="sec2-h">
+                    <div class="sec2-t">🔍 Findings</div>
+                    <div class="rpt-m" id="findingsCount"></div>
                 </div>
                 <div id="findingsList"></div>
             </div>
             
-            <div class="gas-card">
-                <div class="gas-title">⚡ Gas Optimization Suggestions</div>
+            <div class="gas">
+                <div class="gas-t">⚡ Gas Optimization Suggestions</div>
                 <div id="gasList"></div>
             </div>
         </section>
     </main>
     
     <footer>
-        <div class="container">
-            <p class="footer-text">SmartAudit — AI-Powered Smart Contract Security Auditor</p>
-            <p class="footer-text" style="margin-top: 4px;">Powered by Xiaomi MiMo V2.5 | Built for the MiMo 100T Creator Program</p>
+        <div class="c">
+            <p class="ft">SmartAudit — AI-Powered Smart Contract Security Auditor</p>
+            <p class="ft" style="margin-top:4px">Powered by Xiaomi MiMo V2.5 | Built for the MiMo 100T Creator Program</p>
         </div>
     </footer>
     
     <script>
-        // ===== CONFIG =====
-        const BLOCKSCOUT_CHAINS = {
-            eth: 'https://eth.blockscout.com/api',
-            base: 'https://base.blockscout.com/api',
-            arb: 'https://arbitrum.blockscout.com/api',
-            op: 'https://optimism.blockscout.com/api',
-            polygon: 'https://polygon.blockscout.com/api',
-            bsc: 'https://bsc.blockscout.com/api',
-            avax: 'https://avalanche.blockscout.com/api',
-            zksync: 'https://zksync.blockscout.com/api'
-        };
-        
-        // ===== STATE =====
-        let currentReport = null;
-        
-        // ===== INIT =====
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.input-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.input-group').forEach(g => g.classList.remove('active'));
-                    tab.classList.add('active');
-                    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
-                });
+    // ===== CONFIG =====
+    const BLOCKSCOUT = {
+        eth:'https://eth.blockscout.com/api',base:'https://base.blockscout.com/api',
+        arb:'https://arbitrum.blockscout.com/api',op:'https://optimism.blockscout.com/api',
+        polygon:'https://polygon.blockscout.com/api',bsc:'https://bsc.blockscout.com/api',
+        avax:'https://avalanche.blockscout.com/api',zksync:'https://zksync.blockscout.com/api'
+    };
+    
+    let currentReport = null;
+    
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded',()=>{
+        document.querySelectorAll('.tab').forEach(t=>{
+            t.addEventListener('click',()=>{
+                document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+                document.querySelectorAll('.ig').forEach(x=>x.classList.remove('active'));
+                t.classList.add('active');
+                document.getElementById('tab-'+t.dataset.tab).classList.add('active');
             });
         });
-        
-        // ===== SAMPLE CONTRACTS =====
-        const SAMPLES = {
-            vulnerable: `// SPDX-License-Identifier: MIT
+    });
+    
+    // ===== SAMPLES =====
+    const SAMPLES = {
+        vulnerable: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract VulnerableContract {
@@ -787,11 +279,9 @@ contract VulnerableContract {
     function withdraw(uint256 amount) public {
         require(balances[msg.sender] >= amount, "Insufficient balance");
         
-        // External call before state update
         (bool success, ) = msg.sender.call{value: amount}("");
         require(success, "Transfer failed");
         
-        // State update after external call
         balances[msg.sender] -= amount;
     }
     
@@ -799,13 +289,8 @@ contract VulnerableContract {
     function emergencyWithdraw() public {
         payable(msg.sender).transfer(address(this).balance);
     }
-    
-    // VULNERABLE: Integer overflow in older versions
-    function addToBalance(uint256 amount) public {
-        balances[msg.sender] = balances[msg.sender] + amount;
-    }
 }`,
-            erc20: `// SPDX-License-Identifier: MIT
+        erc20: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract BasicERC20 {
@@ -850,7 +335,7 @@ contract BasicERC20 {
         return true;
     }
 }`,
-            reentrancy: `// SPDX-License-Identifier: MIT
+        reentrancy: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract ReentrancyExample {
@@ -864,1064 +349,1028 @@ contract ReentrancyExample {
         uint256 bal = balances[msg.sender];
         require(bal > 0, "No funds");
         
-        // BUG: External call before state update
         (bool sent, ) = msg.sender.call{value: bal}("");
         require(sent, "Failed to send Ether");
         
         balances[msg.sender] = 0;
     }
-    
-    // Attacker contract would call withdraw() recursively
-    // before balances[msg.sender] is set to 0
 }`
-        };
+    };
+    
+    function loadSample(name) {
+        const s = SAMPLES[name];
+        if (s) {
+            document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+            document.querySelectorAll('.ig').forEach(x=>x.classList.remove('active'));
+            document.querySelector('[data-tab="source"]').classList.add('active');
+            document.getElementById('tab-source').classList.add('active');
+            document.getElementById('sourceCode').value = s;
+        }
+    }
+    
+    // ===== FETCH CONTRACT =====
+    async function fetchContractSource(address, chain) {
+        const base = BLOCKSCOUT[chain];
+        if (!base) throw new Error('Unsupported chain');
         
-        function loadSample(name) {
-            const sample = SAMPLES[name];
-            if (sample) {
-                document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.input-group').forEach(g => g.classList.remove('active'));
-                document.querySelector('[data-tab="source"]').classList.add('active');
-                document.getElementById('tab-source').classList.add('active');
-                document.getElementById('sourceCode').value = sample;
-            }
+        const r = await fetch(`${base}/v2/addresses/${address}`);
+        if (!r.ok) throw new Error('Address not found');
+        const d = await r.json();
+        if (!d.is_contract) throw new Error('Not a smart contract');
+        
+        const sr = await fetch(`${base}/v2/smart-contracts/${address}`);
+        if (!sr.ok) throw new Error('Source code not available (not verified)');
+        const sd = await sr.json();
+        if (!sd.source_code) throw new Error('Contract not verified');
+        
+        return { source: sd.source_code, name: sd.name||'Unknown', compiler: sd.compiler_version||'Unknown', address, chain };
+    }
+    
+    // ===== ADVANCED SECURITY ANALYZER =====
+    class SecurityAnalyzer {
+        constructor(source) {
+            this.source = source;
+            this.rawLines = source.split('\n');
+            this.findings = [];
+            this.gasOpts = [];
+            
+            // Parse contract structure
+            this.pragma = this.parsePragma();
+            this.license = this.parseLicense();
+            this.imports = this.parseImports();
+            this.contracts = this.parseContracts();
+            this.functions = this.parseFunctions();
+            this.stateVars = this.parseStateVars();
+            this.events = this.parseEvents();
+            this.modifiers = this.parseModifiers();
+            this.structs = this.parseStructs();
+            this.mappings = this.parseMappings();
         }
         
-        // ===== FETCH CONTRACT =====
-        async function fetchContractSource(address, chain) {
-            const baseUrl = BLOCKSCOUT_CHAINS[chain];
-            if (!baseUrl) throw new Error('Unsupported chain');
-            
-            const resp = await fetch(`${baseUrl}/v2/addresses/${address}`);
-            if (!resp.ok) throw new Error('Address not found');
-            
-            const data = await resp.json();
-            if (!data.is_contract) throw new Error('This address is not a smart contract');
-            
-            const sourceResp = await fetch(`${baseUrl}/v2/smart-contracts/${address}`);
-            if (!sourceResp.ok) throw new Error('Contract source code not available (not verified)');
-            
-            const sourceData = await sourceResp.json();
-            if (!sourceData.source_code) throw new Error('Contract source code not verified on this chain');
-            
-            return {
-                source: sourceData.source_code,
-                name: sourceData.name || 'Unknown',
-                compiler: sourceData.compiler_version || 'Unknown',
-                address: address,
-                chain: chain
-            };
+        // ===== PARSERS =====
+        parsePragma() {
+            const m = this.source.match(/pragma\s+solidity\s+([^;]+);/);
+            return m ? m[1].trim() : null;
         }
         
-        // ===== SECURITY ANALYZER ENGINE =====
-        class SecurityAnalyzer {
-            constructor(source) {
-                this.source = source;
-                this.lines = source.split('\n');
-                this.findings = [];
-                this.gasOptimizations = [];
+        parseLicense() {
+            const m = this.source.match(/SPDX-License-Identifier:\s*(\S+)/);
+            return m ? m[1] : null;
+        }
+        
+        parseImports() {
+            const imports = [];
+            const re = /import\s+(?:"([^"]+)"|'([^']+)'|{[^}]+}\s+from\s+"([^"]+)"|{[^}]+}\s+from\s+'([^']+)')/g;
+            let m;
+            while ((m = re.exec(this.source)) !== null) {
+                imports.push(m[1]||m[2]||m[3]||m[4]);
             }
-            
-            analyze() {
-                this.checkReentrancy();
-                this.checkAccessControl();
-                this.checkOverflow();
-                this.checkExternalCalls();
-                this.checkTimestampDependence();
-                this.checkFrontRunning();
-                this.checkDenialOfService();
-                this.checkCentralization();
-                this.checkMissingEvents();
-                this.checkUncheckedReturn();
-                this.checkDelegatecall();
-                this.checkSelfdestruct();
-                this.checkTxOrigin();
-                this.checkBlockTimestamp();
-                this.checkBlockNumber();
-                this.checkGasIssues();
-                this.checkVisibility();
-                this.checkPragma();
-                this.checkLicense();
-                this.checkLoops();
-                this.checkStorage();
-                this.checkMath();
-                this.checkApproval();
-                this.checkRandomness();
-                this.checkOracle();
-                this.checkFlashLoan();
-                this.checkProxy();
-                
-                // Gas optimizations
-                this.checkGasOptimizations();
-                
-                return this.generateReport();
+            return imports;
+        }
+        
+        parseContracts() {
+            const contracts = [];
+            const re = /(?:abstract\s+)?contract\s+(\w+)(?:\s+is\s+([^{]+))?\s*\{/g;
+            let m;
+            while ((m = re.exec(this.source)) !== null) {
+                contracts.push({
+                    name: m[1],
+                    parents: m[2] ? m[2].split(',').map(s=>s.trim()) : [],
+                    body: this.extractBlock(this.source, m.index)
+                });
             }
-            
-            addFinding(severity, title, location, description, code, fix) {
+            return contracts;
+        }
+        
+        parseFunctions() {
+            const funcs = [];
+            // Match function declarations with their full body
+            const re = /function\s+(\w+)\s*\(([^)]*)\)(?:\s+(?:external|public|internal|private))?(?:\s+(?:view|pure|payable))?(?:\s+returns\s*\([^)]*\))?\s*\{/g;
+            let m;
+            while ((m = re.exec(this.source)) !== null) {
+                const body = this.extractBlock(this.source, m.index);
+                const sig = m[0].replace(/\s*\{$/, '');
+                funcs.push({
+                    name: m[1],
+                    params: m[2],
+                    signature: sig,
+                    body: body,
+                    line: this.getLineNum(m.index),
+                    visibility: this.extractVisibility(sig),
+                    modifiers: this.extractModifiers(sig),
+                    isPayable: sig.includes('payable'),
+                    isExternal: sig.includes('external'),
+                    isPublic: sig.includes('public')
+                });
+            }
+            return funcs;
+        }
+        
+        parseStateVars() {
+            const vars = [];
+            // Match state variable declarations (outside functions)
+            const contractBodies = this.contracts.map(c => c.body).join('\n');
+            const re = /^\s*(mapping\s*\([^)]*\)\s+(?:public|private|internal)?\s*(\w+)|((?:uint|int|address|bool|string|bytes|bytes\d+)\d*)\s+(?:public|private|internal)?\s*(\w+)(?:\s*=\s*[^;]+)?);/gm;
+            let m;
+            while ((m = re.exec(contractBodies)) !== null) {
+                vars.push({
+                    name: m[2]||m[4],
+                    declaration: m[0].trim(),
+                    line: this.getLineNum(m.index)
+                });
+            }
+            return vars;
+        }
+        
+        parseEvents() {
+            const events = [];
+            const re = /event\s+(\w+)\s*\(([^)]*)\)/g;
+            let m;
+            while ((m = re.exec(this.source)) !== null) {
+                events.push({ name: m[1], params: m[2] });
+            }
+            return events;
+        }
+        
+        parseModifiers() {
+            const mods = [];
+            const re = /modifier\s+(\w+)\s*(?:\([^)]*\))?\s*\{/g;
+            let m;
+            while ((m = re.exec(this.source)) !== null) {
+                mods.push({
+                    name: m[1],
+                    body: this.extractBlock(this.source, m.index),
+                    line: this.getLineNum(m.index)
+                });
+            }
+            return mods;
+        }
+        
+        parseStructs() {
+            const structs = [];
+            const re = /struct\s+(\w+)\s*\{([^}]+)\}/g;
+            let m;
+            while ((m = re.exec(this.source)) !== null) {
+                structs.push({ name: m[1], fields: m[2] });
+            }
+            return structs;
+        }
+        
+        parseMappings() {
+            const maps = [];
+            const re = /mapping\s*\(([^)]+)\)\s+(?:public|private|internal)?\s*(\w+)/g;
+            let m;
+            while ((m = re.exec(this.source)) !== null) {
+                maps.push({ key: m[1].split('=>')[0].trim(), value: m[1].split('=>')[1]?.trim(), name: m[2] });
+            }
+            return maps;
+        }
+        
+        extractBlock(src, startIdx) {
+            let depth = 0;
+            let start = src.indexOf('{', startIdx);
+            if (start === -1) return '';
+            let end = start;
+            for (let i = start; i < src.length; i++) {
+                if (src[i] === '{') depth++;
+                if (src[i] === '}') depth--;
+                if (depth === 0) { end = i; break; }
+            }
+            return src.substring(start, end + 1);
+        }
+        
+        getLineNum(idx) {
+            return this.source.substring(0, idx).split('\n').length;
+        }
+        
+        extractVisibility(sig) {
+            if (sig.includes('external')) return 'external';
+            if (sig.includes('public')) return 'public';
+            if (sig.includes('internal')) return 'internal';
+            if (sig.includes('private')) return 'private';
+            return 'public'; // default
+        }
+        
+        extractModifiers(sig) {
+            const mods = [];
+            const modNames = this.modifiers.map(m => m.name);
+            for (const mod of modNames) {
+                if (sig.includes(mod)) mods.push(mod);
+            }
+            return mods;
+        }
+        
+        getLineContext(lineNum, ctx = 3) {
+            const start = Math.max(0, lineNum - ctx - 1);
+            const end = Math.min(this.rawLines.length, lineNum + ctx);
+            return this.rawLines.slice(start, end).map((l,i) => `${start+i+1}: ${l}`).join('\n');
+        }
+        
+        addFinding(severity, title, location, description, code, fix) {
+            // Deduplicate
+            const key = `${severity}:${title}:${location}`;
+            if (!this.findings.some(f => `${f.severity}:${f.title}:${f.location}` === key)) {
                 this.findings.push({ severity, title, location, description, code, fix });
             }
-            
-            addGasOptimization(title, description) {
-                this.gasOptimizations.push({ title, description });
+        }
+        
+        addGas(title, description) {
+            if (!this.gasOpts.some(g => g.title === title)) {
+                this.gasOpts.push({ title, description });
             }
+        }
+        
+        // ===== MAIN ANALYSIS =====
+        analyze() {
+            this.analyzePragma();
+            this.analyzeLicense();
+            this.analyzeReentrancy();
+            this.analyzeAccessControl();
+            this.analyzeOverflow();
+            this.analyzeExternalCalls();
+            this.analyzeSelfdestruct();
+            this.analyzeDelegatecall();
+            this.analyzeTxOrigin();
+            this.analyzeTimestamp();
+            this.analyzeRandomness();
+            this.analyzeFrontRunning();
+            this.analyzeDoS();
+            this.analyzeCentralization();
+            this.analyzeEvents();
+            this.analyzeVisibility();
+            this.analyzeApproval();
+            this.analyzeOracle();
+            this.analyzeFlashLoan();
+            this.analyzeProxy();
+            this.analyzeUncheckedMath();
+            this.analyzeStorage();
+            this.analyzeReturnValues();
+            this.analyzeAssembly();
+            this.analyzePayable();
+            this.analyzeImmutable();
             
-            getLineContext(lineNum, context = 2) {
-                const start = Math.max(0, lineNum - context - 1);
-                const end = Math.min(this.lines.length, lineNum + context);
-                return this.lines.slice(start, end).map((l, i) => `${start + i + 1}: ${l}`).join('\n');
+            this.analyzeGas();
+            
+            return this.buildReport();
+        }
+        
+        // ===== 1. PRAGMA =====
+        analyzePragma() {
+            if (!this.pragma) {
+                this.addFinding('info', 'Missing Pragma', 'File header',
+                    'No pragma solidity version specified. Different compiler versions may produce different behavior.',
+                    '', 'Add pragma solidity ^0.8.0; at the top of the file.');
+            } else if (this.pragma.includes('^') && !this.pragma.includes('>=')) {
+                // Caret pragma is fine but worth noting
             }
-            
-            // ===== REENTRANCY =====
-            checkReentrancy() {
-                // Pattern: external call followed by state change
-                const callPattern = /\.call\{|\.call\.value\(|\.send\(|\.transfer\(/g;
-                const lines = this.source.split('\n');
-                
-                let callLines = [];
-                for (let i = 0; i < lines.length; i++) {
-                    if (callPattern.test(lines[i])) {
-                        callLines.push(i + 1);
-                    }
-                    callPattern.lastIndex = 0;
-                }
-                
-                // Check if there are state changes after external calls
-                for (const callLine of callLines) {
-                    const afterCall = lines.slice(callLine).join('\n');
-                    if (afterCall.match(/balances\[|mapping.*=|storage.*=/)) {
-                        this.addFinding(
-                            'critical',
-                            'Reentrancy Vulnerability',
-                            `Line ${callLine}`,
-                            'External call is made before state variable is updated. An attacker can re-enter the function before the state is changed, potentially draining funds.',
-                            this.getLineContext(callLine),
-                            'Use the checks-effects-interactions pattern: update state variables BEFORE making external calls. Consider using ReentrancyGuard from OpenZeppelin.'
-                        );
-                        break;
-                    }
-                }
-                
-                // Check for missing reentrancy guard
-                if (callLines.length > 0 && !this.source.includes('nonReentrant') && !this.source.includes('ReentrancyGuard')) {
-                    this.addFinding(
-                        'medium',
-                        'Missing Reentrancy Guard',
-                        'Contract-wide',
-                        'Contract makes external calls but does not use a reentrancy guard. Consider adding OpenZeppelin\'s ReentrancyGuard modifier.',
-                        '',
-                        'Add ReentrancyGuard and use the nonReentrant modifier on functions that make external calls.'
-                    );
-                }
+        }
+        
+        // ===== 2. LICENSE =====
+        analyzeLicense() {
+            if (!this.license) {
+                this.addFinding('info', 'Missing SPDX License', 'File header',
+                    'No SPDX license identifier. Required for verified contracts on Etherscan.',
+                    '', 'Add // SPDX-License-Identifier: MIT at the top.');
             }
-            
-            // ===== ACCESS CONTROL =====
-            checkAccessControl() {
-                const lines = this.lines;
+        }
+        
+        // ===== 3. REENTRANCY (CONTEXT-AWARE) =====
+        analyzeReentrancy() {
+            for (const func of this.functions) {
+                const bodyLines = func.body.split('\n');
+                let callLine = -1;
+                let stateUpdateAfterCall = false;
+                let externalCallType = '';
                 
-                // Check for missing owner pattern
-                if (!this.source.includes('onlyOwner') && !this.source.includes('require(msg.sender == owner)') && !this.source.includes('require(msg.sender==owner)')) {
-                    // Check if there are sensitive functions
-                    const sensitivePatterns = ['withdraw', 'transfer', 'mint', 'burn', 'pause', 'unpause', 'upgrade', 'destroy', 'selfdestruct', 'kill'];
-                    for (const pattern of sensitivePatterns) {
-                        if (this.source.includes(`function ${pattern}`)) {
-                            this.addFinding(
-                                'high',
-                                'Missing Access Control',
-                                `function ${pattern}()`,
-                                `The function "${pattern}" appears to be sensitive but has no access control modifier. Anyone can call this function.`,
-                                '',
-                                `Add an onlyOwner modifier or require(msg.sender == owner) check to restrict access.`
-                            );
-                        }
-                    }
-                }
-                
-                // Check for tx.origin usage
-                if (this.source.includes('tx.origin')) {
-                    const lineNum = this.lines.findIndex(l => l.includes('tx.origin')) + 1;
-                    this.addFinding(
-                        'high',
-                        'tx.origin for Authorization',
-                        `Line ${lineNum}`,
-                        'Using tx.origin for authorization is vulnerable to phishing attacks. An attacker can trick the owner into calling a malicious contract that forwards the call to your contract.',
-                        this.getLineContext(lineNum),
-                        'Use msg.sender instead of tx.origin for authorization checks.'
-                    );
-                }
-            }
-            
-            // ===== OVERFLOW =====
-            checkOverflow() {
-                // In Solidity 0.8+, overflow is checked by default
-                if (this.source.includes('pragma solidity ^0.8') || this.source.includes('pragma solidity >=0.8')) {
-                    // Check for unchecked blocks
-                    if (this.source.includes('unchecked')) {
-                        const lines = this.lines;
-                        for (let i = 0; i < lines.length; i++) {
-                            if (lines[i].includes('unchecked')) {
-                                this.addFinding(
-                                    'medium',
-                                    'Unchecked Arithmetic',
-                                    `Line ${i + 1}`,
-                                    'Arithmetic operations inside unchecked blocks will not revert on overflow/underflow. Ensure this is intentional.',
-                                    this.getLineContext(i + 1),
-                                    'Verify that overflow/underflow is impossible in this context, or use checked arithmetic.'
-                                );
+                // Find external calls in function body
+                for (let i = 0; i < bodyLines.length; i++) {
+                    const line = bodyLines[i];
+                    
+                    // Detect external calls
+                    const hasCall = /\.call\{|\.call\.value\(|\.send\(|\.transfer\(/.test(line);
+                    if (hasCall) {
+                        callLine = i;
+                        if (line.includes('.call{') || line.includes('.call.value(')) externalCallType = 'low-level call';
+                        else if (line.includes('.send(')) externalCallType = '.send()';
+                        else if (line.includes('.transfer(')) externalCallType = '.transfer()';
+                        
+                        // Check if state is updated AFTER the call in the same function
+                        for (let j = i + 1; j < bodyLines.length; j++) {
+                            const afterLine = bodyLines[j];
+                            // Look for state variable assignments
+                            if (afterLine.match(/balances\[|mapping.*=|storage.*=|\w+\s*[-+]?=\s*/) && 
+                                !afterLine.match(/require|if|emit|\/\/|bool|uint|address/)) {
+                                stateUpdateAfterCall = true;
+                                break;
                             }
                         }
                     }
-                } else {
-                    // Older Solidity versions
-                    if (!this.source.includes('SafeMath')) {
-                        this.addFinding(
-                            'critical',
-                            'Missing SafeMath',
-                            'Contract-wide',
-                            'Contract uses Solidity <0.8.0 without SafeMath library. Integer overflow/underflow is possible.',
-                            '',
-                            'Use OpenZeppelin\'s SafeMath library or upgrade to Solidity ^0.8.0 which has built-in overflow checks.'
-                        );
+                }
+                
+                if (callLine >= 0 && stateUpdateAfterCall) {
+                    const lineNum = func.line + callLine;
+                    this.addFinding('critical',
+                        'Reentrancy Vulnerability',
+                        `function ${func.name}() at line ${func.line}`,
+                        `External call (${externalCallType}) is made before state variable is updated. An attacker can re-enter the function and drain funds. This is the most common DeFi exploit pattern.`,
+                        this.getLineContext(lineNum),
+                        'Use checks-effects-interactions pattern: update state BEFORE external calls. Add ReentrancyGuard from OpenZeppelin.');
+                }
+                
+                // Check for missing reentrancy guard on functions with external calls
+                if (callLine >= 0 && !func.modifiers.includes('nonReentrant') && !this.source.includes('ReentrancyGuard')) {
+                    this.addFinding('medium',
+                        'Missing Reentrancy Guard',
+                        `function ${func.name}()`,
+                        'Function makes external calls but has no reentrancy protection. Even with checks-effects-interactions, a guard provides defense in depth.',
+                        '', 'Add nonReentrant modifier from OpenZeppelin\'s ReentrancyGuard.');
+                }
+            }
+        }
+        
+        // ===== 4. ACCESS CONTROL (CONTEXT-AWARE) =====
+        analyzeAccessControl() {
+            const hasOwner = this.source.includes('owner') || this.source.includes('Ownable');
+            const hasAccessControl = this.source.includes('onlyOwner') || 
+                                     this.source.includes('require(msg.sender') ||
+                                     this.source.includes('_checkRole') ||
+                                     this.source.includes('AccessControl');
+            
+            const sensitiveFuncs = ['withdraw', 'transfer', 'mint', 'burn', 'pause', 'unpause', 
+                                   'upgrade', 'destroy', 'selfdestruct', 'kill', 'setOwner',
+                                   'changeOwner', 'updateAdmin', 'addMinter', 'removeMinter'];
+            
+            for (const func of this.functions) {
+                if (sensitiveFuncs.includes(func.name)) {
+                    const hasAuth = func.body.includes('require(msg.sender') || 
+                                   func.body.includes('require(owner') ||
+                                   func.body.includes('onlyOwner') ||
+                                   func.body.includes('_checkRole') ||
+                                   func.modifiers.some(m => m.toLowerCase().includes('only') || m.toLowerCase().includes('auth'));
+                    
+                    if (!hasAuth) {
+                        this.addFinding('critical',
+                            'Missing Access Control',
+                            `function ${func.name}() at line ${func.line}`,
+                            `Sensitive function "${func.name}" has no access control. Anyone can call it and potentially drain funds or take ownership.`,
+                            this.getLineContext(func.line),
+                            'Add require(msg.sender == owner) or use OpenZeppelin\'s Ownable/AccessControl.');
                     }
                 }
             }
             
-            // ===== EXTERNAL CALLS =====
-            checkExternalCalls() {
-                const lines = this.lines;
-                
+            // Check tx.origin
+            if (this.source.includes('tx.origin')) {
+                for (const func of this.functions) {
+                    if (func.body.includes('tx.origin')) {
+                        this.addFinding('critical',
+                            'tx.origin for Authorization',
+                            `function ${func.name}() at line ${func.line}`,
+                            'Using tx.origin for authorization is vulnerable to phishing attacks. An attacker can trick the owner into calling a malicious contract.',
+                            this.getLineContext(func.line),
+                            'Use msg.sender instead of tx.origin.');
+                    }
+                }
+            }
+        }
+        
+        // ===== 5. OVERFLOW =====
+        analyzeOverflow() {
+            const isNewSolidity = this.pragma && (this.pragma.includes('^0.8') || this.pragma.includes('>=0.8'));
+            
+            if (!isNewSolidity) {
+                // Old Solidity - check for SafeMath
+                if (!this.source.includes('SafeMath') && !this.source.includes('using SafeMath')) {
+                    const hasArithmetic = /\b\w+\s*[+\-*]\s*\w+/.test(this.source);
+                    if (hasArithmetic) {
+                        this.addFinding('critical',
+                            'Missing SafeMath Library',
+                            'Contract-wide',
+                            'Contract uses Solidity <0.8.0 without SafeMath. Integer overflow/underflow is possible and can lead to token theft or balance manipulation.',
+                            '', 'Use OpenZeppelin\'s SafeMath or upgrade to Solidity ^0.8.0.');
+                    }
+                }
+            } else {
+                // New Solidity - check for unchecked blocks
+                for (const func of this.functions) {
+                    if (func.body.includes('unchecked')) {
+                        const lines = func.body.split('\n');
+                        for (let i = 0; i < lines.length; i++) {
+                            if (lines[i].includes('unchecked')) {
+                                this.addFinding('medium',
+                                    'Unchecked Arithmetic Block',
+                                    `function ${func.name}() at line ${func.line + i}`,
+                                    'Arithmetic in unchecked block will not revert on overflow/underflow. This can be exploited if not carefully validated.',
+                                    this.getLineContext(func.line + i),
+                                    'Verify bounds before unchecked operations. Use SafeMath if unsure.');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // ===== 6. EXTERNAL CALLS =====
+        analyzeExternalCalls() {
+            for (const func of this.functions) {
+                const lines = func.body.split('\n');
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i];
                     
                     // Unchecked low-level calls
-                    if (line.includes('.call{') && !line.includes('require') && !lines[i+1]?.includes('require')) {
-                        this.addFinding(
-                            'high',
-                            'Unchecked External Call',
-                            `Line ${i + 1}`,
-                            'The return value of a low-level call is not checked. The call may fail silently.',
-                            this.getLineContext(i + 1),
-                            'Always check the return value: (bool success, ) = addr.call(...); require(success, "Call failed");'
-                        );
+                    if (line.includes('.call{') || line.includes('.call.value(')) {
+                        // Check if return value is checked
+                        const nextLine = lines[i+1] || '';
+                        const isChecked = line.includes('require') || line.includes('bool') || 
+                                         nextLine.includes('require') || nextLine.includes('success');
+                        if (!isChecked) {
+                            this.addFinding('high',
+                                'Unchecked External Call',
+                                `function ${func.name}() at line ${func.line + i}`,
+                                'Return value of low-level call is not checked. The call may fail silently, leading to loss of funds or incorrect state.',
+                                this.getLineContext(func.line + i),
+                                'Always check: (bool success, ) = addr.call{value: amount}(""); require(success, "Failed");');
+                        }
                     }
                     
-                    // .send() without checking return
+                    // Unchecked .send()
                     if (line.includes('.send(') && !line.includes('require') && !line.includes('bool')) {
-                        this.addFinding(
-                            'medium',
+                        this.addFinding('high',
                             'Unchecked .send() Return',
-                            `Line ${i + 1}`,
-                            'The .send() function returns false on failure instead of reverting. The return value should be checked.',
-                            this.getLineContext(i + 1),
-                            'Use .transfer() instead, or check the return value: require(addr.send(amount), "Send failed");'
-                        );
+                            `function ${func.name}() at line ${func.line + i}`,
+                            '.send() returns false on failure instead of reverting. Return value must be checked.',
+                            this.getLineContext(func.line + i),
+                            'Use require(addr.send(amount)) or use .transfer() which reverts on failure.');
                     }
                 }
             }
-            
-            // ===== TIMESTAMP =====
-            checkTimestampDependence() {
-                if (this.source.includes('block.timestamp')) {
-                    const lines = this.lines;
+        }
+        
+        // ===== 7. SELFDESTRUCT =====
+        analyzeSelfdestruct() {
+            if (this.source.includes('selfdestruct') || this.source.includes('suicide')) {
+                for (const func of this.functions) {
+                    if (func.body.includes('selfdestruct') || func.body.includes('suicide')) {
+                        const hasAuth = func.body.includes('require(msg.sender') || 
+                                       func.body.includes('onlyOwner') ||
+                                       func.modifiers.some(m => m.toLowerCase().includes('only'));
+                        
+                        this.addFinding(hasAuth ? 'high' : 'critical',
+                            'Selfdestruct Usage',
+                            `function ${func.name}() at line ${func.line}`,
+                            `selfdestruct permanently destroys the contract and sends all ETH to a target. ${hasAuth ? 'Has access control but still risky.' : 'NO ACCESS CONTROL - anyone can destroy the contract!'}`,
+                            this.getLineContext(func.line),
+                            'Remove selfdestruct unless absolutely necessary. If needed, add strict access control and timelock.');
+                    }
+                }
+            }
+        }
+        
+        // ===== 8. DELEGATECALL =====
+        analyzeDelegatecall() {
+            if (this.source.includes('delegatecall')) {
+                for (const func of this.functions) {
+                    if (func.body.includes('delegatecall')) {
+                        this.addFinding('critical',
+                            'Delegatecall Risk',
+                            `function ${func.name}() at line ${func.line}`,
+                            'delegatecall executes code in the caller\'s context. If the target is malicious or vulnerable, it can compromise the entire contract and steal all funds.',
+                            this.getLineContext(func.line),
+                            'Ensure delegatecall target is trusted and immutable. Consider using a timelock for changing the target.');
+                    }
+                }
+            }
+        }
+        
+        // ===== 9. TIMESTAMP =====
+        analyzeTimestamp() {
+            for (const func of this.functions) {
+                if (func.body.includes('block.timestamp')) {
+                    const lines = func.body.split('\n');
                     for (let i = 0; i < lines.length; i++) {
-                        if (lines[i].includes('block.timestamp') && (lines[i].includes('==') || lines[i].includes('<') || lines[i].includes('>'))) {
-                            this.addFinding(
-                                'low',
+                        if (lines[i].includes('block.timestamp') && 
+                            (lines[i].includes('==') || lines[i].includes('>=') || lines[i].includes('<=') || lines[i].includes('!='))) {
+                            this.addFinding('low',
                                 'Block Timestamp Dependence',
-                                `Line ${i + 1}`,
-                                'Using block.timestamp for comparison can be manipulated by miners within a ~15 second window.',
-                                this.getLineContext(i + 1),
-                                'Avoid using block.timestamp for precise timing. For randomness, use Chainlink VRF.'
-                            );
+                                `function ${func.name}() at line ${func.line + i}`,
+                                'block.timestamp can be manipulated by miners within ~15 seconds. Do not use for critical timing or randomness.',
+                                this.getLineContext(func.line + i),
+                                'Allow tolerance for timestamp checks. For randomness, use Chainlink VRF.');
                             break;
                         }
                     }
                 }
             }
-            
-            // ===== FRONT RUNNING =====
-            checkFrontRunning() {
-                // Check for functions that might be front-runnable
-                const frontRunnable = ['swap', 'trade', 'bid', 'auction', 'claim'];
-                for (const func of frontRunnable) {
-                    if (this.source.includes(`function ${func}`) && !this.source.includes('commit') && !this.source.includes('reveal')) {
-                        this.addFinding(
-                            'medium',
-                            'Potential Front-Running',
-                            `function ${func}()`,
-                            `The function "${func}" may be vulnerable to front-running attacks. Miners or bots can see pending transactions and act on them.`,
-                            '',
-                            'Consider using commit-reveal schemes, private mempools, or slippage protection.'
-                        );
-                    }
-                }
+        }
+        
+        // ===== 10. RANDOMNESS =====
+        analyzeRandomness() {
+            if ((this.source.includes('keccak256') || this.source.includes('sha256')) && 
+                (this.source.includes('block.timestamp') || this.source.includes('blockhash') || this.source.includes('block.number'))) {
+                this.addFinding('critical',
+                    'Insecure On-Chain Randomness',
+                    'keccak256 with block data',
+                    'Using block.timestamp, blockhash, or block.number for randomness is predictable. Miners can manipulate these values. This is critical for gambling, NFT minting, or lottery contracts.',
+                    '', 'Use Chainlink VRF (Verifiable Random Function) for secure randomness.');
             }
-            
-            // ===== DENIAL OF SERVICE =====
-            checkDenialOfService() {
-                const lines = this.lines;
-                
-                // Check for loops over arrays that could grow
-                for (let i = 0; i < lines.length; i++) {
-                    if (lines[i].match(/for\s*\(.*\.length/) && lines[i].includes('[]')) {
-                        this.addFinding(
-                            'medium',
-                            'Denial of Service via Unbounded Loop',
-                            `Line ${i + 1}`,
-                            'Looping over an array that can grow indefinitely may cause the function to run out of gas.',
-                            this.getLineContext(i + 1),
-                            'Use pagination or limit the array size. Consider using mappings instead of arrays.'
-                        );
-                    }
-                }
-                
-                // Check for pull over push pattern
-                if (this.source.includes('.transfer(') && this.source.includes('payable')) {
-                    const transferLines = [];
-                    for (let i = 0; i < lines.length; i++) {
-                        if (lines[i].includes('.transfer(') && lines[i].includes('payable')) {
-                            transferLines.push(i + 1);
+        }
+        
+        // ===== 11. FRONT-RUNNING =====
+        analyzeFrontRunning() {
+            const frontRunnable = ['swap', 'trade', 'bid', 'auction', 'claim', 'liquidate', 'flash'];
+            for (const func of this.functions) {
+                for (const pattern of frontRunnable) {
+                    if (func.name.toLowerCase().includes(pattern)) {
+                        if (!func.body.includes('slippage') && !func.body.includes('minAmount') && 
+                            !func.body.includes('minOutput') && !func.body.includes('deadline')) {
+                            this.addFinding('medium',
+                                'Potential Front-Running / MEV',
+                                `function ${func.name}() at line ${func.line}`,
+                                `Function "${func.name}" may be vulnerable to sandwich attacks or front-running. No slippage protection detected.`,
+                                '', 'Add slippage tolerance (minAmountOut), deadline parameter, and consider using private mempools or MEV protection.');
                         }
                     }
-                    if (transferLines.length > 1) {
-                        this.addFinding(
-                            'medium',
-                            'Push Payment Pattern',
-                            `Lines ${transferLines.join(', ')}`,
-                            'Multiple transfers to different addresses in a single transaction can fail if one recipient is a contract that reverts.',
-                            '',
-                            'Use the pull payment pattern: let users withdraw their funds instead of pushing payments.'
-                        );
-                    }
                 }
             }
-            
-            // ===== CENTRALIZATION =====
-            checkCentralization() {
-                const centralizationRisks = [];
-                
-                if (this.source.includes('owner') && !this.source.includes('Ownable')) {
-                    centralizationRisks.push('Single owner can control the contract');
-                }
-                if (this.source.includes('pause') && !this.source.includes('Pausable')) {
-                    centralizationRisks.push('Contract can be paused by owner');
-                }
-                if (this.source.includes('upgrade') || this.source.includes('UUPS') || this.source.includes('transparent')) {
-                    centralizationRisks.push('Contract is upgradeable');
-                }
-                if (this.source.includes('mint') && this.source.includes('onlyOwner')) {
-                    centralizationRisks.push('Owner can mint unlimited tokens');
+        }
+        
+        // ===== 12. DOS =====
+        analyzeDoS() {
+            for (const func of this.functions) {
+                // Unbounded loops
+                const loopMatch = func.body.match(/for\s*\([^)]*;\s*\w+\s*<\s*(\w+)?\.?(\w*)\.length/g);
+                if (loopMatch) {
+                    this.addFinding('medium',
+                        'Unbounded Loop (DoS Risk)',
+                        `function ${func.name}() at line ${func.line}`,
+                        'Function loops over an array that can grow. If the array becomes very large, the function may run out of gas and become unusable.',
+                        '', 'Use pagination (offset, limit) or limit array size. Consider using mappings instead.');
                 }
                 
-                if (centralizationRisks.length > 0) {
-                    this.addFinding(
-                        'info',
-                        'Centralization Risk',
-                        'Contract-wide',
-                        `The contract has centralization risks: ${centralizationRisks.join('; ')}. Consider using decentralized governance or timelock mechanisms.`,
-                        '',
-                        'Consider implementing timelock, multisig, or DAO governance for critical operations.'
-                    );
+                // Push payment pattern
+                const transferCount = (func.body.match(/\.transfer\(|\.send\(/g) || []).length;
+                if (transferCount > 1) {
+                    this.addFinding('medium',
+                        'Push Payment DoS',
+                        `function ${func.name}() at line ${func.line}`,
+                        `Function makes ${transferCount} transfers. If any recipient is a contract that reverts, the entire function fails.`,
+                        '', 'Use pull payment pattern: let users withdraw their funds instead of pushing.');
                 }
             }
+        }
+        
+        // ===== 13. CENTRALIZATION =====
+        analyzeCentralization() {
+            const risks = [];
             
-            // ===== MISSING EVENTS =====
-            checkMissingEvents() {
-                const lines = this.lines;
-                const stateVars = [];
-                
-                // Find state variable assignments
-                for (let i = 0; i < lines.length; i++) {
-                    if (lines[i].match(/^\s*(mapping|uint|int|address|bool|string|bytes)/) && lines[i].includes('public')) {
-                        const match = lines[i].match(/\b(\w+)\s*[;=]/);
-                        if (match) stateVars.push(match[1]);
-                    }
-                }
-                
-                // Check if state changes emit events
-                for (const varName of stateVars) {
-                    if (this.source.includes(`${varName} =`) && !this.source.includes(`emit`) && varName !== 'totalSupply') {
-                        this.addFinding(
-                            'low',
+            if (this.source.includes('owner') && !this.source.includes('Ownable')) {
+                risks.push('Single owner address');
+            }
+            if (this.source.match(/function\s+pause/) && this.source.match(/onlyOwner|require.*owner/)) {
+                risks.push('Owner can pause contract');
+            }
+            if (this.source.match(/function\s+mint/) && this.source.match(/onlyOwner|require.*owner/)) {
+                risks.push('Owner can mint tokens');
+            }
+            if (this.source.includes('upgrade') || this.source.includes('UUPS') || this.source.includes('transparent')) {
+                risks.push('Contract is upgradeable');
+            }
+            if (this.source.match(/function\s+set.*rate|function\s+set.*fee|function\s+set.*price/i)) {
+                risks.push('Owner can change economic parameters');
+            }
+            
+            if (risks.length > 0) {
+                this.addFinding('info',
+                    'Centralization Risk',
+                    'Contract-wide',
+                    `Centralization risks detected: ${risks.join('; ')}. Consider using multisig, timelock, or DAO governance for critical operations.`,
+                    '', 'Implement timelock for admin functions. Use multisig (Gnosis Safe) for ownership. Consider progressive decentralization.');
+            }
+        }
+        
+        // ===== 14. EVENTS =====
+        analyzeEvents() {
+            const emittedEvents = new Set();
+            const emitRe = /emit\s+(\w+)/g;
+            let m;
+            while ((m = emitRe.exec(this.source)) !== null) emittedEvents.add(m[1]);
+            
+            // Check if state-changing functions emit events
+            for (const func of this.functions) {
+                if (func.visibility === 'external' || func.visibility === 'public') {
+                    const hasStateChange = func.body.match(/\w+\s*[-+]?=\s*[^=]/);
+                    const hasEmit = func.body.includes('emit ');
+                    
+                    if (hasStateChange && !hasEmit && func.name !== 'constructor') {
+                        this.addFinding('low',
                             'Missing Event Emission',
-                            `Variable: ${varName}`,
-                            `State variable "${varName}" is modified but no event is emitted. This makes it difficult to track changes off-chain.`,
-                            '',
-                            'Emit events when state variables change to improve transparency and off-chain tracking.'
-                        );
-                        break;
+                            `function ${func.name}() at line ${func.line}`,
+                            `Function modifies state but doesn't emit events. This makes it difficult to track changes off-chain and monitor contract activity.`,
+                            '', 'Emit events for all state changes to improve transparency and enable off-chain monitoring.');
                     }
                 }
             }
-            
-            // ===== UNCHECKED RETURN =====
-            checkUncheckedReturn() {
-                const lines = this.lines;
-                for (let i = 0; i < lines.length; i++) {
-                    if (lines[i].includes('.call(') && !lines[i].includes('require') && !lines[i].includes('bool')) {
-                        this.addFinding(
-                            'high',
-                            'Unchecked Call Return Value',
-                            `Line ${i + 1}`,
-                            'The return value of a low-level call is not checked. The call may fail silently.',
-                            this.getLineContext(i + 1),
-                            'Always check the return value of low-level calls.'
-                        );
+        }
+        
+        // ===== 15. VISIBILITY =====
+        analyzeVisibility() {
+            for (const func of this.functions) {
+                if (func.visibility === 'public' && !func.isExternal) {
+                    // Public functions that could be external are gas inefficient
+                    if (!func.body.includes('this.') && !func.body.includes('address(this)')) {
+                        this.addFinding('info',
+                            'Function Could Be External',
+                            `function ${func.name}() at line ${func.line}`,
+                            'Function is public but never called internally. Making it external saves gas by not copying calldata to memory.',
+                            '', 'Change visibility to external if the function is not called within the contract.');
                     }
                 }
             }
-            
-            // ===== DELEGATECALL =====
-            checkDelegatecall() {
-                if (this.source.includes('delegatecall')) {
-                    const lineNum = this.lines.findIndex(l => l.includes('delegatecall')) + 1;
-                    this.addFinding(
-                        'critical',
-                        'Delegatecall Usage',
-                        `Line ${lineNum}`,
-                        'delegatecall executes code in the context of the calling contract. If the target is malicious or has vulnerabilities, it can compromise the entire contract.',
-                        this.getLineContext(lineNum),
-                        'Ensure the delegatecall target is trusted and cannot be changed by unauthorized users.'
-                    );
+        }
+        
+        // ===== 16. APPROVAL =====
+        analyzeApproval() {
+            if (this.source.includes('approve') && this.source.includes('allowance')) {
+                if (!this.source.includes('increaseAllowance') && !this.source.includes('decreaseAllowance')) {
+                    this.addFinding('medium',
+                        'ERC-20 Approve Race Condition',
+                        'approve() function',
+                        'The standard approve() is vulnerable to front-running: if a user changes allowance from N to M, a spender can spend N+M by front-running the approval change.',
+                        '', 'Implement increaseAllowance() and decreaseAllowance() functions.');
                 }
             }
-            
-            // ===== SELFDESTRUCT =====
-            checkSelfdestruct() {
-                if (this.source.includes('selfdestruct') || this.source.includes('suicide')) {
-                    const lineNum = this.lines.findIndex(l => l.includes('selfdestruct') || l.includes('suicide')) + 1;
-                    this.addFinding(
-                        'critical',
-                        'Selfdestruct Usage',
-                        `Line ${lineNum}`,
-                        'selfdestruct can destroy the contract and send all remaining ETH to a specified address. This is irreversible and can lead to loss of funds.',
-                        this.getLineContext(lineNum),
-                        'Remove selfdestruct unless absolutely necessary. If needed, add strict access control.'
-                    );
-                }
-            }
-            
-            // ===== TX.ORIGIN =====
-            checkTxOrigin() {
-                if (this.source.includes('tx.origin')) {
-                    const lineNum = this.lines.findIndex(l => l.includes('tx.origin')) + 1;
-                    this.addFinding(
-                        'high',
-                        'tx.origin Usage',
-                        `Line ${lineNum}`,
-                        'Using tx.origin for authorization is vulnerable to phishing attacks.',
-                        this.getLineContext(lineNum),
-                        'Use msg.sender instead of tx.origin.'
-                    );
-                }
-            }
-            
-            // ===== BLOCK.TIMESTAMP =====
-            checkBlockTimestamp() {
-                if (this.source.includes('block.timestamp')) {
-                    this.addFinding(
-                        'info',
-                        'Block Timestamp Usage',
-                        'Contract-wide',
-                        'block.timestamp can be manipulated by miners within ~15 seconds. Do not use for precise timing or randomness.',
-                        '',
-                        'For randomness, use Chainlink VRF. For timing, allow reasonable tolerance.'
-                    );
-                }
-            }
-            
-            // ===== BLOCK.NUMBER =====
-            checkBlockNumber() {
-                if (this.source.includes('block.number')) {
-                    this.addFinding(
-                        'info',
-                        'Block Number Usage',
-                        'Contract-wide',
-                        'Using block.number for timing is approximate as block times vary between chains.',
-                        '',
-                        'Be aware that block times differ across chains (Ethereum ~12s, BSC ~3s, etc.).'
-                    );
-                }
-            }
-            
-            // ===== GAS ISSUES =====
-            checkGasIssues() {
-                // Check for string concatenation in loops
-                if (this.source.includes('abi.encodePacked') && this.source.includes('for')) {
-                    this.addFinding(
-                        'low',
-                        'Gas Intensive String Operations',
-                        'Loop with abi.encodePacked',
-                        'Using abi.encodePacked inside loops can be gas intensive.',
-                        '',
-                        'Consider using bytes concatenation or assembly for gas optimization.'
-                    );
-                }
-            }
-            
-            // ===== VISIBILITY =====
-            checkVisibility() {
-                const lines = this.lines;
-                for (let i = 0; i < lines.length; i++) {
-                    if (lines[i].match(/function\s+\w+\s*\([^)]*\)\s*[{]/) && !lines[i].match(/(public|private|internal|external)/)) {
-                        this.addFinding(
-                            'medium',
-                            'Missing Function Visibility',
-                            `Line ${i + 1}`,
-                            'Function does not have an explicit visibility modifier. It defaults to public.',
-                            this.getLineContext(i + 1),
-                            'Explicitly set function visibility (public, external, internal, or private).'
-                        );
-                    }
-                }
-            }
-            
-            // ===== PRAGMA =====
-            checkPragma() {
-                if (!this.source.includes('pragma solidity')) {
-                    this.addFinding(
-                        'info',
-                        'Missing Pragma',
-                        'Contract-wide',
-                        'No pragma solidity version specified. This can lead to unexpected behavior with different compiler versions.',
-                        '',
-                        'Add a pragma solidity statement at the top of the file.'
-                    );
-                }
-            }
-            
-            // ===== LICENSE =====
-            checkLicense() {
-                if (!this.source.includes('SPDX-License-Identifier')) {
-                    this.addFinding(
-                        'info',
-                        'Missing License Identifier',
-                        'File header',
-                        'No SPDX license identifier found. This is recommended for open source contracts.',
-                        '',
-                        'Add // SPDX-License-Identifier: MIT (or appropriate license) at the top of the file.'
-                    );
-                }
-            }
-            
-            // ===== LOOPS =====
-            checkLoops() {
-                const lines = this.lines;
-                for (let i = 0; i < lines.length; i++) {
-                    if (lines[i].match(/for\s*\(/) && lines[i+1]?.match(/\.length/)) {
-                        this.addFinding(
-                            'low',
-                            'Loop Over Dynamic Array',
-                            `Line ${i + 1}`,
-                            'Looping over a dynamic array can be gas-intensive if the array grows large.',
-                            this.getLineContext(i + 1),
-                            'Consider using pagination or limiting the array size.'
-                        );
-                    }
-                }
-            }
-            
-            // ===== STORAGE =====
-            checkStorage() {
-                if (this.source.includes('storage') && this.source.includes('memory')) {
-                    // Check for storage/memory confusion
-                    const lines = this.lines;
-                    for (let i = 0; i < lines.length; i++) {
-                        if (lines[i].match(/struct\s+\w+\s+memory\s+\w+/) && lines[i].includes('=')) {
-                            this.addFinding(
-                                'medium',
-                                'Storage/Memory Confusion',
-                                `Line ${i + 1}`,
-                                'Assigning a storage reference to a memory variable creates a copy. Changes to the memory variable won\'t affect storage.',
-                                this.getLineContext(i + 1),
-                                'Use "storage" keyword if you want to modify the original data.'
-                            );
+        }
+        
+        // ===== 17. ORACLE =====
+        analyzeOracle() {
+            if (this.source.includes('latestRoundData') || this.source.includes('AggregatorV3')) {
+                for (const func of this.functions) {
+                    if (func.body.includes('latestRoundData')) {
+                        // Check if return value is validated
+                        if (!func.body.includes('require') || !func.body.match(/answer\s*(!=|>|>=)\s*0/)) {
+                            this.addFinding('high',
+                                'Stale Oracle Price',
+                                `function ${func.name}() at line ${func.line}`,
+                                'Oracle price data may be stale or zero. Chainlink oracles can return outdated prices during extreme market conditions.',
+                                '', 'Check that answer > 0 andupdatedAt is recent (< heartbeat interval).');
                         }
                     }
                 }
             }
-            
-            // ===== MATH =====
-            checkMath() {
-                if (this.source.includes('/0') || this.source.includes('/ 0')) {
-                    this.addFinding(
-                        'critical',
-                        'Division by Zero',
-                        'Contract-wide',
-                        'Potential division by zero detected. This will cause a revert.',
-                        '',
-                        'Add a require statement to check the divisor is not zero.'
-                    );
-                }
+        }
+        
+        // ===== 18. FLASH LOAN =====
+        analyzeFlashLoan() {
+            if (this.source.includes('flashLoan') || this.source.includes('flash')) {
+                this.addFinding('medium',
+                    'Flash Loan Attack Vector',
+                    'Flash loan functionality',
+                    'Flash loans allow borrowing massive amounts in a single transaction. This can be used to manipulate prices or exploit logic.',
+                    '', 'Ensure price calculations use TWAP (Time-Weighted Average Price) or multiple oracle sources.');
             }
-            
-            // ===== APPROVAL =====
-            checkApproval() {
-                if (this.source.includes('approve') && this.source.includes('allowance')) {
-                    // Check for approve front-running
-                    if (!this.source.includes('increaseAllowance') && !this.source.includes('decreaseAllowance')) {
-                        this.addFinding(
-                            'medium',
-                            'ERC-20 Approve Front-Running',
-                            'approve() function',
-                            'The standard approve() function is vulnerable to front-running. A user can be tricked into approving a larger amount.',
-                            '',
-                            'Use increaseAllowance() and decreaseAllowance() functions instead of approve().'
-                        );
+        }
+        
+        // ===== 19. PROXY =====
+        analyzeProxy() {
+            if (this.source.includes('delegatecall') && (this.source.includes('fallback') || this.source.includes('_implementation'))) {
+                this.addFinding('high',
+                    'Proxy Pattern Risks',
+                    'Proxy/Implementation pattern',
+                    'Proxy contracts have additional risks: storage collision, function selector clashing, and implementation upgrade risks.',
+                    '', 'Use EIP-1967 storage slots. Test thoroughly with different implementation versions. Consider using OpenZeppelin\'s upgradeable contracts.');
+            }
+        }
+        
+        // ===== 20. UNCHECKED MATH =====
+        analyzeUncheckedMath() {
+            for (const func of this.functions) {
+                const lines = func.body.split('\n');
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].includes('unchecked') && lines[i].includes('{')) {
+                        // Look at the unchecked block
+                        let depth = 0;
+                        let blockStart = i;
+                        for (let j = i; j < lines.length; j++) {
+                            if (lines[j].includes('{')) depth++;
+                            if (lines[j].includes('}')) depth--;
+                            if (depth === 0) {
+                                const block = lines.slice(blockStart, j+1).join('\n');
+                                if (block.match(/\+\+|\-\-|\+|\-|\*|\//)) {
+                                    this.addFinding('medium',
+                                        'Arithmetic in Unchecked Block',
+                                        `function ${func.name}() at line ${func.line + blockStart}`,
+                                        'Arithmetic operations in unchecked blocks won\'t revert on overflow/underflow. Ensure bounds are validated before the block.',
+                                        this.getLineContext(func.line + blockStart),
+                                        'Validate inputs before unchecked operations. Use SafeMath for critical calculations.');
+                                }
+                                break;
+                            }
+                        }
                     }
                 }
             }
-            
-            // ===== RANDOMNESS =====
-            checkRandomness() {
-                if (this.source.includes('keccak256') && (this.source.includes('block.timestamp') || this.source.includes('blockhash'))) {
-                    this.addFinding(
-                        'critical',
-                        'Insecure Randomness',
-                        'keccak256 with block data',
-                        'Using block.timestamp or blockhash for randomness is predictable and can be manipulated by miners.',
-                        '',
-                        'Use Chainlink VRF for secure random number generation.'
-                    );
-                }
-            }
-            
-            // ===== ORACLE =====
-            checkOracle() {
-                if (this.source.includes('oracle') || this.source.includes('priceFeed') || this.source.includes('AggregatorV3')) {
-                    if (!this.source.includes('latestRoundData')) {
-                        this.addFinding(
-                            'medium',
-                            'Oracle Data Freshness',
-                            'Price feed usage',
-                            'Oracle price data may be stale. Always check the timestamp of the latest round.',
-                            '',
-                            'Use latestRoundData() and check that the answer is recent and non-zero.'
-                        );
+        }
+        
+        // ===== 21. STORAGE PATTERNS =====
+        analyzeStorage() {
+            // Check for storage pointer issues
+            for (const func of this.functions) {
+                const lines = func.body.split('\n');
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].match(/storage\s+\w+\s*=/) && lines[i].includes('memory')) {
+                        this.addFinding('medium',
+                            'Storage/Memory Confusion',
+                            `function ${func.name}() at line ${func.line + i}`,
+                            'Assigning memory to storage creates a copy. Changes won\'t persist. This is a common source of bugs.',
+                            this.getLineContext(func.line + i),
+                            'Use "storage" keyword to reference original data, "memory" for copies.');
                     }
                 }
             }
-            
-            // ===== FLASH LOAN =====
-            checkFlashLoan() {
-                if (this.source.includes('flashLoan') || this.source.includes('flash')) {
-                    this.addFinding(
-                        'medium',
-                        'Flash Loan Attack Vector',
-                        'Flash loan functionality',
-                        'Flash loans can be used to manipulate prices or exploit logic in a single transaction.',
-                        '',
-                        'Ensure your contract is safe against price manipulation within a single transaction.'
-                    );
+        }
+        
+        // ===== 22. RETURN VALUES =====
+        analyzeReturnValues() {
+            for (const func of this.functions) {
+                // Check if function with return actually returns
+                if (func.signature.includes('returns') && !func.body.includes('return ')) {
+                    this.addFinding('medium',
+                        'Missing Return Statement',
+                        `function ${func.name}() at line ${func.line}`,
+                        'Function declares return type but may not return a value in all code paths.',
+                        '', 'Ensure all code paths return the expected value.');
                 }
-            }
-            
-            // ===== PROXY =====
-            checkProxy() {
-                if (this.source.includes('delegatecall') && this.source.includes('fallback')) {
-                    this.addFinding(
-                        'high',
-                        'Proxy Contract Pattern',
-                        'delegatecall in fallback',
-                        'Proxy contracts use delegatecall in fallback to forward calls to implementation. Storage layout must be carefully managed.',
-                        '',
-                        'Ensure storage layout compatibility between proxy and implementation. Consider using EIP-1967 storage slots.'
-                    );
-                }
-            }
-            
-            // ===== GAS OPTIMIZATIONS =====
-            checkGasOptimizations() {
-                // Cache array length
-                if (this.source.match(/for\s*\([^;]*\.length[^;]*;/)) {
-                    this.addGasOptimization(
-                        'Cache Array Length',
-                        'In for loops, cache the array length in a local variable to avoid reading it from storage on each iteration.'
-                    );
-                }
-                
-                // Use ++i instead of i++
-                if (this.source.match(/i\+\+|i \+\+/)) {
-                    this.addGasOptimization(
-                        'Use Pre-increment',
-                        'Use ++i instead of i++ in loops. Pre-increment is slightly cheaper in gas.'
-                    );
-                }
-                
-                // Use uint256 instead of smaller types
-                if (this.source.match(/uint8|uint16|uint32|uint64|uint128/)) {
-                    this.addGasOptimization(
-                        'Use uint256',
-                        'Using uint256 is often more gas-efficient than smaller uint types due to EVM word size, unless packing multiple variables in a single storage slot.'
-                    );
-                }
-                
-                // Use immutable/constant
-                if (this.source.match(/address\s+public\s+\w+\s*;/) && !this.source.includes('immutable')) {
-                    this.addGasOptimization(
-                        'Use immutable/constant',
-                        'If a state variable is set once and never changed, declare it as immutable or constant to save gas on reads.'
-                    );
-                }
-                
-                // Use calldata instead of memory for read-only params
-                if (this.source.match(/function\s+\w+\([^)]*memory[^)]*\)/)) {
-                    this.addGasOptimization(
-                        'Use calldata for Read-Only Parameters',
-                        'For function parameters that are only read (not modified), use calldata instead of memory to save gas.'
-                    );
-                }
-                
-                // Short-circuit evaluation
-                if (this.source.match(/require\([^)]+\|\|[^)]+\)/)) {
-                    this.addGasOptimization(
-                        'Optimize Require Statements',
-                        'Order require conditions by likelihood of failure. Put the most likely to fail first to save gas on reverts.'
-                    );
-                }
-                
-                // Use assembly for simple operations
-                if (this.source.includes('.transfer(') || this.source.includes('.send(')) {
-                    this.addGasOptimization(
-                        'Use Assembly for ETH Transfer',
-                        'Using assembly for ETH transfers can save gas compared to .transfer() or .send().'
-                    );
-                }
-                
-                // Pack structs
-                if (this.source.includes('struct')) {
-                    this.addGasOptimization(
-                        'Pack Struct Variables',
-                        'Order struct members by size to pack them into fewer storage slots. Place smaller types together.'
-                    );
-                }
-                
-                // Use events instead of storage for historical data
-                if (this.source.match(/mapping.*history|mapping.*log/i)) {
-                    this.addGasOptimization(
-                        'Use Events for Historical Data',
-                        'If data only needs to be read off-chain, emit events instead of storing in state variables.'
-                    );
-                }
-                
-                // Avoid zero to one storage writes
-                if (this.source.match(/=\s*true|= false/)) {
-                    this.addGasOptimization(
-                        'Avoid Zero-to-One Storage Writes',
-                        'Writing to a storage slot for the first time (zero to non-zero) costs more gas. Consider initializing to a non-zero value if possible.'
-                    );
-                }
-            }
-            
-            // ===== GENERATE REPORT =====
-            generateReport() {
-                const stats = { critical: 0, high: 0, medium: 0, low: 0, info: 0 };
-                
-                for (const f of this.findings) {
-                    stats[f.severity]++;
-                }
-                
-                // Calculate risk score
-                const riskScore = Math.min(100, 
-                    stats.critical * 25 + 
-                    stats.high * 15 + 
-                    stats.medium * 8 + 
-                    stats.low * 3 + 
-                    stats.info * 1
-                );
-                
-                let riskLevel = 'info';
-                if (riskScore >= 80) riskLevel = 'critical';
-                else if (riskScore >= 60) riskLevel = 'high';
-                else if (riskScore >= 40) riskLevel = 'medium';
-                else if (riskScore >= 20) riskLevel = 'low';
-                
-                // Generate summary
-                const total = this.findings.length;
-                let summary = `Security audit completed. `;
-                summary += `Found ${total} issue${total !== 1 ? 's' : ''}: `;
-                summary += `${stats.critical} critical, ${stats.high} high, ${stats.medium} medium, ${stats.low} low, ${stats.info} informational.\n\n`;
-                
-                if (riskScore >= 60) {
-                    summary += `⚠️ HIGH RISK: This contract has significant security issues that should be addressed before deployment.`;
-                } else if (riskScore >= 40) {
-                    summary += `⚡ MEDIUM RISK: This contract has some security concerns that should be reviewed.`;
-                } else if (riskScore >= 20) {
-                    summary += `✅ LOW RISK: This contract has minor issues or informational findings.`;
-                } else {
-                    summary += `✅ GOOD: This contract appears to follow security best practices with minimal findings.`;
-                }
-                
-                return {
-                    risk_score: riskScore,
-                    risk_level: riskLevel,
-                    summary: summary,
-                    findings: this.findings,
-                    gas_optimizations: this.gasOptimizations,
-                    statistics: stats
-                };
             }
         }
         
-        // ===== ANALYZE =====
-        function analyzeContract(source) {
-            const analyzer = new SecurityAnalyzer(source);
-            return analyzer.analyze();
-        }
-        
-        // ===== UI UPDATES =====
-        function setLoadingStep(stepId, status) {
-            const step = document.getElementById(stepId);
-            if (!step) return;
-            step.className = 'loading-step ' + status;
-            const icon = step.querySelector('.loading-step-icon');
-            if (status === 'active') icon.textContent = '🔄';
-            else if (status === 'done') icon.textContent = '✅';
-            else icon.textContent = '⏳';
-        }
-        
-        function showLoading() {
-            document.getElementById('loading').classList.add('active');
-            document.getElementById('report').classList.remove('active');
-            ['step-fetch', 'step-parse', 'step-analyze', 'step-report'].forEach(id => {
-                setLoadingStep(id, '');
-            });
-        }
-        
-        function hideLoading() {
-            document.getElementById('loading').classList.remove('active');
-        }
-        
-        function showReport(analysis, contractInfo) {
-            currentReport = { analysis, contractInfo };
-            
-            // Meta
-            document.getElementById('reportMeta').textContent = 
-                `${contractInfo?.name || 'Smart Contract'} • ${contractInfo?.chain?.toUpperCase() || 'Manual Analysis'} • ${new Date().toLocaleString()}`;
-            
-            // Risk score
-            const score = analysis.risk_score || 0;
-            const level = analysis.risk_level || 'info';
-            const circle = document.getElementById('riskCircle');
-            circle.className = 'risk-score-circle ' + level;
-            document.getElementById('riskScore').textContent = score;
-            document.getElementById('riskScore').style.color = getSeverityColor(level);
-            
-            // Stats
-            const stats = analysis.statistics || {};
-            const statsHtml = ['critical', 'high', 'medium', 'low', 'info'].map(sev => `
-                <div class="risk-stat">
-                    <span class="risk-stat-dot ${sev}"></span>
-                    <span class="risk-stat-count">${stats[sev] || 0}</span>
-                    <span class="risk-stat-label">${sev.charAt(0).toUpperCase() + sev.slice(1)}</span>
-                </div>
-            `).join('');
-            document.getElementById('riskStats').innerHTML = statsHtml;
-            
-            // Summary
-            document.getElementById('summaryText').textContent = analysis.summary || 'No summary available.';
-            
-            // Findings
-            const findings = analysis.findings || [];
-            document.getElementById('findingsCount').textContent = `${findings.length} findings`;
-            
-            const findingsHtml = findings.map(f => `
-                <div class="finding">
-                    <div class="finding-header">
-                        <span class="finding-severity ${f.severity}">${f.severity}</span>
-                        <span class="finding-title">${escapeHtml(f.title)}</span>
-                    </div>
-                    ${f.location ? `<div class="finding-location">${escapeHtml(f.location)}</div>` : ''}
-                    <div class="finding-description">${escapeHtml(f.description)}</div>
-                    ${f.code ? `<div class="finding-code">${escapeHtml(f.code)}</div>` : ''}
-                    ${f.fix ? `
-                        <div class="finding-fix">
-                            <div class="finding-fix-label">Recommended Fix</div>
-                            <div class="finding-fix-text">${escapeHtml(f.fix)}</div>
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
-            document.getElementById('findingsList').innerHTML = findingsHtml || '<p style="color: var(--text-muted);">No findings — contract looks secure!</p>';
-            
-            // Gas optimizations
-            const gasOpts = analysis.gas_optimizations || [];
-            const gasHtml = gasOpts.map(g => `
-                <div class="gas-item">
-                    <span class="gas-icon">⚡</span>
-                    <div class="gas-content">
-                        <div class="gas-label">${escapeHtml(g.title)}</div>
-                        <div class="gas-desc">${escapeHtml(g.description)}</div>
-                    </div>
-                </div>
-            `).join('');
-            document.getElementById('gasList').innerHTML = gasHtml || '<p style="color: var(--text-muted);">No gas optimization suggestions.</p>';
-            
-            // Show report
-            document.getElementById('report').classList.add('active');
-            document.getElementById('report').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        
-        function getSeverityColor(severity) {
-            const colors = {
-                critical: '#ff4757',
-                high: '#ff6b6b',
-                medium: '#ffaa00',
-                low: '#00d68f',
-                info: '#3498db'
-            };
-            return colors[severity] || '#8888a0';
-        }
-        
-        function escapeHtml(str) {
-            if (!str) return '';
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-        
-        // ===== MAIN ACTIONS =====
-        async function fetchAndAnalyze() {
-            const address = document.getElementById('contractAddress').value.trim();
-            const chain = document.getElementById('chainSelect').value;
-            
-            if (!address) {
-                alert('Please enter a contract address');
-                return;
-            }
-            
-            if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
-                alert('Invalid Ethereum address format');
-                return;
-            }
-            
-            showLoading();
-            
-            try {
-                // Step 1: Fetch
-                setLoadingStep('step-fetch', 'active');
-                document.getElementById('loadingText').textContent = 'Fetching contract source code...';
-                const contractInfo = await fetchContractSource(address, chain);
-                setLoadingStep('step-fetch', 'done');
-                
-                // Step 2: Parse
-                setLoadingStep('step-parse', 'active');
-                document.getElementById('loadingText').textContent = 'Parsing Solidity code...';
-                await new Promise(r => setTimeout(r, 300));
-                setLoadingStep('step-parse', 'done');
-                
-                // Step 3: Analyze
-                setLoadingStep('step-analyze', 'active');
-                document.getElementById('loadingText').textContent = 'Running security analysis...';
-                await new Promise(r => setTimeout(r, 200));
-                const analysis = analyzeContract(contractInfo.source);
-                setLoadingStep('step-analyze', 'done');
-                
-                // Step 4: Report
-                setLoadingStep('step-report', 'active');
-                document.getElementById('loadingText').textContent = 'Generating security report...';
-                await new Promise(r => setTimeout(r, 200));
-                setLoadingStep('step-report', 'done');
-                
-                hideLoading();
-                showReport(analysis, contractInfo);
-                
-            } catch (err) {
-                hideLoading();
-                alert('Error: ' + err.message);
+        // ===== 23. ASSEMBLY =====
+        analyzeAssembly() {
+            if (this.source.includes('assembly')) {
+                this.addFinding('info',
+                    'Inline Assembly Usage',
+                    'Contract contains assembly',
+                    'Assembly bypasses Solidity\'s safety checks. It should be used only when necessary and thoroughly audited.',
+                    '', 'Document why assembly is needed. Test edge cases thoroughly.');
             }
         }
         
-        async function analyzeSource() {
-            const source = document.getElementById('sourceCode').value.trim();
-            
-            if (!source) {
-                alert('Please paste your smart contract source code');
-                return;
-            }
-            
-            showLoading();
-            
-            try {
-                setLoadingStep('step-fetch', 'done');
-                
-                setLoadingStep('step-parse', 'active');
-                document.getElementById('loadingText').textContent = 'Parsing Solidity code...';
-                const nameMatch = source.match(/contract\s+(\w+)/);
-                const contractInfo = {
-                    name: nameMatch ? nameMatch[1] : 'Unknown',
-                    source: source
-                };
-                await new Promise(r => setTimeout(r, 300));
-                setLoadingStep('step-parse', 'done');
-                
-                setLoadingStep('step-analyze', 'active');
-                document.getElementById('loadingText').textContent = 'Running security analysis...';
-                await new Promise(r => setTimeout(r, 200));
-                const analysis = analyzeContract(source);
-                setLoadingStep('step-analyze', 'done');
-                
-                setLoadingStep('step-report', 'active');
-                document.getElementById('loadingText').textContent = 'Generating security report...';
-                await new Promise(r => setTimeout(r, 200));
-                setLoadingStep('step-report', 'done');
-                
-                hideLoading();
-                showReport(analysis, contractInfo);
-                
-            } catch (err) {
-                hideLoading();
-                alert('Error: ' + err.message);
+        // ===== 24. PAYABLE FUNCTIONS =====
+        analyzePayable() {
+            for (const func of this.functions) {
+                if (func.isPayable && func.visibility !== 'external') {
+                    this.addFinding('low',
+                        'Payable Non-External Function',
+                        `function ${func.name}() at line ${func.line}`,
+                        'Payable functions should generally be external to prevent accidental ETH being sent during internal calls.',
+                        '', 'Make payable functions external unless they need to be called internally.');
+                }
             }
         }
         
-        // ===== DOWNLOAD REPORT =====
-        function downloadReport() {
-            if (!currentReport) return;
-            
-            const { analysis, contractInfo } = currentReport;
-            
-            let report = `SmartAudit Security Report\n`;
-            report += `${'='.repeat(50)}\n\n`;
-            report += `Contract: ${contractInfo?.name || 'Unknown'}\n`;
-            report += `Chain: ${contractInfo?.chain?.toUpperCase() || 'Manual Analysis'}\n`;
-            report += `Address: ${contractInfo?.address || 'N/A'}\n`;
-            report += `Date: ${new Date().toLocaleString()}\n`;
-            report += `Engine: SmartAudit Pattern Analyzer v1.0\n\n`;
-            
-            report += `Risk Score: ${analysis.risk_score}/100 (${analysis.risk_level})\n\n`;
-            
-            report += `EXECUTIVE SUMMARY\n${'-'.repeat(40)}\n${analysis.summary}\n\n`;
-            
-            const stats = analysis.statistics || {};
-            report += `FINDINGS SUMMARY\n${'-'.repeat(40)}\n`;
-            report += `Critical: ${stats.critical || 0}\n`;
-            report += `High: ${stats.high || 0}\n`;
-            report += `Medium: ${stats.medium || 0}\n`;
-            report += `Low: ${stats.low || 0}\n`;
-            report += `Info: ${stats.info || 0}\n\n`;
-            
-            report += `DETAILED FINDINGS\n${'='.repeat(50)}\n\n`;
-            (analysis.findings || []).forEach((f, i) => {
-                report += `${i + 1}. [${f.severity.toUpperCase()}] ${f.title}\n`;
-                if (f.location) report += `   Location: ${f.location}\n`;
-                report += `   ${f.description}\n`;
-                if (f.fix) report += `   Fix: ${f.fix}\n`;
-                report += '\n';
-            });
-            
-            report += `GAS OPTIMIZATIONS\n${'='.repeat(50)}\n\n`;
-            (analysis.gas_optimizations || []).forEach((g, i) => {
-                report += `${i + 1}. ${g.title}\n   ${g.description}\n\n`;
-            });
-            
-            const blob = new Blob([report], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `smartaudit-${contractInfo?.name || 'report'}-${Date.now()}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
+        // ===== 25. IMMUTABLE/CONSTANT =====
+        analyzeImmutable() {
+            for (const v of this.stateVars) {
+                if (v.declaration.match(/address\s+public\s+\w+\s*;/) && 
+                    !v.declaration.includes('immutable') && !v.declaration.includes('constant')) {
+                    this.addFinding('info',
+                        'State Variable Could Be Immutable',
+                        `Variable: ${v.name}`,
+                        'Variable is set once but not declared immutable. This wastes gas on every read.',
+                        '', 'Declare as immutable if set only in constructor.');
+                }
+            }
         }
+        
+        // ===== GAS OPTIMIZATIONS =====
+        analyzeGas() {
+            // Cache array length
+            if (this.source.match(/for\s*\([^;]*\.length[^;]*;/)) {
+                this.addGas('Cache Array Length',
+                    'Store array length in a local variable before the loop to avoid SLOAD on each iteration. Saves ~2100 gas per iteration.');
+            }
+            
+            // ++i vs i++
+            if (this.source.match(/\bi\+\+|\bi \+\+/)) {
+                this.addGas('Use ++i Instead of i++',
+                    'Pre-increment (++i) is cheaper than post-increment (i++) in Solidity. Saves ~5 gas per iteration.');
+            }
+            
+            // uint256 vs smaller types
+            if (this.source.match(/uint8|uint16|uint32|uint64|uint128/)) {
+                this.addGas('Prefer uint256',
+                    'Using uint256 is often more gas-efficient than smaller types because the EVM operates on 256-bit words. Smaller types require extra masking operations. Exception: packing multiple variables in one storage slot.');
+            }
+            
+            // calldata vs memory
+            if (this.source.match(/function\s+\w+\([^)]*memory[^)]*\)/)) {
+                this.addGas('Use calldata for Read-Only Params',
+                    'Function parameters that are only read (not modified) should use calldata instead of memory. Saves ~60 gas per parameter.');
+            }
+            
+            // immutable
+            if (this.source.match(/address\s+public\s+\w+\s*;/) && !this.source.includes('immutable')) {
+                this.addGas('Use immutable for Set-Once Variables',
+                    'Variables set only in constructor should be declared immutable. Saves ~2100 gas per read (SLOAD vs no SLOAD).');
+            }
+            
+            // constant
+            if (this.source.match(/uint\d*\s+public\s+\w+\s*=\s*\d+/) && !this.source.includes('constant')) {
+                this.addGas('Use constant for Fixed Values',
+                    'Variables that never change should be declared constant. Saves ~2100 gas per read.');
+            }
+            
+            // Short-circuit require
+            if (this.source.match(/require\([^)]+&&[^)]+\)/)) {
+                this.addGas('Order Require Conditions',
+                    'Put the most likely-to-fail condition first in require() with &&. Short-circuit evaluation saves gas on revert.');
+            }
+            
+            // Struct packing
+            if (this.source.includes('struct')) {
+                this.addGas('Pack Struct Members',
+                    'Order struct members by size to fit multiple variables in one 256-bit storage slot. Example: uint128 + uint128 = 1 slot instead of 2.');
+            }
+            
+            // unchecked for safe math
+            if (this.pragma && this.pragma.includes('^0.8') && this.source.match(/\+\+|\-\-|\+\s*\d+|\-\s*\d+/)) {
+                this.addGas('Use unchecked for Safe Increments',
+                    'For increments where overflow is impossible (e.g., loop counters), use unchecked { ++i; } to skip overflow checks. Saves ~80 gas.');
+            }
+            
+            // bytes32 vs string
+            if (this.source.includes('string') && !this.source.includes('bytes32')) {
+                this.addGas('Consider bytes32 for Short Strings',
+                    'If strings are always <32 bytes, use bytes32 instead of string. It\'s cheaper for storage and comparison.');
+            }
+        }
+        
+        // ===== BUILD REPORT =====
+        buildReport() {
+            const stats = { critical: 0, high: 0, medium: 0, low: 0, info: 0 };
+            for (const f of this.findings) stats[f.severity]++;
+            
+            const score = Math.min(100, stats.critical * 25 + stats.high * 15 + stats.medium * 8 + stats.low * 3 + stats.info * 1);
+            let level = 'info';
+            if (score >= 80) level = 'critical';
+            else if (score >= 60) level = 'high';
+            else if (score >= 40) level = 'medium';
+            else if (score >= 20) level = 'low';
+            
+            const total = this.findings.length;
+            let summary = `Security audit completed. Found ${total} issue${total!==1?'s':''}: ${stats.critical} critical, ${stats.high} high, ${stats.medium} medium, ${stats.low} low, ${stats.info} informational.\n\n`;
+            if (score >= 60) summary += '⚠️ HIGH RISK: Critical security issues detected. Do NOT deploy without fixes.';
+            else if (score >= 40) summary += '⚡ MEDIUM RISK: Security concerns found. Review and fix before deployment.';
+            else if (score >= 20) summary += '✅ LOW RISK: Minor issues found. Consider fixing for best practices.';
+            else summary += '✅ GOOD: Contract follows security best practices with minimal findings.';
+            
+            return { risk_score: score, risk_level: level, summary, findings: this.findings, gas_optimizations: this.gasOpts, statistics: stats };
+        }
+    }
+    
+    // ===== UI =====
+    function setStep(id, s) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.className = 'ld-i ' + s;
+        el.querySelector('.ld-ic').textContent = s==='active'?'🔄':s==='done'?'✅':'⏳';
+    }
+    
+    function showLoading() {
+        document.getElementById('loading').classList.add('active');
+        document.getElementById('report').classList.remove('active');
+        ['step-fetch','step-parse','step-analyze','step-report'].forEach(id=>setStep(id,''));
+    }
+    
+    function hideLoading() { document.getElementById('loading').classList.remove('active'); }
+    
+    function showReport(analysis, info) {
+        currentReport = { analysis, info };
+        
+        document.getElementById('reportMeta').textContent = `${info?.name||'Contract'} • ${info?.chain?.toUpperCase()||'Manual'} • ${new Date().toLocaleString()}`;
+        
+        const score = analysis.risk_score||0;
+        const level = analysis.risk_level||'info';
+        document.getElementById('riskCircle').className = 'risk-sc ' + level;
+        document.getElementById('riskScore').textContent = score;
+        document.getElementById('riskScore').style.color = sevColor(level);
+        
+        const stats = analysis.statistics||{};
+        document.getElementById('riskStats').innerHTML = ['critical','high','medium','low','info'].map(s=>`
+            <div class="risk-si"><span class="dot ${s}"></span><span class="cnt">${stats[s]||0}</span><span class="slbl">${s[0].toUpperCase()+s.slice(1)}</span></div>
+        `).join('');
+        
+        document.getElementById('summaryText').textContent = analysis.summary||'';
+        
+        const findings = analysis.findings||[];
+        document.getElementById('findingsCount').textContent = `${findings.length} findings`;
+        document.getElementById('findingsList').innerHTML = findings.map(f=>`
+            <div class="find">
+                <div class="find-h"><span class="sev ${f.severity}">${f.severity}</span><span class="find-t">${esc(f.title)}</span></div>
+                ${f.location?`<div class="find-loc">${esc(f.location)}</div>`:''}
+                <div class="find-d">${esc(f.description)}</div>
+                ${f.code?`<div class="find-c">${esc(f.code)}</div>`:''}
+                ${f.fix?`<div class="find-f"><div class="find-fl">Recommended Fix</div><div class="find-ft">${esc(f.fix)}</div></div>`:''}
+            </div>
+        `).join('')||'<p style="color:var(--text3)">No findings — contract looks secure!</p>';
+        
+        const gas = analysis.gas_optimizations||[];
+        document.getElementById('gasList').innerHTML = gas.map(g=>`
+            <div class="gas-i"><span class="gas-ic">⚡</span><div class="gas-c"><div class="gas-l">${esc(g.title)}</div><div class="gas-d">${esc(g.description)}</div></div></div>
+        `).join('')||'<p style="color:var(--text3)">No gas optimization suggestions.</p>';
+        
+        document.getElementById('report').classList.add('active');
+        document.getElementById('report').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    
+    function sevColor(s) { return {critical:'#ff4757',high:'#ff6b6b',medium:'#ffaa00',low:'#00d68f',info:'#3498db'}[s]||'#8888a0'; }
+    function esc(s) { if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML; }
+    
+    // ===== ACTIONS =====
+    async function fetchAndAnalyze() {
+        const addr = document.getElementById('contractAddress').value.trim();
+        const chain = document.getElementById('chainSelect').value;
+        if (!addr) return alert('Enter a contract address');
+        if (!/^0x[a-fA-F0-9]{40}$/.test(addr)) return alert('Invalid address format');
+        
+        showLoading();
+        try {
+            setStep('step-fetch','active');
+            document.getElementById('loadingText').textContent = 'Fetching contract source code...';
+            const info = await fetchContractSource(addr, chain);
+            setStep('step-fetch','done');
+            
+            setStep('step-parse','active');
+            document.getElementById('loadingText').textContent = 'Parsing Solidity & building AST...';
+            await new Promise(r=>setTimeout(r,200));
+            setStep('step-parse','done');
+            
+            setStep('step-analyze','active');
+            document.getElementById('loadingText').textContent = 'Running 50+ security checks...';
+            await new Promise(r=>setTimeout(r,100));
+            const analysis = new SecurityAnalyzer(info.source).analyze();
+            setStep('step-analyze','done');
+            
+            setStep('step-report','active');
+            document.getElementById('loadingText').textContent = 'Generating report...';
+            await new Promise(r=>setTimeout(r,100));
+            setStep('step-report','done');
+            
+            hideLoading();
+            showReport(analysis, info);
+        } catch(e) { hideLoading(); alert('Error: '+e.message); }
+    }
+    
+    async function analyzeSource() {
+        const src = document.getElementById('sourceCode').value.trim();
+        if (!src) return alert('Paste your contract source code');
+        
+        showLoading();
+        try {
+            setStep('step-fetch','done');
+            setStep('step-parse','active');
+            document.getElementById('loadingText').textContent = 'Parsing Solidity & building AST...';
+            const nm = src.match(/contract\s+(\w+)/);
+            const info = { name: nm?nm[1]:'Unknown', source: src };
+            await new Promise(r=>setTimeout(r,200));
+            setStep('step-parse','done');
+            
+            setStep('step-analyze','active');
+            document.getElementById('loadingText').textContent = 'Running 50+ security checks...';
+            await new Promise(r=>setTimeout(r,100));
+            const analysis = new SecurityAnalyzer(src).analyze();
+            setStep('step-analyze','done');
+            
+            setStep('step-report','active');
+            document.getElementById('loadingText').textContent = 'Generating report...';
+            await new Promise(r=>setTimeout(r,100));
+            setStep('step-report','done');
+            
+            hideLoading();
+            showReport(analysis, info);
+        } catch(e) { hideLoading(); alert('Error: '+e.message); }
+    }
+    
+    function downloadReport() {
+        if (!currentReport) return;
+        const { analysis, info } = currentReport;
+        let r = `SmartAudit Security Report\n${'='.repeat(50)}\n\n`;
+        r += `Contract: ${info?.name||'Unknown'}\nChain: ${info?.chain?.toUpperCase()||'Manual'}\nAddress: ${info?.address||'N/A'}\nDate: ${new Date().toLocaleString()}\nEngine: SmartAudit v2.0 Pattern+AST Analyzer\n\n`;
+        r += `Risk Score: ${analysis.risk_score}/100 (${analysis.risk_level})\n\n`;
+        r += `EXECUTIVE SUMMARY\n${'-'.repeat(40)}\n${analysis.summary}\n\n`;
+        const st = analysis.statistics||{};
+        r += `FINDINGS: ${st.critical}C ${st.high}H ${st.medium}M ${st.low}L ${st.info}I\n\n`;
+        r += `DETAILED FINDINGS\n${'='.repeat(50)}\n\n`;
+        (analysis.findings||[]).forEach((f,i)=>{
+            r += `${i+1}. [${f.severity.toUpperCase()}] ${f.title}\n   ${f.location}\n   ${f.description}\n${f.fix?'   Fix: '+f.fix+'\n':''}\n`;
+        });
+        r += `\nGAS OPTIMIZATIONS\n${'='.repeat(50)}\n\n`;
+        (analysis.gas_optimizations||[]).forEach((g,i)=>{ r += `${i+1}. ${g.title}\n   ${g.description}\n\n`; });
+        const blob = new Blob([r],{type:'text/plain'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `smartaudit-${info?.name||'report'}-${Date.now()}.txt`;
+        a.click();
+    }
     </script>
 </body>
 </html>
