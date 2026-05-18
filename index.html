@@ -394,17 +394,17 @@ contract ReentrancyExample {
             this.findings = [];
             this.gasOpts = [];
             
-            // Parse contract structure
+            // Parse contract structure (order matters — modifiers before functions)
             this.pragma = this.parsePragma();
             this.license = this.parseLicense();
             this.imports = this.parseImports();
             this.contracts = this.parseContracts();
-            this.functions = this.parseFunctions();
-            this.stateVars = this.parseStateVars();
             this.events = this.parseEvents();
             this.modifiers = this.parseModifiers();
             this.structs = this.parseStructs();
             this.mappings = this.parseMappings();
+            this.stateVars = this.parseStateVars();
+            this.functions = this.parseFunctions();
         }
         
         // ===== PARSERS =====
