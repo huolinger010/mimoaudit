@@ -3,260 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartAudit — AI Smart Contract Auditor | Powered by Xiaomi MiMo</title>
-    <meta name="description" content="AI-powered smart contract security auditor. Detect vulnerabilities, gas optimizations, and security risks in Solidity contracts. Free, no API key required.">
-    <meta property="og:title" content="SmartAudit — AI Smart Contract Auditor">
-    <meta property="og:description" content="Free AI-powered smart contract security auditor. No API key needed.">
+    <title>SmartAudit — Smart Contract Security Auditor</title>
+    <meta name="description" content="Free AI-powered smart contract security auditor. No API key needed.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡</text></svg>">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{--bg:#0a0a0f;--bg2:#12121a;--card:#1a1a25;--input:#15151f;--border:#2a2a3a;--border2:#3a3a5a;--text:#e8e8f0;--text2:#8888a0;--text3:#555568;--accent:#6c5ce7;--glow:rgba(108,92,231,.3);--ok:#00d68f;--ok-bg:rgba(0,214,143,.1);--warn:#ffaa00;--warn-bg:rgba(255,170,0,.1);--err:#ff4757;--err-bg:rgba(255,71,87,.1);--info:#3498db;--info-bg:rgba(52,152,219,.1)}
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
-        .c{max-width:1200px;margin:0 auto;padding:0 24px}
-        header{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px)}
+        
+        :root{
+            --bg:#09090b;--bg2:#111113;--bg3:#18181b;
+            --border:#27272a;--border2:#3f3f46;
+            --text:#fafafa;--text2:#a1a1aa;--text3:#71717a;
+            --accent:#8b5cf6;--accent2:#a78bfa;--glow:rgba(139,92,246,.15);
+            --ok:#22c55e;--ok-bg:rgba(34,197,94,.08);
+            --warn:#eab308;--warn-bg:rgba(234,179,8,.08);
+            --err:#ef4444;--err-bg:rgba(239,68,68,.08);
+            --info:#3b82f6;--info-bg:rgba(59,130,246,.08);
+            --radius:12px;--radius2:16px;--radius3:20px;
+        }
+        
+        body{
+            font-family:'Inter',-apple-system,sans-serif;
+            background:var(--bg);color:var(--text);
+            min-height:100vh;
+            -webkit-font-smoothing:antialiased;
+        }
+        
+        /* Subtle grid bg */
+        body::before{
+            content:'';position:fixed;inset:0;z-index:0;
+            background-image:
+                linear-gradient(rgba(139,92,246,.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139,92,246,.03) 1px, transparent 1px);
+            background-size:64px 64px;
+            pointer-events:none;
+        }
+        
+        .wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 20px}
+        
+        /* ── Header ── */
+        header{padding:20px 0}
         .hdr{display:flex;align-items:center;justify-content:space-between}
-        .logo{display:flex;align-items:center;gap:12px;text-decoration:none}
-        .logo-i{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#a855f7);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
-        .logo-t{font-size:24px;font-weight:700;background:linear-gradient(135deg,var(--accent),#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .badges{display:flex;gap:8px}
-        .badge{background:var(--card);border:1px solid var(--border);padding:6px 14px;border-radius:20px;font-size:12px;color:var(--text2)}
-        .badge.free{background:var(--ok-bg);border-color:rgba(0,214,143,.3);color:var(--ok)}
-        .hero{text-align:center;padding:80px 0 40px}
-        .hero h1{font-size:48px;font-weight:800;margin-bottom:16px;background:linear-gradient(135deg,var(--text),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .hero p{font-size:18px;color:var(--text2);max-width:600px;margin:0 auto}
-        .stats{display:flex;justify-content:center;gap:40px;margin-top:32px;flex-wrap:wrap}
-        .stat{text-align:center}
-        .stat-v{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--accent),#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .stat-l{font-size:13px;color:var(--text3);margin-top:4px}
-        .sec{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:40px}
-        .tabs{display:flex;gap:8px;margin-bottom:24px}
-        .tab{padding:10px 20px;border:1px solid var(--border);border-radius:8px;background:var(--input);color:var(--text2);cursor:pointer;font-size:14px;transition:.2s}
-        .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-        .tab:hover:not(.active){border-color:var(--border2);color:var(--text)}
-        .ig{display:none}.ig.active{display:block}
-        .lbl{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
-        .help{font-size:12px;color:var(--text3);margin-bottom:12px}
-        .inp{width:100%;padding:14px 16px;background:var(--input);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;font-family:'SF Mono','Fira Code',monospace;transition:border-color .2s;resize:vertical}
-        .inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
-        .inp::placeholder{color:var(--text3)}
-        textarea.inp{min-height:200px}
-        .row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
-        .sel{flex:1;min-width:150px;padding:14px 16px;background:var(--input);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;cursor:pointer}
-        .sel:focus{outline:none;border-color:var(--accent)}
-        .btn{padding:14px 28px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
-        .btn-p{background:linear-gradient(135deg,var(--accent),#a855f7);color:#fff}
-        .btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 20px var(--glow)}
-        .btn-s{background:var(--input);color:var(--text);border:1px solid var(--border)}
-        .btn-s:hover{border-color:var(--border2)}
-        .samp{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
-        .samp-l{font-size:12px;color:var(--text3);margin-bottom:8px}
-        .chips{display:flex;gap:8px;flex-wrap:wrap}
-        .chip{padding:6px 12px;background:var(--input);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text2);cursor:pointer;transition:.2s}
-        .chip:hover{border-color:var(--accent);color:var(--accent)}
-        .ld{display:none;text-align:center;padding:60px 0}.ld.active{display:block}
-        .spin{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 16px}
-        @keyframes sp{to{transform:rotate(360deg)}}
-        .ld-t{color:var(--text2);font-size:16px}
-        .ld-s{margin-top:20px;text-align:left;max-width:400px;margin-left:auto;margin-right:auto}
-        .ld-i{display:flex;align-items:center;gap:10px;padding:8px 0;color:var(--text3);font-size:14px}
-        .ld-i.active{color:var(--accent)}.ld-i.done{color:var(--ok)}
-        .ld-ic{width:20px;text-align:center}
-        .rpt{display:none}.rpt.active{display:block}
-        .rpt-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-        .rpt-t{font-size:24px;font-weight:700}
-        .rpt-m{font-size:13px;color:var(--text3)}
-        .risk{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:24px}
-        .risk-c{display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap}
-        .risk-sc{width:160px;height:160px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
-        .risk-sc::before{content:'';position:absolute;inset:0;border-radius:50%;border:6px solid var(--border)}
-        .risk-sc.critical::before{border-color:var(--err)}.risk-sc.high::before{border-color:#ff6b6b}.risk-sc.medium::before{border-color:var(--warn)}.risk-sc.low::before{border-color:var(--ok)}.risk-sc.info::before{border-color:var(--info)}
-        .risk-sv{font-size:48px;font-weight:800;line-height:1}
-        .risk-sl{font-size:14px;color:var(--text2);margin-top:4px}
-        .risk-st{display:flex;flex-direction:column;gap:12px}
-        .risk-si{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--input);border-radius:10px;min-width:200px}
-        .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-        .dot.critical{background:var(--err)}.dot.high{background:#ff6b6b}.dot.medium{background:var(--warn)}.dot.low{background:var(--ok)}.dot.info{background:var(--info)}
-        .cnt{font-weight:700;min-width:24px}
-        .slbl{color:var(--text2);font-size:14px}
-        .sec2{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
-        .sec2-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-        .sec2-t{font-size:18px;font-weight:700}
-        .find{background:var(--input);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;transition:border-color .2s}
-        .find:hover{border-color:var(--border2)}
-        .find-h{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-        .sev{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-        .sev.critical{background:var(--err-bg);color:var(--err)}.sev.high{background:rgba(255,107,107,.1);color:#ff6b6b}.sev.medium{background:var(--warn-bg);color:var(--warn)}.sev.low{background:var(--ok-bg);color:var(--ok)}.sev.info{background:var(--info-bg);color:var(--info)}
-        .find-t{font-weight:600;font-size:15px}
-        .find-loc{font-size:12px;color:var(--text3);font-family:'SF Mono','Fira Code',monospace;margin-bottom:10px}
-        .find-d{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:12px}
-        .find-c{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;color:var(--text);overflow-x:auto;margin-bottom:12px;white-space:pre-wrap;word-break:break-all}
-        .find-f{background:var(--ok-bg);border:1px solid rgba(0,214,143,.2);border-radius:8px;padding:12px 16px;font-size:13px}
-        .find-fl{font-weight:600;color:var(--ok);margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
-        .find-ft{color:var(--text2);line-height:1.5}
-        .sum{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
-        .sum-t{font-size:18px;font-weight:700;margin-bottom:16px}
-        .sum-txt{font-size:14px;color:var(--text2);line-height:1.8;white-space:pre-wrap}
-        .gas{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
-        .gas-t{font-size:18px;font-weight:700;margin-bottom:16px}
-        .gas-i{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
-        .gas-i:last-child{border-bottom:none}
-        .gas-ic{font-size:18px;margin-top:2px}
-        .gas-c{flex:1}
-        .gas-l{font-weight:600;font-size:14px;margin-bottom:4px}
-        .gas-d{font-size:13px;color:var(--text2);line-height:1.5}
-        footer{text-align:center;padding:40px 0;border-top:1px solid var(--border);margin-top:60px}
-        .ft{font-size:13px;color:var(--text3)}
-        @media(max-width:768px){.hero h1{font-size:32px}.hero p{font-size:16px}.sec{padding:20px}.risk-c{flex-direction:column}.risk-st{width:100%}.risk-si{min-width:auto}.badges{display:none}}
+        .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+        .logo-i{
+            width:36px;height:36px;
+            background:linear-gradient(135deg,var(--accent),#c084fc);
+            border-radius:10px;display:flex;align-items:center;justify-content:center;
+            font-size:18px;
+        }
+        .logo-t{font-size:18px;font-weight:700;color:var(--text)}
+        .pill{
+            padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;
+            background:var(--ok-bg);color:var(--ok);border:1px solid rgba(34,197,94,.15);
+        }
+        
+        /* ── Hero ── */
+        .hero{text-align:center;padding:60px 0 40px}
+        .hero h1{
+            font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.02em;
+            line-height:1.1;margin-bottom:12px;
+            background:linear-gradient(135deg,var(--text) 0%,var(--accent2) 50%,var(--text) 100%);
+            background-size:200% auto;
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            animation:shimmer 8s linear infinite;
+        }
+        @keyframes shimmer{to{background-position:200% center}}
+        .hero p{font-size:15px;color:var(--text2);max-width:480px;margin:0 auto;line-height:1.6}
+        
+        /* ── Input Card ── */
+        .input-card{
+            background:var(--bg2);border:1px solid var(--border);
+            border-radius:var(--radius3);padding:28px;position:relative;
+            transition:border-color .3s;
+        }
+        .input-card:focus-within{border-color:var(--accent)}
+        .input-card:focus-within .input-glow{opacity:1}
+        
+        .input-glow{
+            position:absolute;inset:-1px;border-radius:var(--radius3);
+            background:linear-gradient(135deg,rgba(139,92,246,.1),transparent 60%);
+            opacity:0;transition:opacity .3s;pointer-events:none;z-index:0;
+        }
+        
+        .input-inner{position:relative;z-index:1}
+        
+        .input-label{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+        .input-label span{opacity:.5}
+        
+        textarea{
+            width:100%;min-height:160px;padding:16px;
+            background:var(--bg);border:1px solid var(--border);
+            border-radius:var(--radius);color:var(--text);
+            font-family:'SF Mono','Fira Code','Cascadia Code',monospace;
+            font-size:13px;line-height:1.6;resize:vertical;
+            transition:border-color .2s;
+        }
+        textarea:focus{outline:none;border-color:var(--accent)}
+        textarea::placeholder{color:var(--text3)}
+        
+        .input-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:12px;flex-wrap:wrap}
+        
+        .hints{display:flex;gap:6px;flex-wrap:wrap}
+        .hint{
+            padding:5px 10px;border-radius:8px;font-size:11px;font-weight:500;
+            background:var(--bg3);color:var(--text3);border:1px solid var(--border);
+            cursor:pointer;transition:.2s;user-select:none;
+        }
+        .hint:hover{border-color:var(--border2);color:var(--text2)}
+        
+        .btn{
+            padding:12px 28px;border:none;border-radius:var(--radius);
+            font-size:14px;font-weight:600;cursor:pointer;
+            transition:all .2s;display:inline-flex;align-items:center;gap:8px;
+            font-family:inherit;
+        }
+        .btn-primary{
+            background:linear-gradient(135deg,var(--accent),#7c3aed);
+            color:#fff;
+            box-shadow:0 0 20px rgba(139,92,246,.2);
+        }
+        .btn-primary:hover{
+            transform:translateY(-1px);
+            box-shadow:0 4px 24px rgba(139,92,246,.35);
+        }
+        .btn-primary:active{transform:translateY(0)}
+        .btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+        
+        /* ── Analyzing ── */
+        .analyzing{
+            display:none;text-align:center;padding:48px 0;
+        }
+        .analyzing.show{display:block}
+        
+        .pulse-ring{
+            width:56px;height:56px;margin:0 auto 20px;position:relative;
+        }
+        .pulse-ring::before,.pulse-ring::after{
+            content:'';position:absolute;inset:0;border-radius:50%;
+            border:2px solid var(--accent);
+            animation:pulse 2s ease-out infinite;
+        }
+        .pulse-ring::after{animation-delay:1s}
+        @keyframes pulse{
+            0%{transform:scale(.8);opacity:1}
+            100%{transform:scale(1.8);opacity:0}
+        }
+        .pulse-dot{
+            position:absolute;inset:12px;border-radius:50%;
+            background:var(--accent);
+        }
+        
+        .analyzing-text{font-size:15px;color:var(--text2);margin-bottom:24px}
+        
+        .progress-bar{
+            width:200px;height:3px;background:var(--border);
+            border-radius:2px;margin:0 auto 16px;overflow:hidden;
+        }
+        .progress-fill{
+            height:100%;background:var(--accent);border-radius:2px;
+            width:0%;transition:width .5s ease;
+        }
+        
+        .step-indicators{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+        .step-dot{
+            display:flex;align-items:center;gap:5px;
+            font-size:11px;color:var(--text3);transition:.3s;
+        }
+        .step-dot.active{color:var(--accent)}
+        .step-dot.done{color:var(--ok)}
+        .step-dot .dot{
+            width:6px;height:6px;border-radius:50%;background:var(--border);
+            transition:.3s;
+        }
+        .step-dot.active .dot{background:var(--accent)}
+        .step-dot.done .dot{background:var(--ok)}
+        
+        /* ── Report ── */
+        .report{display:none;padding-bottom:60px}
+        .report.show{display:block}
+        
+        /* Score */
+        .score-section{
+            display:flex;align-items:center;gap:32px;
+            padding:32px;flex-wrap:wrap;
+            background:var(--bg2);border:1px solid var(--border);
+            border-radius:var(--radius3);margin-bottom:16px;
+        }
+        
+        .score-ring{
+            width:120px;height:120px;position:relative;flex-shrink:0;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .score-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+        .score-ring circle{fill:none;stroke-width:4;stroke-linecap:round}
+        .score-ring .track{stroke:var(--border)}
+        .score-ring .fill{
+            stroke:var(--accent);
+            stroke-dasharray:339;
+            transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1);
+        }
+        .score-val{font-size:36px;font-weight:800;position:relative;z-index:1}
+        .score-label{font-size:11px;color:var(--text3);text-align:center;margin-top:2px;position:relative;z-index:1}
+        
+        .score-info{flex:1;min-width:200px}
+        .score-title{font-size:20px;font-weight:700;margin-bottom:4px}
+        .score-sub{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5}
+        
+        .severity-bar{display:flex;gap:4px;height:8px;border-radius:4px;overflow:hidden}
+        .severity-bar div{transition:width 1s cubic-bezier(.4,0,.2,1);min-width:0}
+        .sev-crit{background:var(--err)}.sev-high{background:#f97316}
+        .sev-med{background:var(--warn)}.sev-low{background:var(--ok)}.sev-info{background:var(--info)}
+        
+        .severity-legend{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap}
+        .legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)}
+        .legend-dot{width:8px;height:8px;border-radius:2px}
+        
+        /* Stats row */
+        .stats-row{
+            display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+            gap:8px;margin-bottom:16px;
+        }
+        .stat-card{
+            background:var(--bg2);border:1px solid var(--border);
+            border-radius:var(--radius);padding:16px;text-align:center;
+        }
+        .stat-num{font-size:24px;font-weight:800}
+        .stat-label{font-size:11px;color:var(--text3);margin-top:2px}
+        .stat-card.critical .stat-num{color:var(--err)}
+        .stat-card.high .stat-num{color:#f97316}
+        .stat-card.medium .stat-num{color:var(--warn)}
+        .stat-card.low .stat-num{color:var(--ok)}
+        .stat-card.info .stat-num{color:var(--info)}
+        
+        /* Summary */
+        .summary-card{
+            background:var(--bg2);border:1px solid var(--border);
+            border-radius:var(--radius2);padding:24px;margin-bottom:16px;
+        }
+        .card-header{
+            display:flex;align-items:center;gap:8px;
+            font-size:14px;font-weight:600;margin-bottom:12px;
+        }
+        .card-header .icon{opacity:.6}
+        .summary-text{font-size:13px;color:var(--text2);line-height:1.7}
+        
+        /* Findings */
+        .findings-card{
+            background:var(--bg2);border:1px solid var(--border);
+            border-radius:var(--radius2);padding:24px;margin-bottom:16px;
+        }
+        
+        .finding{
+            background:var(--bg);border:1px solid var(--border);
+            border-radius:var(--radius);padding:16px;margin-bottom:10px;
+            transition:border-color .2s;
+        }
+        .finding:last-child{margin-bottom:0}
+        .finding:hover{border-color:var(--border2)}
+        
+        .finding-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+        .finding-sev{
+            padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;
+            text-transform:uppercase;letter-spacing:.5px;
+        }
+        .finding-sev.critical{background:var(--err-bg);color:var(--err)}
+        .finding-sev.high{background:rgba(249,115,22,.1);color:#f97316}
+        .finding-sev.medium{background:var(--warn-bg);color:var(--warn)}
+        .finding-sev.low{background:var(--ok-bg);color:var(--ok)}
+        .finding-sev.info{background:var(--info-bg);color:var(--info)}
+        .finding-title{font-size:13px;font-weight:600}
+        .finding-loc{font-size:11px;color:var(--text3);font-family:monospace;margin-bottom:8px}
+        .finding-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+        
+        .finding-code{
+            background:var(--bg2);border:1px solid var(--border);
+            border-radius:8px;padding:10px 12px;
+            font-family:monospace;font-size:11px;color:var(--text2);
+            overflow-x:auto;white-space:pre;margin-bottom:10px;
+        }
+        
+        .finding-fix{
+            background:var(--ok-bg);border:1px solid rgba(34,197,94,.12);
+            border-radius:8px;padding:10px 12px;
+        }
+        .finding-fix-l{font-size:10px;font-weight:700;color:var(--ok);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+        .finding-fix-t{font-size:12px;color:var(--text2);line-height:1.5}
+        
+        /* Gas */
+        .gas-card{
+            background:var(--bg2);border:1px solid var(--border);
+            border-radius:var(--radius2);padding:24px;margin-bottom:16px;
+        }
+        .gas-item{
+            display:flex;gap:10px;padding:10px 0;
+            border-bottom:1px solid var(--border);
+        }
+        .gas-item:last-child{border-bottom:none}
+        .gas-icon{font-size:14px;margin-top:1px;opacity:.6}
+        .gas-title{font-size:12px;font-weight:600;margin-bottom:2px}
+        .gas-desc{font-size:11px;color:var(--text3);line-height:1.5}
+        
+        /* Actions */
+        .actions{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+        .btn-sm{
+            padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;
+            background:var(--bg3);color:var(--text2);border:1px solid var(--border);
+            cursor:pointer;transition:.2s;font-family:inherit;
+        }
+        .btn-sm:hover{border-color:var(--border2);color:var(--text)}
+        
+        /* Footer */
+        footer{text-align:center;padding:32px 0;color:var(--text3);font-size:11px}
+        footer a{color:var(--accent2);text-decoration:none}
+        
+        @media(max-width:640px){
+            .score-section{flex-direction:column;text-align:center}
+            .input-footer{flex-direction:column}
+            .hints{justify-content:center}
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="c hdr">
-            <a href="#" class="logo">
-                <div class="logo-i">🛡</div>
-                <span class="logo-t">SmartAudit</span>
-            </a>
-            <div class="badges">
-                <span class="badge">Powered by Xiaomi MiMo</span>
-                <span class="badge free">✓ 100% Free — No API Key</span>
+    <div class="wrap">
+        <header>
+            <div class="hdr">
+                <a href="#" class="logo">
+                    <div class="logo-i">🛡</div>
+                    <span class="logo-t">SmartAudit</span>
+                </a>
+                <span class="pill">No API Key Required</span>
             </div>
-        </div>
-    </header>
-    
-    <main class="c">
+        </header>
+        
         <section class="hero">
-            <h1>AI Smart Contract Auditor</h1>
-            <p>Detect vulnerabilities, optimize gas, and secure your smart contracts — powered by Xiaomi MiMo. Free, instant, no API key required.</p>
-            <div class="stats">
-                <div class="stat"><div class="stat-v">50+</div><div class="stat-l">Detection Rules</div></div>
-                <div class="stat"><div class="stat-v">8</div><div class="stat-l">Chains</div></div>
-                <div class="stat"><div class="stat-v">$0</div><div class="stat-l">Cost</div></div>
-                <div class="stat"><div class="stat-v">0</div><div class="stat-l">API Keys</div></div>
-            </div>
+            <h1>Smart Contract<br>Security Auditor</h1>
+            <p>Paste a contract address or Solidity source code. Get instant security analysis.</p>
         </section>
         
-        <section class="sec">
-            <div class="tabs">
-                <button class="tab active" data-tab="address">Contract Address</button>
-                <button class="tab" data-tab="source">Source Code</button>
-            </div>
-            
-            <div class="ig active" id="tab-address">
-                <label class="lbl">Contract Address</label>
-                <p class="help">Enter a verified contract address to fetch source code automatically</p>
-                <input type="text" class="inp" id="contractAddress" placeholder="0x..." spellcheck="false">
-                <div class="row">
-                    <select class="sel" id="chainSelect">
-                        <option value="eth">Ethereum</option>
-                        <option value="base">Base</option>
-                        <option value="arb">Arbitrum</option>
-                        <option value="op">Optimism</option>
-                        <option value="polygon">Polygon</option>
-                        <option value="bsc">BSC</option>
-                        <option value="avax">Avalanche</option>
-                        <option value="zksync">zkSync</option>
-                    </select>
-                    <button class="btn btn-p" onclick="fetchAndAnalyze()">🔍 Fetch & Analyze</button>
-                </div>
-                <div class="samp">
-                    <div class="samp-l">Try sample contracts:</div>
-                    <div class="chips">
-                        <span class="chip" onclick="loadSample('vulnerable')">Vulnerable Contract</span>
-                        <span class="chip" onclick="loadSample('erc20')">ERC-20 Token</span>
-                        <span class="chip" onclick="loadSample('reentrancy')">Reentrancy Example</span>
+        <!-- INPUT -->
+        <section class="input-card" id="inputSection">
+            <div class="input-glow"></div>
+            <div class="input-inner">
+                <div class="input-label">📝 Contract Address or Solidity Source Code</div>
+                <textarea id="input" placeholder="0x... or paste Solidity code here" spellcheck="false"></textarea>
+                <div class="input-footer">
+                    <div class="hints">
+                        <span class="hint" onclick="loadSample('vulnerable')">Vulnerable</span>
+                        <span class="hint" onclick="loadSample('erc20')">ERC-20</span>
+                        <span class="hint" onclick="loadSample('reentrancy')">Reentrancy</span>
                     </div>
-                </div>
-            </div>
-            
-            <div class="ig" id="tab-source">
-                <label class="lbl">Solidity Source Code</label>
-                <p class="help">Paste your smart contract source code directly</p>
-                <textarea class="inp" id="sourceCode" placeholder="// SPDX-License-Identifier: MIT&#10;pragma solidity ^0.8.0;&#10;&#10;contract MyContract {&#10;    // Paste your contract here...&#10;}"></textarea>
-                <div class="row">
-                    <button class="btn btn-p" onclick="analyzeSource()">🔍 Analyze Contract</button>
+                    <button class="btn btn-primary" id="btnAnalyze" onclick="analyze()">
+                        <span>🔍</span> Analyze
+                    </button>
                 </div>
             </div>
         </section>
         
-        <section class="ld" id="loading">
-            <div class="spin"></div>
-            <div class="ld-t" id="loadingText">Analyzing smart contract...</div>
-            <div class="ld-s">
-                <div class="ld-i" id="step-fetch"><span class="ld-ic">⏳</span><span>Fetching contract source code</span></div>
-                <div class="ld-i" id="step-parse"><span class="ld-ic">⏳</span><span>Parsing Solidity code & building AST</span></div>
-                <div class="ld-i" id="step-analyze"><span class="ld-ic">⏳</span><span>Running security analysis</span></div>
-                <div class="ld-i" id="step-report"><span class="ld-ic">⏳</span><span>Generating security report</span></div>
+        <!-- LOADING -->
+        <section class="analyzing" id="analyzing">
+            <div class="pulse-ring"><div class="pulse-dot"></div></div>
+            <div class="analyzing-text" id="analyzeText">Analyzing contract...</div>
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div class="step-indicators">
+                <div class="step-dot" id="s1"><span class="dot"></span> Fetch</div>
+                <div class="step-dot" id="s2"><span class="dot"></span> Parse</div>
+                <div class="step-dot" id="s3"><span class="dot"></span> Analyze</div>
+                <div class="step-dot" id="s4"><span class="dot"></span> Report</div>
             </div>
         </section>
         
-        <section class="rpt" id="report">
-            <div class="rpt-h">
-                <div>
-                    <div class="rpt-t">Security Audit Report</div>
-                    <div class="rpt-m" id="reportMeta"></div>
-                </div>
-                <button class="btn btn-s" onclick="downloadReport()">📥 Download Report</button>
-            </div>
-            
-            <div class="risk">
-                <div class="risk-c">
-                    <div class="risk-sc" id="riskCircle">
-                        <div class="risk-sv" id="riskScore">-</div>
-                        <div class="risk-sl">Risk Score</div>
-                    </div>
-                    <div class="risk-st" id="riskStats"></div>
-                </div>
-            </div>
-            
-            <div class="sum">
-                <div class="sum-t">📋 Executive Summary</div>
-                <div class="sum-txt" id="summaryText"></div>
-            </div>
-            
-            <div class="sec2">
-                <div class="sec2-h">
-                    <div class="sec2-t">🔍 Findings</div>
-                    <div class="rpt-m" id="findingsCount"></div>
-                </div>
-                <div id="findingsList"></div>
-            </div>
-            
-            <div class="gas">
-                <div class="gas-t">⚡ Gas Optimization Suggestions</div>
-                <div id="gasList"></div>
-            </div>
-        </section>
-    </main>
-    
-    <footer>
-        <div class="c">
-            <p class="ft">SmartAudit — AI-Powered Smart Contract Security Auditor</p>
-            <p class="ft" style="margin-top:4px">Powered by Xiaomi MiMo V2.5 | Built for the MiMo 100T Creator Program</p>
-        </div>
-    </footer>
+        <!-- REPORT -->
+        <section class="report" id="report"></section>
+        
+        <footer>
+            SmartAudit — Powered by Xiaomi MiMo V2.5 · Built for the MiMo 100T Creator Program
+        </footer>
+    </div>
     
     <script>
-    // ===== CONFIG =====
-    const BLOCKSCOUT = {
+    // ===== BLOCKSCOUT CHAINS =====
+    const CHAINS = {
         eth:'https://eth.blockscout.com/api',base:'https://base.blockscout.com/api',
         arb:'https://arbitrum.blockscout.com/api',op:'https://optimism.blockscout.com/api',
         polygon:'https://polygon.blockscout.com/api',bsc:'https://bsc.blockscout.com/api',
         avax:'https://avalanche.blockscout.com/api',zksync:'https://zksync.blockscout.com/api'
     };
     
-    let currentReport = null;
-    
-    // ===== INIT =====
-    document.addEventListener('DOMContentLoaded',()=>{
-        document.querySelectorAll('.tab').forEach(t=>{
-            t.addEventListener('click',()=>{
-                document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-                document.querySelectorAll('.ig').forEach(x=>x.classList.remove('active'));
-                t.classList.add('active');
-                document.getElementById('tab-'+t.dataset.tab).classList.add('active');
-            });
-        });
-    });
+    // Auto-detect chain from address (try all chains, use first that returns contract)
+    async function fetchFromAnyChain(address) {
+        const order = ['eth','base','arb','op','polygon','bsc','avax','zksync'];
+        for (const chain of order) {
+            try {
+                const r = await fetch(`${CHAINS[chain]}/v2/addresses/${address}`);
+                if (!r.ok) continue;
+                const d = await r.json();
+                if (!d.is_contract) continue;
+                const sr = await fetch(`${CHAINS[chain]}/v2/smart-contracts/${address}`);
+                if (!sr.ok) continue;
+                const sd = await sr.json();
+                if (sd.source_code) return { source: sd.source_code, name: sd.name||'Unknown', chain, address };
+            } catch(e) { continue; }
+        }
+        throw new Error('Contract not found or not verified on any supported chain');
+    }
     
     // ===== SAMPLES =====
     const SAMPLES = {
@@ -275,17 +425,13 @@ contract VulnerableContract {
         balances[msg.sender] += msg.value;
     }
     
-    // VULNERABLE: Reentrancy
     function withdraw(uint256 amount) public {
         require(balances[msg.sender] >= amount, "Insufficient balance");
-        
         (bool success, ) = msg.sender.call{value: amount}("");
         require(success, "Transfer failed");
-        
         balances[msg.sender] -= amount;
     }
     
-    // VULNERABLE: No access control
     function emergencyWithdraw() public {
         payable(msg.sender).transfer(address(this).balance);
     }
@@ -298,7 +444,6 @@ contract BasicERC20 {
     string public symbol = "BASIC";
     uint8 public decimals = 18;
     uint256 public totalSupply;
-    
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
     
@@ -312,7 +457,7 @@ contract BasicERC20 {
     }
     
     function transfer(address to, uint256 value) public returns (bool) {
-        require(balanceOf[msg.sender] >= value, "Insufficient balance");
+        require(balanceOf[msg.sender] >= value);
         balanceOf[msg.sender] -= value;
         balanceOf[to] += value;
         emit Transfer(msg.sender, to, value);
@@ -326,8 +471,8 @@ contract BasicERC20 {
     }
     
     function transferFrom(address from, address to, uint256 value) public returns (bool) {
-        require(balanceOf[from] >= value, "Insufficient balance");
-        require(allowance[from][msg.sender] >= value, "Allowance exceeded");
+        require(balanceOf[from] >= value);
+        require(allowance[from][msg.sender] >= value);
         balanceOf[from] -= value;
         balanceOf[to] += value;
         allowance[from][msg.sender] -= value;
@@ -348,1029 +493,562 @@ contract ReentrancyExample {
     function withdraw() public {
         uint256 bal = balances[msg.sender];
         require(bal > 0, "No funds");
-        
         (bool sent, ) = msg.sender.call{value: bal}("");
-        require(sent, "Failed to send Ether");
-        
+        require(sent, "Failed");
         balances[msg.sender] = 0;
     }
 }`
     };
     
     function loadSample(name) {
-        const s = SAMPLES[name];
-        if (s) {
-            document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-            document.querySelectorAll('.ig').forEach(x=>x.classList.remove('active'));
-            document.querySelector('[data-tab="source"]').classList.add('active');
-            document.getElementById('tab-source').classList.add('active');
-            document.getElementById('sourceCode').value = s;
-        }
+        document.getElementById('input').value = SAMPLES[name];
+        document.getElementById('input').focus();
     }
     
-    // ===== FETCH CONTRACT =====
-    async function fetchContractSource(address, chain) {
-        const base = BLOCKSCOUT[chain];
-        if (!base) throw new Error('Unsupported chain');
-        
-        const r = await fetch(`${base}/v2/addresses/${address}`);
-        if (!r.ok) throw new Error('Address not found');
-        const d = await r.json();
-        if (!d.is_contract) throw new Error('Not a smart contract');
-        
-        const sr = await fetch(`${base}/v2/smart-contracts/${address}`);
-        if (!sr.ok) throw new Error('Source code not available (not verified)');
-        const sd = await sr.json();
-        if (!sd.source_code) throw new Error('Contract not verified');
-        
-        return { source: sd.source_code, name: sd.name||'Unknown', compiler: sd.compiler_version||'Unknown', address, chain };
-    }
-    
-    // ===== ADVANCED SECURITY ANALYZER =====
-    class SecurityAnalyzer {
-        constructor(source) {
-            this.source = source;
-            this.rawLines = source.split('\n');
+    // ===== ANALYZER ENGINE =====
+    class Analyzer {
+        constructor(src) {
+            this.src = src;
+            this.lines = src.split('\n');
             this.findings = [];
-            this.gasOpts = [];
-            
-            // Parse contract structure (order matters — modifiers before functions)
-            this.pragma = this.parsePragma();
-            this.license = this.parseLicense();
-            this.imports = this.parseImports();
-            this.contracts = this.parseContracts();
-            this.events = this.parseEvents();
-            this.modifiers = this.parseModifiers();
-            this.structs = this.parseStructs();
-            this.mappings = this.parseMappings();
-            this.stateVars = this.parseStateVars();
-            this.functions = this.parseFunctions();
+            this.gas = [];
+            // Parse structure
+            this.pragma = (src.match(/pragma\s+solidity\s+([^;]+)/)||[])[1]?.trim();
+            this.license = (src.match(/SPDX-License-Identifier:\s*(\S+)/)||[])[1];
+            this.events = [...src.matchAll(/event\s+(\w+)\s*\(([^)]*)\)/g)].map(m=>({name:m[1],params:m[2]}));
+            this.modifiers = this._parseModifiers();
+            this.contracts = this._parseContracts();
+            this.functions = this._parseFunctions();
+            this.stateVars = this._parseStateVars();
         }
         
-        // ===== PARSERS =====
-        parsePragma() {
-            const m = this.source.match(/pragma\s+solidity\s+([^;]+);/);
-            return m ? m[1].trim() : null;
+        _extractBlock(src, idx) {
+            let d=0,s=src.indexOf('{',idx); if(s<1)return '';
+            for(let i=s;i<src.length;i++){if(src[i]==='{')d++;if(src[i]==='}')d--;if(d===0)return src.substring(s,i+1);}
+            return '';
         }
         
-        parseLicense() {
-            const m = this.source.match(/SPDX-License-Identifier:\s*(\S+)/);
-            return m ? m[1] : null;
-        }
+        _lineAt(idx){return this.src.substring(0,idx).split('\n').length;}
         
-        parseImports() {
-            const imports = [];
-            const re = /import\s+(?:"([^"]+)"|'([^']+)'|{[^}]+}\s+from\s+"([^"]+)"|{[^}]+}\s+from\s+'([^']+)')/g;
+        _parseModifiers(){
+            const mods=[];
+            const re=/modifier\s+(\w+)\s*(?:\([^)]*\))?\s*\{/g;
             let m;
-            while ((m = re.exec(this.source)) !== null) {
-                imports.push(m[1]||m[2]||m[3]||m[4]);
-            }
-            return imports;
-        }
-        
-        parseContracts() {
-            const contracts = [];
-            const re = /(?:abstract\s+)?contract\s+(\w+)(?:\s+is\s+([^{]+))?\s*\{/g;
-            let m;
-            while ((m = re.exec(this.source)) !== null) {
-                contracts.push({
-                    name: m[1],
-                    parents: m[2] ? m[2].split(',').map(s=>s.trim()) : [],
-                    body: this.extractBlock(this.source, m.index)
-                });
-            }
-            return contracts;
-        }
-        
-        parseFunctions() {
-            const funcs = [];
-            // Match function declarations with their full body
-            const re = /function\s+(\w+)\s*\(([^)]*)\)(?:\s+(?:external|public|internal|private))?(?:\s+(?:view|pure|payable))?(?:\s+returns\s*\([^)]*\))?\s*\{/g;
-            let m;
-            while ((m = re.exec(this.source)) !== null) {
-                const body = this.extractBlock(this.source, m.index);
-                const sig = m[0].replace(/\s*\{$/, '');
-                funcs.push({
-                    name: m[1],
-                    params: m[2],
-                    signature: sig,
-                    body: body,
-                    line: this.getLineNum(m.index),
-                    visibility: this.extractVisibility(sig),
-                    modifiers: this.extractModifiers(sig),
-                    isPayable: sig.includes('payable'),
-                    isExternal: sig.includes('external'),
-                    isPublic: sig.includes('public')
-                });
-            }
-            return funcs;
-        }
-        
-        parseStateVars() {
-            const vars = [];
-            // Match state variable declarations (outside functions)
-            const contractBodies = this.contracts.map(c => c.body).join('\n');
-            const re = /^\s*(mapping\s*\([^)]*\)\s+(?:public|private|internal)?\s*(\w+)|((?:uint|int|address|bool|string|bytes|bytes\d+)\d*)\s+(?:public|private|internal)?\s*(\w+)(?:\s*=\s*[^;]+)?);/gm;
-            let m;
-            while ((m = re.exec(contractBodies)) !== null) {
-                vars.push({
-                    name: m[2]||m[4],
-                    declaration: m[0].trim(),
-                    line: this.getLineNum(m.index)
-                });
-            }
-            return vars;
-        }
-        
-        parseEvents() {
-            const events = [];
-            const re = /event\s+(\w+)\s*\(([^)]*)\)/g;
-            let m;
-            while ((m = re.exec(this.source)) !== null) {
-                events.push({ name: m[1], params: m[2] });
-            }
-            return events;
-        }
-        
-        parseModifiers() {
-            const mods = [];
-            const re = /modifier\s+(\w+)\s*(?:\([^)]*\))?\s*\{/g;
-            let m;
-            while ((m = re.exec(this.source)) !== null) {
-                mods.push({
-                    name: m[1],
-                    body: this.extractBlock(this.source, m.index),
-                    line: this.getLineNum(m.index)
-                });
-            }
+            while((m=re.exec(this.src))!==null) mods.push({name:m[1],body:this._extractBlock(this.src,m.index),line:this._lineAt(m.index)});
             return mods;
         }
         
-        parseStructs() {
-            const structs = [];
-            const re = /struct\s+(\w+)\s*\{([^}]+)\}/g;
+        _parseContracts(){
+            const cs=[];
+            const re=/(?:abstract\s+)?contract\s+(\w+)(?:\s+is\s+([^{]+))?\s*\{/g;
             let m;
-            while ((m = re.exec(this.source)) !== null) {
-                structs.push({ name: m[1], fields: m[2] });
-            }
-            return structs;
+            while((m=re.exec(this.src))!==null) cs.push({name:m[1],parents:m[2]?m[2].split(',').map(s=>s.trim()):[],body:this._extractBlock(this.src,m.index)});
+            return cs;
         }
         
-        parseMappings() {
-            const maps = [];
-            const re = /mapping\s*\(([^)]+)\)\s+(?:public|private|internal)?\s*(\w+)/g;
+        _parseFunctions(){
+            const fs=[];
+            const re=/function\s+(\w+)\s*\(([^)]*)\)(?:\s+(?:external|public|internal|private))?(?:\s+(?:view|pure|payable))?(?:\s+returns\s*\([^)]*\))?\s*\{/g;
             let m;
-            while ((m = re.exec(this.source)) !== null) {
-                maps.push({ key: m[1].split('=>')[0].trim(), value: m[1].split('=>')[1]?.trim(), name: m[2] });
+            while((m=re.exec(this.src))!==null){
+                const body=this._extractBlock(this.src,m.index);
+                const sig=m[0].replace(/\s*\{$/,'');
+                fs.push({
+                    name:m[1],params:m[2],sig,body,
+                    line:this._lineAt(m.index),
+                    vis:sig.includes('external')?'external':sig.includes('public')?'public':sig.includes('internal')?'internal':sig.includes('private')?'private':'public',
+                    mods:this.modifiers.filter(mod=>sig.includes(mod.name)).map(mod=>mod.name),
+                    payable:sig.includes('payable')
+                });
             }
-            return maps;
+            return fs;
         }
         
-        extractBlock(src, startIdx) {
-            let depth = 0;
-            let start = src.indexOf('{', startIdx);
-            if (start === -1) return '';
-            let end = start;
-            for (let i = start; i < src.length; i++) {
-                if (src[i] === '{') depth++;
-                if (src[i] === '}') depth--;
-                if (depth === 0) { end = i; break; }
-            }
-            return src.substring(start, end + 1);
+        _parseStateVars(){
+            const vs=[];
+            const cb=this.contracts.map(c=>c.body).join('\n');
+            const re=/^\s*(mapping\s*\([^)]*\)\s+(?:public|private|internal)?\s*(\w+)|((?:uint|int|address|bool|string|bytes|bytes\d+)\d*)\s+(?:public|private|internal)?\s*(\w+)(?:\s*=\s*[^;]+)?);/gm;
+            let m;
+            while((m=re.exec(cb))!==null) vs.push({name:m[2]||m[4],decl:m[0].trim(),line:this._lineAt(m.index)});
+            return vs;
         }
         
-        getLineNum(idx) {
-            return this.source.substring(0, idx).split('\n').length;
+        _ctx(line,n=3){
+            const s=Math.max(0,line-n-1),e=Math.min(this.lines.length,line+n);
+            return this.lines.slice(s,e).map((l,i)=>`${s+i+1}: ${l}`).join('\n');
         }
         
-        extractVisibility(sig) {
-            if (sig.includes('external')) return 'external';
-            if (sig.includes('public')) return 'public';
-            if (sig.includes('internal')) return 'internal';
-            if (sig.includes('private')) return 'private';
-            return 'public'; // default
+        _add(sev,title,loc,desc,code,fix){
+            const k=`${sev}:${title}:${loc}`;
+            if(!this.findings.some(f=>`${f.sev}:${f.title}:${f.loc}`===k))
+                this.findings.push({sev,title,loc,desc,code,fix});
         }
         
-        extractModifiers(sig) {
-            const mods = [];
-            const modNames = this.modifiers.map(m => m.name);
-            for (const mod of modNames) {
-                if (sig.includes(mod)) mods.push(mod);
-            }
-            return mods;
+        _gas(title,desc){if(!this.gas.some(g=>g.title===title))this.gas.push({title,desc});}
+        
+        // ── CHECKS ──
+        
+        checkPragma(){
+            if(!this.pragma) this._add('info','Missing Pragma','File','No pragma solidity version specified.','','Add pragma solidity ^0.8.0;');
         }
         
-        getLineContext(lineNum, ctx = 3) {
-            const start = Math.max(0, lineNum - ctx - 1);
-            const end = Math.min(this.rawLines.length, lineNum + ctx);
-            return this.rawLines.slice(start, end).map((l,i) => `${start+i+1}: ${l}`).join('\n');
+        checkLicense(){
+            if(!this.license) this._add('info','Missing SPDX License','File','No SPDX license identifier.','','Add // SPDX-License-Identifier: MIT');
         }
         
-        addFinding(severity, title, location, description, code, fix) {
-            // Deduplicate
-            const key = `${severity}:${title}:${location}`;
-            if (!this.findings.some(f => `${f.severity}:${f.title}:${f.location}` === key)) {
-                this.findings.push({ severity, title, location, description, code, fix });
-            }
-        }
-        
-        addGas(title, description) {
-            if (!this.gasOpts.some(g => g.title === title)) {
-                this.gasOpts.push({ title, description });
-            }
-        }
-        
-        // ===== MAIN ANALYSIS =====
-        analyze() {
-            this.analyzePragma();
-            this.analyzeLicense();
-            this.analyzeReentrancy();
-            this.analyzeAccessControl();
-            this.analyzeOverflow();
-            this.analyzeExternalCalls();
-            this.analyzeSelfdestruct();
-            this.analyzeDelegatecall();
-            // tx.origin is checked inside analyzeAccessControl()
-            this.analyzeTimestamp();
-            this.analyzeRandomness();
-            this.analyzeFrontRunning();
-            this.analyzeDoS();
-            this.analyzeCentralization();
-            this.analyzeEvents();
-            this.analyzeVisibility();
-            this.analyzeApproval();
-            this.analyzeOracle();
-            this.analyzeFlashLoan();
-            this.analyzeProxy();
-            this.analyzeUncheckedMath();
-            this.analyzeStorage();
-            this.analyzeReturnValues();
-            this.analyzeAssembly();
-            this.analyzePayable();
-            this.analyzeImmutable();
-            
-            this.analyzeGas();
-            
-            return this.buildReport();
-        }
-        
-        // ===== 1. PRAGMA =====
-        analyzePragma() {
-            if (!this.pragma) {
-                this.addFinding('info', 'Missing Pragma', 'File header',
-                    'No pragma solidity version specified. Different compiler versions may produce different behavior.',
-                    '', 'Add pragma solidity ^0.8.0; at the top of the file.');
-            } else if (this.pragma.includes('^') && !this.pragma.includes('>=')) {
-                // Caret pragma is fine but worth noting
-            }
-        }
-        
-        // ===== 2. LICENSE =====
-        analyzeLicense() {
-            if (!this.license) {
-                this.addFinding('info', 'Missing SPDX License', 'File header',
-                    'No SPDX license identifier. Required for verified contracts on Etherscan.',
-                    '', 'Add // SPDX-License-Identifier: MIT at the top.');
-            }
-        }
-        
-        // ===== 3. REENTRANCY (CONTEXT-AWARE) =====
-        analyzeReentrancy() {
-            for (const func of this.functions) {
-                const bodyLines = func.body.split('\n');
-                let callLine = -1;
-                let stateUpdateAfterCall = false;
-                let externalCallType = '';
-                
-                // Find external calls in function body
-                for (let i = 0; i < bodyLines.length; i++) {
-                    const line = bodyLines[i];
-                    
-                    // Detect external calls
-                    const hasCall = /\.call\{|\.call\.value\(|\.send\(|\.transfer\(/.test(line);
-                    if (hasCall) {
-                        callLine = i;
-                        if (line.includes('.call{') || line.includes('.call.value(')) externalCallType = 'low-level call';
-                        else if (line.includes('.send(')) externalCallType = '.send()';
-                        else if (line.includes('.transfer(')) externalCallType = '.transfer()';
-                        
-                        // Check if state is updated AFTER the call in the same function
-                        for (let j = i + 1; j < bodyLines.length; j++) {
-                            const afterLine = bodyLines[j];
-                            // Look for state variable assignments
-                            if (afterLine.match(/balances\[|mapping.*=|storage.*=|\w+\s*[-+]?=\s*/) && 
-                                !afterLine.match(/require|if|emit|\/\/|bool|uint|address/)) {
-                                stateUpdateAfterCall = true;
-                                break;
+        checkReentrancy(){
+            for(const f of this.functions){
+                const bl=f.body.split('\n');
+                let callIdx=-1,callType='',stateAfter=false;
+                for(let i=0;i<bl.length;i++){
+                    if(/\.call\{|\.call\.value\(|\.send\(|\.transfer\(/.test(bl[i])){
+                        callIdx=i;
+                        callType=bl[i].includes('.call{')||bl[i].includes('.call.value(')?'low-level call':bl[i].includes('.send(')?'.send()':'.transfer()';
+                        for(let j=i+1;j<bl.length;j++){
+                            if(bl[j].match(/balances\[|mapping.*=|\w+\s*[-+]?=\s*/)&&!bl[j].match(/require|if|emit|\/\/|bool|uint|address/)){
+                                stateAfter=true;break;
                             }
                         }
                     }
                 }
-                
-                if (callLine >= 0 && stateUpdateAfterCall) {
-                    const lineNum = func.line + callLine;
-                    this.addFinding('critical',
-                        'Reentrancy Vulnerability',
-                        `function ${func.name}() at line ${func.line}`,
-                        `External call (${externalCallType}) is made before state variable is updated. An attacker can re-enter the function and drain funds. This is the most common DeFi exploit pattern.`,
-                        this.getLineContext(lineNum),
-                        'Use checks-effects-interactions pattern: update state BEFORE external calls. Add ReentrancyGuard from OpenZeppelin.');
+                if(callIdx>=0&&stateAfter){
+                    this._add('critical','Reentrancy Vulnerability',`function ${f.name}() line ${f.line}`,
+                        `External call (${callType}) before state update. Attacker can re-enter and drain funds.`,
+                        this._ctx(f.line+callIdx),'Update state BEFORE external calls. Add ReentrancyGuard from OpenZeppelin.');
                 }
-                
-                // Check for missing reentrancy guard on functions with external calls
-                if (callLine >= 0 && !func.modifiers.includes('nonReentrant') && !this.source.includes('ReentrancyGuard')) {
-                    this.addFinding('medium',
-                        'Missing Reentrancy Guard',
-                        `function ${func.name}()`,
-                        'Function makes external calls but has no reentrancy protection. Even with checks-effects-interactions, a guard provides defense in depth.',
-                        '', 'Add nonReentrant modifier from OpenZeppelin\'s ReentrancyGuard.');
+                if(callIdx>=0&&!f.mods.includes('nonReentrant')&&!this.src.includes('ReentrancyGuard')){
+                    this._add('medium','Missing Reentrancy Guard',`function ${f.name}()`,
+                        'External call without reentrancy protection.','','Add nonReentrant modifier from OpenZeppelin.');
                 }
             }
         }
         
-        // ===== 4. ACCESS CONTROL (CONTEXT-AWARE) =====
-        analyzeAccessControl() {
-            const hasOwner = this.source.includes('owner') || this.source.includes('Ownable');
-            const hasAccessControl = this.source.includes('onlyOwner') || 
-                                     this.source.includes('require(msg.sender') ||
-                                     this.source.includes('_checkRole') ||
-                                     this.source.includes('AccessControl');
-            
-            const sensitiveFuncs = ['withdraw', 'transfer', 'mint', 'burn', 'pause', 'unpause', 
-                                   'upgrade', 'destroy', 'selfdestruct', 'kill', 'setOwner',
-                                   'changeOwner', 'updateAdmin', 'addMinter', 'removeMinter'];
-            
-            for (const func of this.functions) {
-                if (sensitiveFuncs.includes(func.name)) {
-                    const hasAuth = func.body.includes('require(msg.sender') || 
-                                   func.body.includes('require(owner') ||
-                                   func.body.includes('onlyOwner') ||
-                                   func.body.includes('_checkRole') ||
-                                   func.modifiers.some(m => m.toLowerCase().includes('only') || m.toLowerCase().includes('auth'));
-                    
-                    if (!hasAuth) {
-                        this.addFinding('critical',
-                            'Missing Access Control',
-                            `function ${func.name}() at line ${func.line}`,
-                            `Sensitive function "${func.name}" has no access control. Anyone can call it and potentially drain funds or take ownership.`,
-                            this.getLineContext(func.line),
-                            'Add require(msg.sender == owner) or use OpenZeppelin\'s Ownable/AccessControl.');
+        checkAccess(){
+            const sensitive=['withdraw','transfer','mint','burn','pause','unpause','upgrade','destroy','kill','setOwner','changeOwner','addMinter'];
+            for(const f of this.functions){
+                if(sensitive.includes(f.name)){
+                    const hasAuth=f.body.includes('require(msg.sender')||f.body.includes('require(owner')||
+                        f.body.includes('onlyOwner')||f.body.includes('_checkRole')||
+                        f.mods.some(m=>/only|auth/i.test(m));
+                    if(!hasAuth){
+                        this._add('critical','Missing Access Control',`function ${f.name}() line ${f.line}`,
+                            `Sensitive function "${f.name}" has no access control. Anyone can call it.`,
+                            this._ctx(f.line),'Add require(msg.sender == owner) or use OpenZeppelin Ownable.');
                     }
                 }
-            }
-            
-            // Check tx.origin
-            if (this.source.includes('tx.origin')) {
-                for (const func of this.functions) {
-                    if (func.body.includes('tx.origin')) {
-                        this.addFinding('critical',
-                            'tx.origin for Authorization',
-                            `function ${func.name}() at line ${func.line}`,
-                            'Using tx.origin for authorization is vulnerable to phishing attacks. An attacker can trick the owner into calling a malicious contract.',
-                            this.getLineContext(func.line),
-                            'Use msg.sender instead of tx.origin.');
-                    }
+                if(f.body.includes('tx.origin')){
+                    this._add('critical','tx.origin Authorization',`function ${f.name}()`,
+                        'tx.origin is vulnerable to phishing attacks. Attacker can trick owner via malicious contract.',
+                        '','Use msg.sender instead of tx.origin.');
                 }
             }
         }
         
-        // ===== 5. OVERFLOW =====
-        analyzeOverflow() {
-            const isNewSolidity = this.pragma && (this.pragma.includes('^0.8') || this.pragma.includes('>=0.8'));
-            
-            if (!isNewSolidity) {
-                // Old Solidity - check for SafeMath
-                if (!this.source.includes('SafeMath') && !this.source.includes('using SafeMath')) {
-                    const hasArithmetic = /\b\w+\s*[+\-*]\s*\w+/.test(this.source);
-                    if (hasArithmetic) {
-                        this.addFinding('critical',
-                            'Missing SafeMath Library',
-                            'Contract-wide',
-                            'Contract uses Solidity <0.8.0 without SafeMath. Integer overflow/underflow is possible and can lead to token theft or balance manipulation.',
-                            '', 'Use OpenZeppelin\'s SafeMath or upgrade to Solidity ^0.8.0.');
-                    }
-                }
-            } else {
-                // New Solidity - check for unchecked blocks
-                for (const func of this.functions) {
-                    if (func.body.includes('unchecked')) {
-                        const lines = func.body.split('\n');
-                        for (let i = 0; i < lines.length; i++) {
-                            if (lines[i].includes('unchecked')) {
-                                this.addFinding('medium',
-                                    'Unchecked Arithmetic Block',
-                                    `function ${func.name}() at line ${func.line + i}`,
-                                    'Arithmetic in unchecked block will not revert on overflow/underflow. This can be exploited if not carefully validated.',
-                                    this.getLineContext(func.line + i),
-                                    'Verify bounds before unchecked operations. Use SafeMath if unsure.');
-                            }
+        checkExternalCalls(){
+            for(const f of this.functions){
+                const bl=f.body.split('\n');
+                for(let i=0;i<bl.length;i++){
+                    if((bl[i].includes('.call{')||bl[i].includes('.call.value('))&&!bl[i].includes('require')&&!bl[i].includes('bool')){
+                        const next=bl[i+1]||'';
+                        if(!next.includes('require')&&!next.includes('success')){
+                            this._add('high','Unchecked External Call',`function ${f.name}() line ${f.line+i}`,
+                                'Return value of low-level call not checked. May fail silently.','',
+                                'Check: (bool success, ) = addr.call(...); require(success);');
                         }
                     }
-                }
-            }
-        }
-        
-        // ===== 6. EXTERNAL CALLS =====
-        analyzeExternalCalls() {
-            for (const func of this.functions) {
-                const lines = func.body.split('\n');
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i];
-                    
-                    // Unchecked low-level calls
-                    if (line.includes('.call{') || line.includes('.call.value(')) {
-                        // Check if return value is checked
-                        const nextLine = lines[i+1] || '';
-                        const isChecked = line.includes('require') || line.includes('bool') || 
-                                         nextLine.includes('require') || nextLine.includes('success');
-                        if (!isChecked) {
-                            this.addFinding('high',
-                                'Unchecked External Call',
-                                `function ${func.name}() at line ${func.line + i}`,
-                                'Return value of low-level call is not checked. The call may fail silently, leading to loss of funds or incorrect state.',
-                                this.getLineContext(func.line + i),
-                                'Always check: (bool success, ) = addr.call{value: amount}(""); require(success, "Failed");');
-                        }
-                    }
-                    
-                    // Unchecked .send()
-                    if (line.includes('.send(') && !line.includes('require') && !line.includes('bool')) {
-                        this.addFinding('high',
-                            'Unchecked .send() Return',
-                            `function ${func.name}() at line ${func.line + i}`,
-                            '.send() returns false on failure instead of reverting. Return value must be checked.',
-                            this.getLineContext(func.line + i),
-                            'Use require(addr.send(amount)) or use .transfer() which reverts on failure.');
+                    if(bl[i].includes('.send(')&&!bl[i].includes('require')&&!bl[i].includes('bool')){
+                        this._add('high','Unchecked .send()',`function ${f.name}() line ${f.line+i}`,
+                            '.send() returns false on failure instead of reverting.','',
+                            'Use require(addr.send(amount)) or .transfer().');
                     }
                 }
             }
         }
         
-        // ===== 7. SELFDESTRUCT =====
-        analyzeSelfdestruct() {
-            if (this.source.includes('selfdestruct') || this.source.includes('suicide')) {
-                for (const func of this.functions) {
-                    if (func.body.includes('selfdestruct') || func.body.includes('suicide')) {
-                        const hasAuth = func.body.includes('require(msg.sender') || 
-                                       func.body.includes('onlyOwner') ||
-                                       func.modifiers.some(m => m.toLowerCase().includes('only'));
-                        
-                        this.addFinding(hasAuth ? 'high' : 'critical',
-                            'Selfdestruct Usage',
-                            `function ${func.name}() at line ${func.line}`,
-                            `selfdestruct permanently destroys the contract and sends all ETH to a target. ${hasAuth ? 'Has access control but still risky.' : 'NO ACCESS CONTROL - anyone can destroy the contract!'}`,
-                            this.getLineContext(func.line),
-                            'Remove selfdestruct unless absolutely necessary. If needed, add strict access control and timelock.');
+        checkSelfdestruct(){
+            for(const f of this.functions){
+                if(f.body.includes('selfdestruct')||f.body.includes('suicide')){
+                    const hasAuth=f.body.includes('require(msg.sender')||f.mods.some(m=>/only/i.test(m));
+                    this._add(hasAuth?'high':'critical','Selfdestruct',`function ${f.name}()`,
+                        `selfdestruct permanently destroys the contract.${hasAuth?' Has auth.':' NO AUTH — anyone can destroy!'}`,
+                        '','Remove selfdestruct or add strict access control + timelock.');
+                }
+            }
+        }
+        
+        checkDelegatecall(){
+            for(const f of this.functions){
+                if(f.body.includes('delegatecall')){
+                    this._add('critical','Delegatecall',`function ${f.name}()`,
+                        'delegatecall executes in caller context. Malicious target = total compromise.',
+                        '','Ensure target is trusted and immutable.');
+                }
+            }
+        }
+        
+        checkOverflow(){
+            const isNew=this.pragma&&(this.pragma.includes('^0.8')||this.pragma.includes('>=0.8'));
+            if(!isNew&&!this.src.includes('SafeMath')){
+                if(/\b\w+\s*[+\-*]\s*\w+/.test(this.src)){
+                    this._add('critical','Missing SafeMath','Contract','Solidity <0.8 without SafeMath. Overflow possible.','','Use SafeMath or upgrade to ^0.8.0.');
+                }
+            }
+            if(isNew){
+                for(const f of this.functions){
+                    if(f.body.includes('unchecked')){
+                        this._add('medium','Unchecked Arithmetic',`function ${f.name}()`,
+                            'Arithmetic in unchecked block won\'t revert on overflow.','','Validate bounds before unchecked operations.');
                     }
                 }
             }
         }
         
-        // ===== 8. DELEGATECALL =====
-        analyzeDelegatecall() {
-            if (this.source.includes('delegatecall')) {
-                for (const func of this.functions) {
-                    if (func.body.includes('delegatecall')) {
-                        this.addFinding('critical',
-                            'Delegatecall Risk',
-                            `function ${func.name}() at line ${func.line}`,
-                            'delegatecall executes code in the caller\'s context. If the target is malicious or vulnerable, it can compromise the entire contract and steal all funds.',
-                            this.getLineContext(func.line),
-                            'Ensure delegatecall target is trusted and immutable. Consider using a timelock for changing the target.');
+        checkRandomness(){
+            if((this.src.includes('keccak256')||this.src.includes('sha256'))&&(this.src.includes('block.timestamp')||this.src.includes('blockhash')||this.src.includes('block.number'))){
+                this._add('critical','Insecure Randomness','keccak256 + block data',
+                    'Block data is predictable and miner-manipulable.','','Use Chainlink VRF for secure randomness.');
+            }
+        }
+        
+        checkFrontRunning(){
+            for(const f of this.functions){
+                for(const p of ['swap','trade','bid','auction','claim','liquidate']){
+                    if(f.name.toLowerCase().includes(p)&&!f.body.includes('slippage')&&!f.body.includes('minAmount')&&!f.body.includes('deadline')){
+                        this._add('medium','Front-Running / MEV',`function ${f.name}()`,
+                            'No slippage protection detected. Vulnerable to sandwich attacks.','',
+                            'Add slippage tolerance (minAmountOut) and deadline parameter.');
                     }
                 }
             }
         }
         
-        // ===== 9. TIMESTAMP =====
-        analyzeTimestamp() {
-            for (const func of this.functions) {
-                if (func.body.includes('block.timestamp')) {
-                    const lines = func.body.split('\n');
-                    for (let i = 0; i < lines.length; i++) {
-                        if (lines[i].includes('block.timestamp') && 
-                            (lines[i].includes('==') || lines[i].includes('>=') || lines[i].includes('<=') || lines[i].includes('!='))) {
-                            this.addFinding('low',
-                                'Block Timestamp Dependence',
-                                `function ${func.name}() at line ${func.line + i}`,
-                                'block.timestamp can be manipulated by miners within ~15 seconds. Do not use for critical timing or randomness.',
-                                this.getLineContext(func.line + i),
-                                'Allow tolerance for timestamp checks. For randomness, use Chainlink VRF.');
-                            break;
-                        }
-                    }
+        checkDoS(){
+            for(const f of this.functions){
+                if(f.body.match(/for\s*\([^;]*\.length/)){
+                    this._add('medium','Unbounded Loop (DoS)',`function ${f.name}()`,
+                        'Loop over growing array may run out of gas.','','Use pagination or limit array size.');
+                }
+                const tc=(f.body.match(/\.transfer\(|\.send\(/g)||[]).length;
+                if(tc>1){
+                    this._add('medium','Push Payment DoS',`function ${f.name}()`,
+                        `${tc} transfers — one failing recipient reverts all.`,'','Use pull payment pattern.');
                 }
             }
         }
         
-        // ===== 10. RANDOMNESS =====
-        analyzeRandomness() {
-            if ((this.source.includes('keccak256') || this.source.includes('sha256')) && 
-                (this.source.includes('block.timestamp') || this.source.includes('blockhash') || this.source.includes('block.number'))) {
-                this.addFinding('critical',
-                    'Insecure On-Chain Randomness',
-                    'keccak256 with block data',
-                    'Using block.timestamp, blockhash, or block.number for randomness is predictable. Miners can manipulate these values. This is critical for gambling, NFT minting, or lottery contracts.',
-                    '', 'Use Chainlink VRF (Verifiable Random Function) for secure randomness.');
-            }
+        checkCentralization(){
+            const r=[];
+            if(this.src.includes('owner')&&!this.src.includes('Ownable')) r.push('Single owner');
+            if(this.src.match(/function\s+pause/)&&this.src.match(/onlyOwner|require.*owner/)) r.push('Owner can pause');
+            if(this.src.match(/function\s+mint/)&&this.src.match(/onlyOwner|require.*owner/)) r.push('Owner can mint');
+            if(this.src.includes('upgrade')||this.src.includes('UUPS')) r.push('Upgradeable');
+            if(r.length) this._add('info','Centralization Risk','Contract',
+                `${r.join('; ')}. Consider multisig, timelock, or DAO governance.`,'',
+                'Use Gnosis Safe multisig + timelock for admin functions.');
         }
         
-        // ===== 11. FRONT-RUNNING =====
-        analyzeFrontRunning() {
-            const frontRunnable = ['swap', 'trade', 'bid', 'auction', 'claim', 'liquidate', 'flash'];
-            for (const func of this.functions) {
-                for (const pattern of frontRunnable) {
-                    if (func.name.toLowerCase().includes(pattern)) {
-                        if (!func.body.includes('slippage') && !func.body.includes('minAmount') && 
-                            !func.body.includes('minOutput') && !func.body.includes('deadline')) {
-                            this.addFinding('medium',
-                                'Potential Front-Running / MEV',
-                                `function ${func.name}() at line ${func.line}`,
-                                `Function "${func.name}" may be vulnerable to sandwich attacks or front-running. No slippage protection detected.`,
-                                '', 'Add slippage tolerance (minAmountOut), deadline parameter, and consider using private mempools or MEV protection.');
-                        }
-                    }
+        checkEvents(){
+            for(const f of this.functions){
+                if((f.vis==='external'||f.vis==='public')&&f.body.match(/\w+\s*[-+]?=\s*[^=]/)&&!f.body.includes('emit')&&f.name!=='constructor'){
+                    this._add('low','Missing Events',`function ${f.name}()`,
+                        'State changes without events. Hard to track off-chain.','',
+                        'Emit events for all state changes.');
                 }
             }
         }
         
-        // ===== 12. DOS =====
-        analyzeDoS() {
-            for (const func of this.functions) {
-                // Unbounded loops
-                const loopMatch = func.body.match(/for\s*\([^)]*;\s*\w+\s*<\s*(\w+)?\.?(\w*)\.length/g);
-                if (loopMatch) {
-                    this.addFinding('medium',
-                        'Unbounded Loop (DoS Risk)',
-                        `function ${func.name}() at line ${func.line}`,
-                        'Function loops over an array that can grow. If the array becomes very large, the function may run out of gas and become unusable.',
-                        '', 'Use pagination (offset, limit) or limit array size. Consider using mappings instead.');
-                }
-                
-                // Push payment pattern
-                const transferCount = (func.body.match(/\.transfer\(|\.send\(/g) || []).length;
-                if (transferCount > 1) {
-                    this.addFinding('medium',
-                        'Push Payment DoS',
-                        `function ${func.name}() at line ${func.line}`,
-                        `Function makes ${transferCount} transfers. If any recipient is a contract that reverts, the entire function fails.`,
-                        '', 'Use pull payment pattern: let users withdraw their funds instead of pushing.');
+        checkVisibility(){
+            for(const f of this.functions){
+                if(f.vis==='public'&&!f.body.includes('this.')&&!f.body.includes('address(this)')){
+                    this._add('info','Could Be External',`function ${f.name}()`,
+                        'Never called internally. External saves gas (no calldata copy).','',
+                        'Change to external.');
                 }
             }
         }
         
-        // ===== 13. CENTRALIZATION =====
-        analyzeCentralization() {
-            const risks = [];
-            
-            if (this.source.includes('owner') && !this.source.includes('Ownable')) {
-                risks.push('Single owner address');
-            }
-            if (this.source.match(/function\s+pause/) && this.source.match(/onlyOwner|require.*owner/)) {
-                risks.push('Owner can pause contract');
-            }
-            if (this.source.match(/function\s+mint/) && this.source.match(/onlyOwner|require.*owner/)) {
-                risks.push('Owner can mint tokens');
-            }
-            if (this.source.includes('upgrade') || this.source.includes('UUPS') || this.source.includes('transparent')) {
-                risks.push('Contract is upgradeable');
-            }
-            if (this.source.match(/function\s+set.*rate|function\s+set.*fee|function\s+set.*price/i)) {
-                risks.push('Owner can change economic parameters');
-            }
-            
-            if (risks.length > 0) {
-                this.addFinding('info',
-                    'Centralization Risk',
-                    'Contract-wide',
-                    `Centralization risks detected: ${risks.join('; ')}. Consider using multisig, timelock, or DAO governance for critical operations.`,
-                    '', 'Implement timelock for admin functions. Use multisig (Gnosis Safe) for ownership. Consider progressive decentralization.');
+        checkApproval(){
+            if(this.src.includes('approve')&&this.src.includes('allowance')&&!this.src.includes('increaseAllowance')){
+                this._add('medium','Approve Race Condition','approve()',
+                    'Standard approve() vulnerable to front-running.','',
+                    'Add increaseAllowance() / decreaseAllowance().');
             }
         }
         
-        // ===== 14. EVENTS =====
-        analyzeEvents() {
-            const emittedEvents = new Set();
-            const emitRe = /emit\s+(\w+)/g;
-            let m;
-            while ((m = emitRe.exec(this.source)) !== null) emittedEvents.add(m[1]);
-            
-            // Check if state-changing functions emit events
-            for (const func of this.functions) {
-                if (func.visibility === 'external' || func.visibility === 'public') {
-                    const hasStateChange = func.body.match(/\w+\s*[-+]?=\s*[^=]/);
-                    const hasEmit = func.body.includes('emit ');
-                    
-                    if (hasStateChange && !hasEmit && func.name !== 'constructor') {
-                        this.addFinding('low',
-                            'Missing Event Emission',
-                            `function ${func.name}() at line ${func.line}`,
-                            `Function modifies state but doesn't emit events. This makes it difficult to track changes off-chain and monitor contract activity.`,
-                            '', 'Emit events for all state changes to improve transparency and enable off-chain monitoring.');
-                    }
+        checkOracle(){
+            for(const f of this.functions){
+                if(f.body.includes('latestRoundData')&&!f.body.match(/answer\s*[>!]=\s*0/)){
+                    this._add('high','Stale Oracle Price',`function ${f.name}()`,
+                        'Oracle may return stale or zero price.','',
+                        'Check answer > 0 and updatedAt is recent.');
                 }
             }
         }
         
-        // ===== 15. VISIBILITY =====
-        analyzeVisibility() {
-            for (const func of this.functions) {
-                if (func.visibility === 'public' && !func.isExternal) {
-                    // Public functions that could be external are gas inefficient
-                    if (!func.body.includes('this.') && !func.body.includes('address(this)')) {
-                        this.addFinding('info',
-                            'Function Could Be External',
-                            `function ${func.name}() at line ${func.line}`,
-                            'Function is public but never called internally. Making it external saves gas by not copying calldata to memory.',
-                            '', 'Change visibility to external if the function is not called within the contract.');
-                    }
+        checkProxy(){
+            if(this.src.includes('delegatecall')&&(this.src.includes('fallback')||this.src.includes('_implementation'))){
+                this._add('high','Proxy Risks','Proxy pattern',
+                    'Storage collision, selector clashing, upgrade risks.','',
+                    'Use EIP-1967 slots. Use OpenZeppelin upgradeable contracts.');
+            }
+        }
+        
+        checkAssembly(){
+            if(this.src.includes('assembly')){
+                this._add('info','Inline Assembly','Contract',
+                    'Assembly bypasses Solidity safety checks.','','Document why. Test edge cases.');
+            }
+        }
+        
+        checkImmutable(){
+            for(const v of this.stateVars){
+                if(v.decl.match(/address\s+public\s+\w+\s*;/)&&!v.decl.includes('immutable')&&!v.decl.includes('constant')){
+                    this._add('info','Could Be Immutable',`${v.name}`,
+                        'Set once but not immutable. Wastes gas on reads.','','Declare immutable.');
                 }
             }
         }
         
-        // ===== 16. APPROVAL =====
-        analyzeApproval() {
-            if (this.source.includes('approve') && this.source.includes('allowance')) {
-                if (!this.source.includes('increaseAllowance') && !this.source.includes('decreaseAllowance')) {
-                    this.addFinding('medium',
-                        'ERC-20 Approve Race Condition',
-                        'approve() function',
-                        'The standard approve() is vulnerable to front-running: if a user changes allowance from N to M, a spender can spend N+M by front-running the approval change.',
-                        '', 'Implement increaseAllowance() and decreaseAllowance() functions.');
-                }
-            }
+        checkGas(){
+            if(this.src.match(/for\s*\([^;]*\.length[^;]*;/)) this._gas('Cache Array Length','Store length in local var. Saves ~2100 gas/iteration.');
+            if(this.src.match(/\bi\+\+|\bi \+\+/)) this._gas('Use ++i','Pre-increment cheaper than post-increment. ~5 gas/iteration.');
+            if(this.src.match(/uint8|uint16|uint32|uint64|uint128/)) this._gas('Prefer uint256','EVM operates on 256-bit words. Smaller types need masking.');
+            if(this.src.match(/function\s+\w+\([^)]*memory[^)]*\)/)) this._gas('Use calldata','Read-only params: calldata cheaper than memory. ~60 gas/param.');
+            if(this.src.match(/address\s+public\s+\w+\s*;/)&&!this.src.includes('immutable')) this._gas('Use immutable','Set-once vars: saves ~2100 gas/read (no SLOAD).');
+            if(this.pragma&&this.pragma.includes('^0.8')&&this.src.match(/\+\+|\-\-/)) this._gas('Use unchecked { ++i }','Safe increments: skip overflow check. ~80 gas.');
+            if(this.src.includes('struct')) this._gas('Pack Structs','Order by size to fit multiple vars in one 256-bit slot.');
         }
         
-        // ===== 17. ORACLE =====
-        analyzeOracle() {
-            if (this.source.includes('latestRoundData') || this.source.includes('AggregatorV3')) {
-                for (const func of this.functions) {
-                    if (func.body.includes('latestRoundData')) {
-                        // Check if return value is validated
-                        if (!func.body.includes('require') || !func.body.match(/answer\s*(!=|>|>=)\s*0/)) {
-                            this.addFinding('high',
-                                'Stale Oracle Price',
-                                `function ${func.name}() at line ${func.line}`,
-                                'Oracle price data may be stale or zero. Chainlink oracles can return outdated prices during extreme market conditions.',
-                                '', 'Check that answer > 0 andupdatedAt is recent (< heartbeat interval).');
-                        }
-                    }
-                }
-            }
+        // ── MAIN ──
+        run(){
+            this.checkPragma();this.checkLicense();this.checkReentrancy();
+            this.checkAccess();this.checkExternalCalls();this.checkSelfdestruct();
+            this.checkDelegatecall();this.checkOverflow();this.checkRandomness();
+            this.checkFrontRunning();this.checkDoS();this.checkCentralization();
+            this.checkEvents();this.checkVisibility();this.checkApproval();
+            this.checkOracle();this.checkProxy();this.checkAssembly();
+            this.checkImmutable();this.checkGas();
+            return this._report();
         }
         
-        // ===== 18. FLASH LOAN =====
-        analyzeFlashLoan() {
-            if (this.source.includes('flashLoan') || this.source.includes('flash')) {
-                this.addFinding('medium',
-                    'Flash Loan Attack Vector',
-                    'Flash loan functionality',
-                    'Flash loans allow borrowing massive amounts in a single transaction. This can be used to manipulate prices or exploit logic.',
-                    '', 'Ensure price calculations use TWAP (Time-Weighted Average Price) or multiple oracle sources.');
-            }
-        }
-        
-        // ===== 19. PROXY =====
-        analyzeProxy() {
-            if (this.source.includes('delegatecall') && (this.source.includes('fallback') || this.source.includes('_implementation'))) {
-                this.addFinding('high',
-                    'Proxy Pattern Risks',
-                    'Proxy/Implementation pattern',
-                    'Proxy contracts have additional risks: storage collision, function selector clashing, and implementation upgrade risks.',
-                    '', 'Use EIP-1967 storage slots. Test thoroughly with different implementation versions. Consider using OpenZeppelin\'s upgradeable contracts.');
-            }
-        }
-        
-        // ===== 20. UNCHECKED MATH =====
-        analyzeUncheckedMath() {
-            for (const func of this.functions) {
-                const lines = func.body.split('\n');
-                for (let i = 0; i < lines.length; i++) {
-                    if (lines[i].includes('unchecked') && lines[i].includes('{')) {
-                        // Look at the unchecked block
-                        let depth = 0;
-                        let blockStart = i;
-                        for (let j = i; j < lines.length; j++) {
-                            if (lines[j].includes('{')) depth++;
-                            if (lines[j].includes('}')) depth--;
-                            if (depth === 0) {
-                                const block = lines.slice(blockStart, j+1).join('\n');
-                                if (block.match(/\+\+|\-\-|\+|\-|\*|\//)) {
-                                    this.addFinding('medium',
-                                        'Arithmetic in Unchecked Block',
-                                        `function ${func.name}() at line ${func.line + blockStart}`,
-                                        'Arithmetic operations in unchecked blocks won\'t revert on overflow/underflow. Ensure bounds are validated before the block.',
-                                        this.getLineContext(func.line + blockStart),
-                                        'Validate inputs before unchecked operations. Use SafeMath for critical calculations.');
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        // ===== 21. STORAGE PATTERNS =====
-        analyzeStorage() {
-            // Check for storage pointer issues
-            for (const func of this.functions) {
-                const lines = func.body.split('\n');
-                for (let i = 0; i < lines.length; i++) {
-                    if (lines[i].match(/storage\s+\w+\s*=/) && lines[i].includes('memory')) {
-                        this.addFinding('medium',
-                            'Storage/Memory Confusion',
-                            `function ${func.name}() at line ${func.line + i}`,
-                            'Assigning memory to storage creates a copy. Changes won\'t persist. This is a common source of bugs.',
-                            this.getLineContext(func.line + i),
-                            'Use "storage" keyword to reference original data, "memory" for copies.');
-                    }
-                }
-            }
-        }
-        
-        // ===== 22. RETURN VALUES =====
-        analyzeReturnValues() {
-            for (const func of this.functions) {
-                // Check if function with return actually returns
-                if (func.signature.includes('returns') && !func.body.includes('return ')) {
-                    this.addFinding('medium',
-                        'Missing Return Statement',
-                        `function ${func.name}() at line ${func.line}`,
-                        'Function declares return type but may not return a value in all code paths.',
-                        '', 'Ensure all code paths return the expected value.');
-                }
-            }
-        }
-        
-        // ===== 23. ASSEMBLY =====
-        analyzeAssembly() {
-            if (this.source.includes('assembly')) {
-                this.addFinding('info',
-                    'Inline Assembly Usage',
-                    'Contract contains assembly',
-                    'Assembly bypasses Solidity\'s safety checks. It should be used only when necessary and thoroughly audited.',
-                    '', 'Document why assembly is needed. Test edge cases thoroughly.');
-            }
-        }
-        
-        // ===== 24. PAYABLE FUNCTIONS =====
-        analyzePayable() {
-            for (const func of this.functions) {
-                if (func.isPayable && func.visibility !== 'external') {
-                    this.addFinding('low',
-                        'Payable Non-External Function',
-                        `function ${func.name}() at line ${func.line}`,
-                        'Payable functions should generally be external to prevent accidental ETH being sent during internal calls.',
-                        '', 'Make payable functions external unless they need to be called internally.');
-                }
-            }
-        }
-        
-        // ===== 25. IMMUTABLE/CONSTANT =====
-        analyzeImmutable() {
-            for (const v of this.stateVars) {
-                if (v.declaration.match(/address\s+public\s+\w+\s*;/) && 
-                    !v.declaration.includes('immutable') && !v.declaration.includes('constant')) {
-                    this.addFinding('info',
-                        'State Variable Could Be Immutable',
-                        `Variable: ${v.name}`,
-                        'Variable is set once but not declared immutable. This wastes gas on every read.',
-                        '', 'Declare as immutable if set only in constructor.');
-                }
-            }
-        }
-        
-        // ===== GAS OPTIMIZATIONS =====
-        analyzeGas() {
-            // Cache array length
-            if (this.source.match(/for\s*\([^;]*\.length[^;]*;/)) {
-                this.addGas('Cache Array Length',
-                    'Store array length in a local variable before the loop to avoid SLOAD on each iteration. Saves ~2100 gas per iteration.');
-            }
+        _report(){
+            const s={critical:0,high:0,medium:0,low:0,info:0};
+            for(const f of this.findings) s[f.sev]++;
+            const score=Math.min(100,s.critical*25+s.high*15+s.medium*8+s.low*3+s.info);
+            let lvl=score>=80?'critical':score>=60?'high':score>=40?'medium':score>=20?'low':'info';
             
-            // ++i vs i++
-            if (this.source.match(/\bi\+\+|\bi \+\+/)) {
-                this.addGas('Use ++i Instead of i++',
-                    'Pre-increment (++i) is cheaper than post-increment (i++) in Solidity. Saves ~5 gas per iteration.');
-            }
+            const t=this.findings.length;
+            let sum=`Found ${t} issue${t!==1?'s':''}: ${s.critical} critical, ${s.high} high, ${s.medium} medium, ${s.low} low, ${s.info} info.\n\n`;
+            if(score>=60) sum+='HIGH RISK — Do NOT deploy without fixing critical issues.';
+            else if(score>=40) sum+='MEDIUM RISK — Review and fix before deployment.';
+            else if(score>=20) sum+='LOW RISK — Minor issues, consider fixing.';
+            else sum+='GOOD — Contract follows best practices.';
             
-            // uint256 vs smaller types
-            if (this.source.match(/uint8|uint16|uint32|uint64|uint128/)) {
-                this.addGas('Prefer uint256',
-                    'Using uint256 is often more gas-efficient than smaller types because the EVM operates on 256-bit words. Smaller types require extra masking operations. Exception: packing multiple variables in one storage slot.');
-            }
-            
-            // calldata vs memory
-            if (this.source.match(/function\s+\w+\([^)]*memory[^)]*\)/)) {
-                this.addGas('Use calldata for Read-Only Params',
-                    'Function parameters that are only read (not modified) should use calldata instead of memory. Saves ~60 gas per parameter.');
-            }
-            
-            // immutable
-            if (this.source.match(/address\s+public\s+\w+\s*;/) && !this.source.includes('immutable')) {
-                this.addGas('Use immutable for Set-Once Variables',
-                    'Variables set only in constructor should be declared immutable. Saves ~2100 gas per read (SLOAD vs no SLOAD).');
-            }
-            
-            // constant
-            if (this.source.match(/uint\d*\s+public\s+\w+\s*=\s*\d+/) && !this.source.includes('constant')) {
-                this.addGas('Use constant for Fixed Values',
-                    'Variables that never change should be declared constant. Saves ~2100 gas per read.');
-            }
-            
-            // Short-circuit require
-            if (this.source.match(/require\([^)]+&&[^)]+\)/)) {
-                this.addGas('Order Require Conditions',
-                    'Put the most likely-to-fail condition first in require() with &&. Short-circuit evaluation saves gas on revert.');
-            }
-            
-            // Struct packing
-            if (this.source.includes('struct')) {
-                this.addGas('Pack Struct Members',
-                    'Order struct members by size to fit multiple variables in one 256-bit storage slot. Example: uint128 + uint128 = 1 slot instead of 2.');
-            }
-            
-            // unchecked for safe math
-            if (this.pragma && this.pragma.includes('^0.8') && this.source.match(/\+\+|\-\-|\+\s*\d+|\-\s*\d+/)) {
-                this.addGas('Use unchecked for Safe Increments',
-                    'For increments where overflow is impossible (e.g., loop counters), use unchecked { ++i; } to skip overflow checks. Saves ~80 gas.');
-            }
-            
-            // bytes32 vs string
-            if (this.source.includes('string') && !this.source.includes('bytes32')) {
-                this.addGas('Consider bytes32 for Short Strings',
-                    'If strings are always <32 bytes, use bytes32 instead of string. It\'s cheaper for storage and comparison.');
-            }
-        }
-        
-        // ===== BUILD REPORT =====
-        buildReport() {
-            const stats = { critical: 0, high: 0, medium: 0, low: 0, info: 0 };
-            for (const f of this.findings) stats[f.severity]++;
-            
-            const score = Math.min(100, stats.critical * 25 + stats.high * 15 + stats.medium * 8 + stats.low * 3 + stats.info * 1);
-            let level = 'info';
-            if (score >= 80) level = 'critical';
-            else if (score >= 60) level = 'high';
-            else if (score >= 40) level = 'medium';
-            else if (score >= 20) level = 'low';
-            
-            const total = this.findings.length;
-            let summary = `Security audit completed. Found ${total} issue${total!==1?'s':''}: ${stats.critical} critical, ${stats.high} high, ${stats.medium} medium, ${stats.low} low, ${stats.info} informational.\n\n`;
-            if (score >= 60) summary += '⚠️ HIGH RISK: Critical security issues detected. Do NOT deploy without fixes.';
-            else if (score >= 40) summary += '⚡ MEDIUM RISK: Security concerns found. Review and fix before deployment.';
-            else if (score >= 20) summary += '✅ LOW RISK: Minor issues found. Consider fixing for best practices.';
-            else summary += '✅ GOOD: Contract follows security best practices with minimal findings.';
-            
-            return { risk_score: score, risk_level: level, summary, findings: this.findings, gas_optimizations: this.gasOpts, statistics: stats };
+            return {score,level:lvl,summary:s,findings:this.findings,gas:this.gas,stats:s};
         }
     }
     
     // ===== UI =====
-    function setStep(id, s) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.className = 'ld-i ' + s;
-        el.querySelector('.ld-ic').textContent = s==='active'?'🔄':s==='done'?'✅':'⏳';
+    function setStep(id,state){
+        const el=document.getElementById(id);
+        el.className='step-dot '+state;
     }
     
-    function showLoading() {
-        document.getElementById('loading').classList.add('active');
-        document.getElementById('report').classList.remove('active');
-        ['step-fetch','step-parse','step-analyze','step-report'].forEach(id=>setStep(id,''));
+    function showAnalyzing(){
+        document.getElementById('analyzing').classList.add('show');
+        document.getElementById('report').classList.remove('show');
+        document.getElementById('inputSection').style.display='none';
+        ['s1','s2','s3','s4'].forEach(id=>setStep(id,''));
+        document.getElementById('progress').style.width='0%';
     }
     
-    function hideLoading() { document.getElementById('loading').classList.remove('active'); }
+    function hideAnalyzing(){
+        document.getElementById('analyzing').classList.remove('show');
+        document.getElementById('inputSection').style.display='';
+    }
     
-    function showReport(analysis, info) {
-        currentReport = { analysis, info };
+    function renderReport(r,info){
+        const sevColors={critical:'var(--err)',high:'#f97316',medium:'var(--warn)',low:'var(--ok)',info:'var(--info)'};
+        const sevBg={critical:'var(--err-bg)',high:'rgba(249,115,22,.08)',medium:'var(--warn-bg)',low:'var(--ok-bg)',info:'var(--info-bg)'};
+        const sevNames={critical:'Critical',high:'High',medium:'Medium',low:'Low',info:'Info'};
         
-        document.getElementById('reportMeta').textContent = `${info?.name||'Contract'} • ${info?.chain?.toUpperCase()||'Manual'} • ${new Date().toLocaleString()}`;
+        // Score ring
+        const pct=r.score/100;
+        const dashOff=339-(339*pct);
+        const scoreColor=r.level==='critical'?'var(--err)':r.level==='high'?'#f97316':r.level==='medium'?'var(--warn)':r.level==='low'?'var(--ok)':'var(--info)';
         
-        const score = analysis.risk_score||0;
-        const level = analysis.risk_level||'info';
-        document.getElementById('riskCircle').className = 'risk-sc ' + level;
-        document.getElementById('riskScore').textContent = score;
-        document.getElementById('riskScore').style.color = sevColor(level);
+        // Severity bar widths
+        const total=Math.max(r.findings.length,1);
+        const barW={critical:r.stats.critical/total*100,high:r.stats.high/total*100,medium:r.stats.medium/total*100,low:r.stats.low/total*100,info:r.stats.info/total*100};
         
-        const stats = analysis.statistics||{};
-        document.getElementById('riskStats').innerHTML = ['critical','high','medium','low','info'].map(s=>`
-            <div class="risk-si"><span class="dot ${s}"></span><span class="cnt">${stats[s]||0}</span><span class="slbl">${s[0].toUpperCase()+s.slice(1)}</span></div>
-        `).join('');
+        let html='';
         
-        document.getElementById('summaryText').textContent = analysis.summary||'';
-        
-        const findings = analysis.findings||[];
-        document.getElementById('findingsCount').textContent = `${findings.length} findings`;
-        document.getElementById('findingsList').innerHTML = findings.map(f=>`
-            <div class="find">
-                <div class="find-h"><span class="sev ${f.severity}">${f.severity}</span><span class="find-t">${esc(f.title)}</span></div>
-                ${f.location?`<div class="find-loc">${esc(f.location)}</div>`:''}
-                <div class="find-d">${esc(f.description)}</div>
-                ${f.code?`<div class="find-c">${esc(f.code)}</div>`:''}
-                ${f.fix?`<div class="find-f"><div class="find-fl">Recommended Fix</div><div class="find-ft">${esc(f.fix)}</div></div>`:''}
+        // Score section
+        html+=`<div class="score-section">
+            <div class="score-ring">
+                <svg viewBox="0 0 112 112"><circle class="track" cx="56" cy="56" r="54"/><circle class="fill" cx="56" cy="56" r="54" style="stroke:${scoreColor};stroke-dashoffset:${dashOff}"/></svg>
+                <div><div class="score-val" style="color:${scoreColor}">${r.score}</div><div class="score-label">Risk Score</div></div>
             </div>
-        `).join('')||'<p style="color:var(--text3)">No findings — contract looks secure!</p>';
+            <div class="score-info">
+                <div class="score-title">${r.score>=60?'⚠️ High Risk':r.score>=40?'⚡ Medium Risk':r.score>=20?'✅ Low Risk':'✅ Secure'}</div>
+                <div class="score-sub">${r.summary}</div>
+                <div class="severity-bar">
+                    ${r.stats.critical?`<div class="sev-crit" style="width:${barW.critical}%"></div>`:''}
+                    ${r.stats.high?`<div class="sev-high" style="width:${barW.high}%"></div>`:''}
+                    ${r.stats.medium?`<div class="sev-med" style="width:${barW.medium}%"></div>`:''}
+                    ${r.stats.low?`<div class="sev-low" style="width:${barW.low}%"></div>`:''}
+                    ${r.stats.info?`<div class="sev-info" style="width:${barW.info}%"></div>`:''}
+                </div>
+                <div class="severity-legend">
+                    ${Object.entries(r.stats).filter(([,v])=>v>0).map(([k,v])=>`<span class="legend-item"><span class="legend-dot" style="background:${sevColors[k]}"></span>${v} ${sevNames[k]}</span>`).join('')}
+                </div>
+            </div>
+        </div>`;
         
-        const gas = analysis.gas_optimizations||[];
-        document.getElementById('gasList').innerHTML = gas.map(g=>`
-            <div class="gas-i"><span class="gas-ic">⚡</span><div class="gas-c"><div class="gas-l">${esc(g.title)}</div><div class="gas-d">${esc(g.description)}</div></div></div>
-        `).join('')||'<p style="color:var(--text3)">No gas optimization suggestions.</p>';
+        // Stats
+        html+=`<div class="stats-row">
+            ${Object.entries(r.stats).map(([k,v])=>`<div class="stat-card ${k}"><div class="stat-num">${v}</div><div class="stat-label">${sevNames[k]}</div></div>`).join('')}
+        </div>`;
         
-        document.getElementById('report').classList.add('active');
+        // Findings
+        if(r.findings.length){
+            html+=`<div class="findings-card"><div class="card-header"><span class="icon">🔍</span> Findings (${r.findings.length})</div>`;
+            for(const f of r.findings){
+                html+=`<div class="finding">
+                    <div class="finding-head"><span class="finding-sev ${f.sev}">${f.sev}</span><span class="finding-title">${esc(f.title)}</span></div>
+                    ${f.loc?`<div class="finding-loc">${esc(f.loc)}</div>`:''}
+                    <div class="finding-desc">${esc(f.desc)}</div>
+                    ${f.code?`<div class="finding-code">${esc(f.code)}</div>`:''}
+                    ${f.fix?`<div class="finding-fix"><div class="finding-fix-l">Fix</div><div class="finding-fix-t">${esc(f.fix)}</div></div>`:''}
+                </div>`;
+            }
+            html+=`</div>`;
+        }
+        
+        // Gas
+        if(r.gas.length){
+            html+=`<div class="gas-card"><div class="card-header"><span class="icon">⚡</span> Gas Optimizations (${r.gas.length})</div>`;
+            for(const g of r.gas){
+                html+=`<div class="gas-item"><span class="gas-icon">💡</span><div><div class="gas-title">${esc(g.title)}</div><div class="gas-desc">${esc(g.desc)}</div></div></div>`;
+            }
+            html+=`</div>`;
+        }
+        
+        // Actions
+        html+=`<div class="actions">
+            <button class="btn-sm" onclick="downloadReport()">📥 Download Report</button>
+            <button class="btn-sm" onclick="reset()">← New Scan</button>
+        </div>`;
+        
+        document.getElementById('report').innerHTML=html;
+        document.getElementById('report').classList.add('show');
         document.getElementById('report').scrollIntoView({behavior:'smooth',block:'start'});
     }
     
-    function sevColor(s) { return {critical:'#ff4757',high:'#ff6b6b',medium:'#ffaa00',low:'#00d68f',info:'#3498db'}[s]||'#8888a0'; }
-    function esc(s) { if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML; }
+    function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
     
     // ===== ACTIONS =====
-    async function fetchAndAnalyze() {
-        const addr = document.getElementById('contractAddress').value.trim();
-        const chain = document.getElementById('chainSelect').value;
-        if (!addr) return alert('Enter a contract address');
-        if (!/^0x[a-fA-F0-9]{40}$/.test(addr)) return alert('Invalid address format');
+    let lastReport=null,lastInfo=null;
+    
+    async function analyze(){
+        const input=document.getElementById('input').value.trim();
+        if(!input)return;
         
-        showLoading();
-        try {
-            setStep('step-fetch','active');
-            document.getElementById('loadingText').textContent = 'Fetching contract source code...';
-            const info = await fetchContractSource(addr, chain);
-            setStep('step-fetch','done');
+        const isAddress=/^0x[a-fA-F0-9]{40}$/.test(input);
+        
+        showAnalyzing();
+        
+        try{
+            let src,info;
             
-            setStep('step-parse','active');
-            document.getElementById('loadingText').textContent = 'Parsing Solidity & building AST...';
-            await new Promise(r=>setTimeout(r,200));
-            setStep('step-parse','done');
+            if(isAddress){
+                // Fetch from chain
+                setStep('s1','active');
+                document.getElementById('analyzeText').textContent='Fetching contract source...';
+                document.getElementById('progress').style.width='10%';
+                info=await fetchFromAnyChain(input);
+                src=info.source;
+                setStep('s1','done');
+                document.getElementById('progress').style.width='30%';
+            } else {
+                setStep('s1','done');
+                document.getElementById('progress').style.width='30%';
+                const nm=input.match(/contract\s+(\w+)/);
+                info={name:nm?nm[1]:'Unknown',source:input};
+                src=input;
+            }
             
-            setStep('step-analyze','active');
-            document.getElementById('loadingText').textContent = 'Running 50+ security checks...';
+            // Parse
+            setStep('s2','active');
+            document.getElementById('analyzeText').textContent='Parsing Solidity code...';
+            await new Promise(r=>setTimeout(r,150));
+            setStep('s2','done');
+            document.getElementById('progress').style.width='50%';
+            
+            // Analyze
+            setStep('s3','active');
+            document.getElementById('analyzeText').textContent='Running security analysis...';
             await new Promise(r=>setTimeout(r,100));
-            const analysis = new SecurityAnalyzer(info.source).analyze();
-            setStep('step-analyze','done');
+            const result=new Analyzer(src).run();
+            setStep('s3','done');
+            document.getElementById('progress').style.width='80%';
             
-            setStep('step-report','active');
-            document.getElementById('loadingText').textContent = 'Generating report...';
+            // Report
+            setStep('s4','active');
+            document.getElementById('analyzeText').textContent='Generating report...';
             await new Promise(r=>setTimeout(r,100));
-            setStep('step-report','done');
+            setStep('s4','done');
+            document.getElementById('progress').style.width='100%';
             
-            hideLoading();
-            showReport(analysis, info);
-        } catch(e) { hideLoading(); alert('Error: '+e.message); }
+            lastReport=result;lastInfo=info;
+            
+            await new Promise(r=>setTimeout(r,300));
+            hideAnalyzing();
+            renderReport(result,info);
+            
+        }catch(e){
+            hideAnalyzing();
+            alert('Error: '+e.message);
+        }
     }
     
-    async function analyzeSource() {
-        const src = document.getElementById('sourceCode').value.trim();
-        if (!src) return alert('Paste your contract source code');
-        
-        showLoading();
-        try {
-            setStep('step-fetch','done');
-            setStep('step-parse','active');
-            document.getElementById('loadingText').textContent = 'Parsing Solidity & building AST...';
-            const nm = src.match(/contract\s+(\w+)/);
-            const info = { name: nm?nm[1]:'Unknown', source: src };
-            await new Promise(r=>setTimeout(r,200));
-            setStep('step-parse','done');
-            
-            setStep('step-analyze','active');
-            document.getElementById('loadingText').textContent = 'Running 50+ security checks...';
-            await new Promise(r=>setTimeout(r,100));
-            const analysis = new SecurityAnalyzer(src).analyze();
-            setStep('step-analyze','done');
-            
-            setStep('step-report','active');
-            document.getElementById('loadingText').textContent = 'Generating report...';
-            await new Promise(r=>setTimeout(r,100));
-            setStep('step-report','done');
-            
-            hideLoading();
-            showReport(analysis, info);
-        } catch(e) { hideLoading(); alert('Error: '+e.message); }
+    function reset(){
+        document.getElementById('report').classList.remove('show');
+        document.getElementById('report').innerHTML='';
+        document.getElementById('inputSection').style.display='';
+        document.getElementById('input').value='';
+        document.getElementById('input').focus();
     }
     
-    function downloadReport() {
-        if (!currentReport) return;
-        const { analysis, info } = currentReport;
-        let r = `SmartAudit Security Report\n${'='.repeat(50)}\n\n`;
-        r += `Contract: ${info?.name||'Unknown'}\nChain: ${info?.chain?.toUpperCase()||'Manual'}\nAddress: ${info?.address||'N/A'}\nDate: ${new Date().toLocaleString()}\nEngine: SmartAudit v2.0 Pattern+AST Analyzer\n\n`;
-        r += `Risk Score: ${analysis.risk_score}/100 (${analysis.risk_level})\n\n`;
-        r += `EXECUTIVE SUMMARY\n${'-'.repeat(40)}\n${analysis.summary}\n\n`;
-        const st = analysis.statistics||{};
-        r += `FINDINGS: ${st.critical}C ${st.high}H ${st.medium}M ${st.low}L ${st.info}I\n\n`;
-        r += `DETAILED FINDINGS\n${'='.repeat(50)}\n\n`;
-        (analysis.findings||[]).forEach((f,i)=>{
-            r += `${i+1}. [${f.severity.toUpperCase()}] ${f.title}\n   ${f.location}\n   ${f.description}\n${f.fix?'   Fix: '+f.fix+'\n':''}\n`;
+    function downloadReport(){
+        if(!lastReport)return;
+        const r=lastReport,i=lastInfo;
+        let t=`SmartAudit Security Report\n${'='.repeat(50)}\n\n`;
+        t+=`Contract: ${i?.name||'Unknown'}\nChain: ${i?.chain?.toUpperCase()||'Manual'}\nAddress: ${i?.address||'N/A'}\nDate: ${new Date().toLocaleString()}\nEngine: SmartAudit v2.0\n\n`;
+        t+=`Risk Score: ${r.score}/100 (${r.level})\n\n`;
+        t+=`SUMMARY\n${'-'.repeat(40)}\n${r.summary}\n\n`;
+        t+=`FINDINGS (${r.findings.length})\n${'='.repeat(50)}\n\n`;
+        r.findings.forEach((f,idx)=>{
+            t+=`${idx+1}. [${f.sev.toUpperCase()}] ${f.title}\n   ${f.loc}\n   ${f.desc}\n${f.fix?'   Fix: '+f.fix+'\n':''}\n`;
         });
-        r += `\nGAS OPTIMIZATIONS\n${'='.repeat(50)}\n\n`;
-        (analysis.gas_optimizations||[]).forEach((g,i)=>{ r += `${i+1}. ${g.title}\n   ${g.description}\n\n`; });
-        const blob = new Blob([r],{type:'text/plain'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `smartaudit-${info?.name||'report'}-${Date.now()}.txt`;
+        if(r.gas.length){
+            t+=`\nGAS OPTIMIZATIONS\n${'='.repeat(50)}\n\n`;
+            r.gas.forEach((g,idx)=>{t+=`${idx+1}. ${g.title}\n   ${g.desc}\n\n`;});
+        }
+        const blob=new Blob([t],{type:'text/plain'});
+        const a=document.createElement('a');
+        a.href=URL.createObjectURL(blob);
+        a.download=`smartaudit-${i?.name||'report'}-${Date.now()}.txt`;
         a.click();
     }
+    
+    // Enter key
+    document.addEventListener('DOMContentLoaded',()=>{
+        document.getElementById('input').addEventListener('keydown',e=>{
+            if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)) analyze();
+        });
+        document.getElementById('input').focus();
+    });
     </script>
 </body>
 </html>
