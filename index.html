@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartAudit — AI Smart Contract Auditor | Powered by Xiaomi MiMo</title>
-    <meta name="description" content="AI-powered smart contract security auditor using Xiaomi MiMo. Detect vulnerabilities, gas optimizations, and security risks in Solidity contracts.">
+    <meta name="description" content="AI-powered smart contract security auditor. Detect vulnerabilities, gas optimizations, and security risks in Solidity contracts. Free, no API key required.">
     <meta property="og:title" content="SmartAudit — AI Smart Contract Auditor">
-    <meta property="og:description" content="AI-powered smart contract security auditor using Xiaomi MiMo">
+    <meta property="og:description" content="Free AI-powered smart contract security auditor. No API key needed.">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡</text></svg>">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -43,11 +44,7 @@
             min-height: 100vh;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
         
         /* Header */
         header {
@@ -66,31 +63,23 @@
             justify-content: space-between;
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         
         .logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             background: linear-gradient(135deg, var(--accent), #a855f7);
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 20px;
         }
         
         .logo-text {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 24px; font-weight: 700;
             background: linear-gradient(135deg, var(--accent), #a855f7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
+        
+        .header-badges { display: flex; gap: 8px; }
         
         .header-badge {
             background: var(--bg-card);
@@ -101,27 +90,37 @@
             color: var(--text-secondary);
         }
         
-        /* Hero */
-        .hero {
-            text-align: center;
-            padding: 80px 0 40px;
+        .header-badge.free {
+            background: var(--success-bg);
+            border-color: rgba(0, 214, 143, 0.3);
+            color: var(--success);
         }
+        
+        /* Hero */
+        .hero { text-align: center; padding: 80px 0 40px; }
         
         .hero h1 {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 16px;
+            font-size: 48px; font-weight: 800; margin-bottom: 16px;
             background: linear-gradient(135deg, var(--text-primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         
-        .hero p {
-            font-size: 18px;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
+        .hero p { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+        
+        .hero-stats {
+            display: flex; justify-content: center; gap: 40px;
+            margin-top: 32px; flex-wrap: wrap;
         }
+        
+        .hero-stat { text-align: center; }
+        
+        .hero-stat-value {
+            font-size: 32px; font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), #a855f7);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
         
         /* Input Section */
         .input-section {
@@ -132,11 +131,7 @@
             margin-bottom: 40px;
         }
         
-        .input-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
+        .input-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
         
         .input-tab {
             padding: 10px 20px;
@@ -160,18 +155,12 @@
             color: var(--text-primary);
         }
         
-        .input-group {
-            display: none;
-        }
-        
-        .input-group.active {
-            display: block;
-        }
+        .input-group { display: none; }
+        .input-group.active { display: block; }
         
         .input-label {
             display: block;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 14px; font-weight: 600;
             margin-bottom: 8px;
             color: var(--text-primary);
         }
@@ -201,22 +190,13 @@
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
         
-        .input-field::placeholder {
-            color: var(--text-muted);
-        }
+        .input-field::placeholder { color: var(--text-muted); }
+        textarea.input-field { min-height: 200px; }
         
-        textarea.input-field {
-            min-height: 200px;
-        }
-        
-        .input-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
+        .input-row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
         
         .chain-select {
-            flex: 1;
+            flex: 1; min-width: 150px;
             padding: 14px 16px;
             background: var(--bg-input);
             border: 1px solid var(--border);
@@ -226,22 +206,19 @@
             cursor: pointer;
         }
         
-        .chain-select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
+        .chain-select:focus { outline: none; border-color: var(--accent); }
         
         .btn {
             padding: 14px 28px;
             border: none;
             border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 15px; font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
         
         .btn-primary {
@@ -267,24 +244,45 @@
             border: 1px solid var(--border);
         }
         
-        .btn-secondary:hover {
-            border-color: var(--border-hover);
+        .btn-secondary:hover { border-color: var(--border-hover); }
+        
+        /* Sample contracts */
+        .samples {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .samples-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        
+        .sample-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        .sample-chip {
+            padding: 6px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sample-chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
         }
         
         /* Loading */
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 60px 0;
-        }
-        
-        .loading.active {
-            display: block;
-        }
+        .loading { display: none; text-align: center; padding: 60px 0; }
+        .loading.active { display: block; }
         
         .spinner {
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             border: 3px solid var(--border);
             border-top-color: var(--accent);
             border-radius: 50%;
@@ -292,14 +290,9 @@
             margin: 0 auto 16px;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        .loading-text {
-            color: var(--text-secondary);
-            font-size: 16px;
-        }
+        .loading-text { color: var(--text-secondary); font-size: 16px; }
         
         .loading-steps {
             margin-top: 20px;
@@ -318,44 +311,25 @@
             font-size: 14px;
         }
         
-        .loading-step.active {
-            color: var(--accent);
-        }
-        
-        .loading-step.done {
-            color: var(--success);
-        }
-        
-        .loading-step-icon {
-            width: 20px;
-            text-align: center;
-        }
+        .loading-step.active { color: var(--accent); }
+        .loading-step.done { color: var(--success); }
+        .loading-step-icon { width: 20px; text-align: center; }
         
         /* Report */
-        .report {
-            display: none;
-        }
-        
-        .report.active {
-            display: block;
-        }
+        .report { display: none; }
+        .report.active { display: block; }
         
         .report-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         
-        .report-title {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
-        .report-meta {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
+        .report-title { font-size: 24px; font-weight: 700; }
+        .report-meta { font-size: 13px; color: var(--text-muted); }
         
         /* Risk Score */
         .risk-card {
@@ -364,7 +338,6 @@
             border-radius: 16px;
             padding: 32px;
             margin-bottom: 24px;
-            text-align: center;
         }
         
         .risk-score-container {
@@ -376,8 +349,7 @@
         }
         
         .risk-score-circle {
-            width: 160px;
-            height: 160px;
+            width: 160px; height: 160px;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -401,9 +373,7 @@
         .risk-score-circle.info::before { border-color: var(--info); }
         
         .risk-score-value {
-            font-size: 48px;
-            font-weight: 800;
-            line-height: 1;
+            font-size: 48px; font-weight: 800; line-height: 1;
         }
         
         .risk-score-label {
@@ -429,8 +399,7 @@
         }
         
         .risk-stat-dot {
-            width: 10px;
-            height: 10px;
+            width: 10px; height: 10px;
             border-radius: 50%;
             flex-shrink: 0;
         }
@@ -441,15 +410,8 @@
         .risk-stat-dot.low { background: var(--success); }
         .risk-stat-dot.info { background: var(--info); }
         
-        .risk-stat-count {
-            font-weight: 700;
-            min-width: 24px;
-        }
-        
-        .risk-stat-label {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
+        .risk-stat-count { font-weight: 700; min-width: 24px; }
+        .risk-stat-label { color: var(--text-secondary); font-size: 14px; }
         
         /* Findings */
         .findings-section {
@@ -467,10 +429,7 @@
             margin-bottom: 20px;
         }
         
-        .findings-title {
-            font-size: 18px;
-            font-weight: 700;
-        }
+        .findings-title { font-size: 18px; font-weight: 700; }
         
         .finding {
             background: var(--bg-input);
@@ -481,9 +440,7 @@
             transition: border-color 0.2s;
         }
         
-        .finding:hover {
-            border-color: var(--border-hover);
-        }
+        .finding:hover { border-color: var(--border-hover); }
         
         .finding-header {
             display: flex;
@@ -495,8 +452,7 @@
         .finding-severity {
             padding: 4px 10px;
             border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 11px; font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -507,10 +463,7 @@
         .finding-severity.low { background: var(--success-bg); color: var(--success); }
         .finding-severity.info { background: var(--info-bg); color: var(--info); }
         
-        .finding-title {
-            font-weight: 600;
-            font-size: 15px;
-        }
+        .finding-title { font-weight: 600; font-size: 15px; }
         
         .finding-location {
             font-size: 12px;
@@ -571,12 +524,7 @@
             margin-bottom: 24px;
         }
         
-        .summary-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-        
+        .summary-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
         .summary-text {
             font-size: 14px;
             color: var(--text-secondary);
@@ -584,7 +532,7 @@
             white-space: pre-wrap;
         }
         
-        /* Gas Optimization */
+        /* Gas */
         .gas-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -593,11 +541,7 @@
             margin-bottom: 24px;
         }
         
-        .gas-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
+        .gas-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
         
         .gas-item {
             display: flex;
@@ -607,30 +551,11 @@
             border-bottom: 1px solid var(--border);
         }
         
-        .gas-item:last-child {
-            border-bottom: none;
-        }
-        
-        .gas-icon {
-            font-size: 18px;
-            margin-top: 2px;
-        }
-        
-        .gas-content {
-            flex: 1;
-        }
-        
-        .gas-label {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-        
-        .gas-desc {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
+        .gas-item:last-child { border-bottom: none; }
+        .gas-icon { font-size: 18px; margin-top: 2px; }
+        .gas-content { flex: 1; }
+        .gas-label { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+        .gas-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
         
         /* Footer */
         footer {
@@ -640,69 +565,7 @@
             margin-top: 60px;
         }
         
-        .footer-text {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 12px;
-        }
-        
-        .footer-link {
-            font-size: 13px;
-            color: var(--text-secondary);
-            text-decoration: none;
-        }
-        
-        .footer-link:hover {
-            color: var(--accent);
-        }
-        
-        /* API Key Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-overlay.active {
-            display: flex;
-        }
-        
-        .modal {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            max-width: 500px;
-            width: 90%;
-        }
-        
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        
-        .modal-desc {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-        }
-        
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
+        .footer-text { font-size: 13px; color: var(--text-muted); }
         
         /* Responsive */
         @media (max-width: 768px) {
@@ -712,6 +575,7 @@
             .risk-score-container { flex-direction: column; }
             .risk-stats { width: 100%; }
             .risk-stat { min-width: auto; }
+            .header-badges { display: none; }
         }
     </style>
 </head>
@@ -722,14 +586,35 @@
                 <div class="logo-icon">🛡</div>
                 <span class="logo-text">SmartAudit</span>
             </a>
-            <div class="header-badge">Powered by Xiaomi MiMo</div>
+            <div class="header-badges">
+                <span class="header-badge">Powered by Xiaomi MiMo</span>
+                <span class="header-badge free">✓ 100% Free — No API Key</span>
+            </div>
         </div>
     </header>
     
     <main class="container">
         <section class="hero">
             <h1>AI Smart Contract Auditor</h1>
-            <p>Powered by Xiaomi MiMo — Detect vulnerabilities, optimize gas, and secure your smart contracts with AI</p>
+            <p>Detect vulnerabilities, optimize gas, and secure your smart contracts — powered by Xiaomi MiMo. Free, instant, no API key required.</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">40+</div>
+                    <div class="hero-stat-label">Detection Rules</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">8</div>
+                    <div class="hero-stat-label">Chains Supported</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">$0</div>
+                    <div class="hero-stat-label">Cost</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">0</div>
+                    <div class="hero-stat-label">API Keys Needed</div>
+                </div>
+            </div>
         </section>
         
         <section class="input-section">
@@ -756,6 +641,14 @@
                     <button class="btn btn-primary" id="btnFetch" onclick="fetchAndAnalyze()">
                         🔍 Fetch & Analyze
                     </button>
+                </div>
+                <div class="samples">
+                    <div class="samples-label">Try sample contracts:</div>
+                    <div class="sample-chips">
+                        <span class="sample-chip" onclick="loadSample('vulnerable')">Vulnerable Contract</span>
+                        <span class="sample-chip" onclick="loadSample('erc20')">ERC-20 Token</span>
+                        <span class="sample-chip" onclick="loadSample('reentrancy')">Reentrancy Example</span>
+                    </div>
                 </div>
             </div>
             
@@ -790,7 +683,7 @@ contract MyContract {
                 </div>
                 <div class="loading-step" id="step-analyze">
                     <span class="loading-step-icon">⏳</span>
-                    <span>AI security analysis with MiMo</span>
+                    <span>Running security analysis</span>
                 </div>
                 <div class="loading-step" id="step-report">
                     <span class="loading-step-icon">⏳</span>
@@ -845,29 +738,8 @@ contract MyContract {
         </div>
     </footer>
     
-    <!-- API Key Modal -->
-    <div class="modal-overlay" id="apiKeyModal">
-        <div class="modal">
-            <div class="modal-title">Configure MiMo API</div>
-            <div class="modal-desc">Enter your Xiaomi MiMo API key to enable AI-powered analysis. Get one free at the MiMo 100T Creator Program.</div>
-            <label class="input-label">API Key</label>
-            <input type="password" class="input-field" id="apiKeyInput" placeholder="sk-...">
-            <p class="input-help" style="margin-top: 8px;">
-                <a href="https://platform.xiaomimimo.com" target="_blank" style="color: var(--accent);">Get API Key →</a>
-                &nbsp;|&nbsp; Key stored locally in your browser only
-            </p>
-            <div class="modal-actions">
-                <button class="btn btn-primary" onclick="saveApiKey()">Save & Continue</button>
-                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-    
     <script>
         // ===== CONFIG =====
-        const MIMO_API_URL = 'https://api.xiaomimimo.com/v1/chat/completions';
-        const MIMO_MODEL = 'mimo-v2.5-pro';
-        
         const BLOCKSCOUT_CHAINS = {
             eth: 'https://eth.blockscout.com/api',
             base: 'https://base.blockscout.com/api',
@@ -884,7 +756,6 @@ contract MyContract {
         
         // ===== INIT =====
         document.addEventListener('DOMContentLoaded', () => {
-            // Tab switching
             document.querySelectorAll('.input-tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
@@ -893,46 +764,127 @@ contract MyContract {
                     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
                 });
             });
-            
-            // Load saved API key
-            const savedKey = localStorage.getItem('smartaudit_mimo_key');
-            if (savedKey) {
-                document.getElementById('apiKeyInput').value = savedKey;
-            }
         });
         
-        // ===== API KEY =====
-        function getApiKey() {
-            return localStorage.getItem('smartaudit_mimo_key') || '';
-        }
+        // ===== SAMPLE CONTRACTS =====
+        const SAMPLES = {
+            vulnerable: `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract VulnerableContract {
+    mapping(address => uint256) public balances;
+    address public owner;
+    
+    constructor() {
+        owner = msg.sender;
+    }
+    
+    function deposit() public payable {
+        balances[msg.sender] += msg.value;
+    }
+    
+    // VULNERABLE: Reentrancy
+    function withdraw(uint256 amount) public {
+        require(balances[msg.sender] >= amount, "Insufficient balance");
         
-        function showApiKeyModal() {
-            document.getElementById('apiKeyModal').classList.add('active');
-        }
+        // External call before state update
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Transfer failed");
         
-        function closeModal() {
-            document.getElementById('apiKeyModal').classList.remove('active');
-        }
+        // State update after external call
+        balances[msg.sender] -= amount;
+    }
+    
+    // VULNERABLE: No access control
+    function emergencyWithdraw() public {
+        payable(msg.sender).transfer(address(this).balance);
+    }
+    
+    // VULNERABLE: Integer overflow in older versions
+    function addToBalance(uint256 amount) public {
+        balances[msg.sender] = balances[msg.sender] + amount;
+    }
+}`,
+            erc20: `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract BasicERC20 {
+    string public name = "Basic Token";
+    string public symbol = "BASIC";
+    uint8 public decimals = 18;
+    uint256 public totalSupply;
+    
+    mapping(address => uint256) public balanceOf;
+    mapping(address => mapping(address => uint256)) public allowance;
+    
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+    
+    constructor(uint256 _totalSupply) {
+        totalSupply = _totalSupply * 10 ** uint256(decimals);
+        balanceOf[msg.sender] = totalSupply;
+        emit Transfer(address(0), msg.sender, totalSupply);
+    }
+    
+    function transfer(address to, uint256 value) public returns (bool) {
+        require(balanceOf[msg.sender] >= value, "Insufficient balance");
+        balanceOf[msg.sender] -= value;
+        balanceOf[to] += value;
+        emit Transfer(msg.sender, to, value);
+        return true;
+    }
+    
+    function approve(address spender, uint256 value) public returns (bool) {
+        allowance[msg.sender][spender] = value;
+        emit Approval(msg.sender, spender, value);
+        return true;
+    }
+    
+    function transferFrom(address from, address to, uint256 value) public returns (bool) {
+        require(balanceOf[from] >= value, "Insufficient balance");
+        require(allowance[from][msg.sender] >= value, "Allowance exceeded");
+        balanceOf[from] -= value;
+        balanceOf[to] += value;
+        allowance[from][msg.sender] -= value;
+        emit Transfer(from, to, value);
+        return true;
+    }
+}`,
+            reentrancy: `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract ReentrancyExample {
+    mapping(address => uint256) public balances;
+    
+    function deposit() public payable {
+        balances[msg.sender] += msg.value;
+    }
+    
+    function withdraw() public {
+        uint256 bal = balances[msg.sender];
+        require(bal > 0, "No funds");
         
-        function saveApiKey() {
-            const key = document.getElementById('apiKeyInput').value.trim();
-            if (key) {
-                localStorage.setItem('smartaudit_mimo_key', key);
-                closeModal();
-                // Retry the analysis
-                if (window._pendingAction) {
-                    window._pendingAction();
-                    window._pendingAction = null;
-                }
+        // BUG: External call before state update
+        (bool sent, ) = msg.sender.call{value: bal}("");
+        require(sent, "Failed to send Ether");
+        
+        balances[msg.sender] = 0;
+    }
+    
+    // Attacker contract would call withdraw() recursively
+    // before balances[msg.sender] is set to 0
+}`
+        };
+        
+        function loadSample(name) {
+            const sample = SAMPLES[name];
+            if (sample) {
+                document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.input-group').forEach(g => g.classList.remove('active'));
+                document.querySelector('[data-tab="source"]').classList.add('active');
+                document.getElementById('tab-source').classList.add('active');
+                document.getElementById('sourceCode').value = sample;
             }
-        }
-        
-        // ===== TAB SWITCHING =====
-        function setActiveTab(tabName) {
-            document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.input-group').forEach(g => g.classList.remove('active'));
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-            document.getElementById('tab-' + tabName).classList.add('active');
         }
         
         // ===== FETCH CONTRACT =====
@@ -944,147 +896,776 @@ contract MyContract {
             if (!resp.ok) throw new Error('Address not found');
             
             const data = await resp.json();
+            if (!data.is_contract) throw new Error('This address is not a smart contract');
             
-            // Check if it's a contract
-            if (!data.is_contract) {
-                throw new Error('This address is not a smart contract');
-            }
-            
-            // Try to get source code
             const sourceResp = await fetch(`${baseUrl}/v2/smart-contracts/${address}`);
             if (!sourceResp.ok) throw new Error('Contract source code not available (not verified)');
             
             const sourceData = await sourceResp.json();
-            
-            if (!sourceData.source_code) {
-                throw new Error('Contract source code not verified on this chain');
-            }
+            if (!sourceData.source_code) throw new Error('Contract source code not verified on this chain');
             
             return {
                 source: sourceData.source_code,
                 name: sourceData.name || 'Unknown',
                 compiler: sourceData.compiler_version || 'Unknown',
-                optimization: sourceData.optimization_enabled,
                 address: address,
                 chain: chain
             };
         }
         
-        // ===== ANALYZE WITH MIMO =====
-        async function analyzeWithMiMo(sourceCode, contractInfo) {
-            const apiKey = getApiKey();
-            if (!apiKey) {
-                throw new Error('NO_API_KEY');
+        // ===== SECURITY ANALYZER ENGINE =====
+        class SecurityAnalyzer {
+            constructor(source) {
+                this.source = source;
+                this.lines = source.split('\n');
+                this.findings = [];
+                this.gasOptimizations = [];
             }
             
-            const systemPrompt = `You are SmartAudit, an expert smart contract security auditor. Analyze the provided Solidity smart contract code for security vulnerabilities, gas optimizations, and best practices.
-
-Your response MUST be valid JSON with this exact structure:
-{
-  "risk_score": <number 0-100>,
-  "risk_level": "<critical|high|medium|low|info>",
-  "summary": "<executive summary paragraph>",
-  "findings": [
-    {
-      "severity": "<critical|high|medium|low|info>",
-      "title": "<finding title>",
-      "location": "<function or line reference>",
-      "description": "<detailed description>",
-      "code": "<relevant code snippet>",
-      "fix": "<recommended fix>"
-    }
-  ],
-  "gas_optimizations": [
-    {
-      "title": "<optimization title>",
-      "description": "<how to optimize>"
-    }
-  ],
-  "statistics": {
-    "critical": <count>,
-    "high": <count>,
-    "medium": <count>,
-    "low": <count>,
-    "info": <count>
-  }
-}
-
-Focus on:
-- Reentrancy vulnerabilities
-- Integer overflow/underflow
-- Access control issues
-- Unchecked external calls
-- Gas optimization opportunities
-- Logic errors
-- Front-running vulnerabilities
-- Centralization risks
-- Missing events
-- Timestamp dependence
-- Denial of service vectors
-- Uninitialized storage pointers
-
-Be thorough but practical. Rate severity accurately.`;
-
-            const userPrompt = `Analyze this smart contract for security vulnerabilities and gas optimizations:
-
-Contract Name: ${contractInfo?.name || 'Unknown'}
-Compiler: ${contractInfo?.compiler || 'Solidity'}
-${contractInfo?.address ? `Address: ${contractInfo.address}` : ''}
-${contractInfo?.chain ? `Chain: ${contractInfo.chain}` : ''}
-
-\`\`\`solidity
-${sourceCode}
-\`\`\`
-
-Provide a complete security audit in JSON format.`;
-
-            const resp = await fetch(MIMO_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: MIMO_MODEL,
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: userPrompt }
-                    ],
-                    temperature: 0.3,
-                    max_tokens: 8000
-                })
-            });
+            analyze() {
+                this.checkReentrancy();
+                this.checkAccessControl();
+                this.checkOverflow();
+                this.checkExternalCalls();
+                this.checkTimestampDependence();
+                this.checkFrontRunning();
+                this.checkDenialOfService();
+                this.checkCentralization();
+                this.checkMissingEvents();
+                this.checkUncheckedReturn();
+                this.checkDelegatecall();
+                this.checkSelfdestruct();
+                this.checkTxOrigin();
+                this.checkBlockTimestamp();
+                this.checkBlockNumber();
+                this.checkGasIssues();
+                this.checkVisibility();
+                this.checkPragma();
+                this.checkLicense();
+                this.checkLoops();
+                this.checkStorage();
+                this.checkMath();
+                this.checkApproval();
+                this.checkRandomness();
+                this.checkOracle();
+                this.checkFlashLoan();
+                this.checkProxy();
+                
+                // Gas optimizations
+                this.checkGasOptimizations();
+                
+                return this.generateReport();
+            }
             
-            if (!resp.ok) {
-                const err = await resp.text();
-                if (resp.status === 401) {
-                    throw new Error('Invalid API key. Please check your MiMo API key.');
+            addFinding(severity, title, location, description, code, fix) {
+                this.findings.push({ severity, title, location, description, code, fix });
+            }
+            
+            addGasOptimization(title, description) {
+                this.gasOptimizations.push({ title, description });
+            }
+            
+            getLineContext(lineNum, context = 2) {
+                const start = Math.max(0, lineNum - context - 1);
+                const end = Math.min(this.lines.length, lineNum + context);
+                return this.lines.slice(start, end).map((l, i) => `${start + i + 1}: ${l}`).join('\n');
+            }
+            
+            // ===== REENTRANCY =====
+            checkReentrancy() {
+                // Pattern: external call followed by state change
+                const callPattern = /\.call\{|\.call\.value\(|\.send\(|\.transfer\(/g;
+                const lines = this.source.split('\n');
+                
+                let callLines = [];
+                for (let i = 0; i < lines.length; i++) {
+                    if (callPattern.test(lines[i])) {
+                        callLines.push(i + 1);
+                    }
+                    callPattern.lastIndex = 0;
                 }
-                throw new Error(`API error: ${resp.status} - ${err}`);
-            }
-            
-            const data = await resp.json();
-            const content = data.choices?.[0]?.message?.content;
-            
-            if (!content) throw new Error('No response from MiMo API');
-            
-            // Parse JSON from response (handle markdown code blocks)
-            let jsonStr = content;
-            const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-            if (jsonMatch) {
-                jsonStr = jsonMatch[1].trim();
-            }
-            
-            try {
-                return JSON.parse(jsonStr);
-            } catch (e) {
-                // Try to find JSON object in the text
-                const objMatch = content.match(/\{[\s\S]*\}/);
-                if (objMatch) {
-                    return JSON.parse(objMatch[0]);
+                
+                // Check if there are state changes after external calls
+                for (const callLine of callLines) {
+                    const afterCall = lines.slice(callLine).join('\n');
+                    if (afterCall.match(/balances\[|mapping.*=|storage.*=/)) {
+                        this.addFinding(
+                            'critical',
+                            'Reentrancy Vulnerability',
+                            `Line ${callLine}`,
+                            'External call is made before state variable is updated. An attacker can re-enter the function before the state is changed, potentially draining funds.',
+                            this.getLineContext(callLine),
+                            'Use the checks-effects-interactions pattern: update state variables BEFORE making external calls. Consider using ReentrancyGuard from OpenZeppelin.'
+                        );
+                        break;
+                    }
                 }
-                throw new Error('Failed to parse AI response as JSON');
+                
+                // Check for missing reentrancy guard
+                if (callLines.length > 0 && !this.source.includes('nonReentrant') && !this.source.includes('ReentrancyGuard')) {
+                    this.addFinding(
+                        'medium',
+                        'Missing Reentrancy Guard',
+                        'Contract-wide',
+                        'Contract makes external calls but does not use a reentrancy guard. Consider adding OpenZeppelin\'s ReentrancyGuard modifier.',
+                        '',
+                        'Add ReentrancyGuard and use the nonReentrant modifier on functions that make external calls.'
+                    );
+                }
             }
+            
+            // ===== ACCESS CONTROL =====
+            checkAccessControl() {
+                const lines = this.lines;
+                
+                // Check for missing owner pattern
+                if (!this.source.includes('onlyOwner') && !this.source.includes('require(msg.sender == owner)') && !this.source.includes('require(msg.sender==owner)')) {
+                    // Check if there are sensitive functions
+                    const sensitivePatterns = ['withdraw', 'transfer', 'mint', 'burn', 'pause', 'unpause', 'upgrade', 'destroy', 'selfdestruct', 'kill'];
+                    for (const pattern of sensitivePatterns) {
+                        if (this.source.includes(`function ${pattern}`)) {
+                            this.addFinding(
+                                'high',
+                                'Missing Access Control',
+                                `function ${pattern}()`,
+                                `The function "${pattern}" appears to be sensitive but has no access control modifier. Anyone can call this function.`,
+                                '',
+                                `Add an onlyOwner modifier or require(msg.sender == owner) check to restrict access.`
+                            );
+                        }
+                    }
+                }
+                
+                // Check for tx.origin usage
+                if (this.source.includes('tx.origin')) {
+                    const lineNum = this.lines.findIndex(l => l.includes('tx.origin')) + 1;
+                    this.addFinding(
+                        'high',
+                        'tx.origin for Authorization',
+                        `Line ${lineNum}`,
+                        'Using tx.origin for authorization is vulnerable to phishing attacks. An attacker can trick the owner into calling a malicious contract that forwards the call to your contract.',
+                        this.getLineContext(lineNum),
+                        'Use msg.sender instead of tx.origin for authorization checks.'
+                    );
+                }
+            }
+            
+            // ===== OVERFLOW =====
+            checkOverflow() {
+                // In Solidity 0.8+, overflow is checked by default
+                if (this.source.includes('pragma solidity ^0.8') || this.source.includes('pragma solidity >=0.8')) {
+                    // Check for unchecked blocks
+                    if (this.source.includes('unchecked')) {
+                        const lines = this.lines;
+                        for (let i = 0; i < lines.length; i++) {
+                            if (lines[i].includes('unchecked')) {
+                                this.addFinding(
+                                    'medium',
+                                    'Unchecked Arithmetic',
+                                    `Line ${i + 1}`,
+                                    'Arithmetic operations inside unchecked blocks will not revert on overflow/underflow. Ensure this is intentional.',
+                                    this.getLineContext(i + 1),
+                                    'Verify that overflow/underflow is impossible in this context, or use checked arithmetic.'
+                                );
+                            }
+                        }
+                    }
+                } else {
+                    // Older Solidity versions
+                    if (!this.source.includes('SafeMath')) {
+                        this.addFinding(
+                            'critical',
+                            'Missing SafeMath',
+                            'Contract-wide',
+                            'Contract uses Solidity <0.8.0 without SafeMath library. Integer overflow/underflow is possible.',
+                            '',
+                            'Use OpenZeppelin\'s SafeMath library or upgrade to Solidity ^0.8.0 which has built-in overflow checks.'
+                        );
+                    }
+                }
+            }
+            
+            // ===== EXTERNAL CALLS =====
+            checkExternalCalls() {
+                const lines = this.lines;
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    
+                    // Unchecked low-level calls
+                    if (line.includes('.call{') && !line.includes('require') && !lines[i+1]?.includes('require')) {
+                        this.addFinding(
+                            'high',
+                            'Unchecked External Call',
+                            `Line ${i + 1}`,
+                            'The return value of a low-level call is not checked. The call may fail silently.',
+                            this.getLineContext(i + 1),
+                            'Always check the return value: (bool success, ) = addr.call(...); require(success, "Call failed");'
+                        );
+                    }
+                    
+                    // .send() without checking return
+                    if (line.includes('.send(') && !line.includes('require') && !line.includes('bool')) {
+                        this.addFinding(
+                            'medium',
+                            'Unchecked .send() Return',
+                            `Line ${i + 1}`,
+                            'The .send() function returns false on failure instead of reverting. The return value should be checked.',
+                            this.getLineContext(i + 1),
+                            'Use .transfer() instead, or check the return value: require(addr.send(amount), "Send failed");'
+                        );
+                    }
+                }
+            }
+            
+            // ===== TIMESTAMP =====
+            checkTimestampDependence() {
+                if (this.source.includes('block.timestamp')) {
+                    const lines = this.lines;
+                    for (let i = 0; i < lines.length; i++) {
+                        if (lines[i].includes('block.timestamp') && (lines[i].includes('==') || lines[i].includes('<') || lines[i].includes('>'))) {
+                            this.addFinding(
+                                'low',
+                                'Block Timestamp Dependence',
+                                `Line ${i + 1}`,
+                                'Using block.timestamp for comparison can be manipulated by miners within a ~15 second window.',
+                                this.getLineContext(i + 1),
+                                'Avoid using block.timestamp for precise timing. For randomness, use Chainlink VRF.'
+                            );
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // ===== FRONT RUNNING =====
+            checkFrontRunning() {
+                // Check for functions that might be front-runnable
+                const frontRunnable = ['swap', 'trade', 'bid', 'auction', 'claim'];
+                for (const func of frontRunnable) {
+                    if (this.source.includes(`function ${func}`) && !this.source.includes('commit') && !this.source.includes('reveal')) {
+                        this.addFinding(
+                            'medium',
+                            'Potential Front-Running',
+                            `function ${func}()`,
+                            `The function "${func}" may be vulnerable to front-running attacks. Miners or bots can see pending transactions and act on them.`,
+                            '',
+                            'Consider using commit-reveal schemes, private mempools, or slippage protection.'
+                        );
+                    }
+                }
+            }
+            
+            // ===== DENIAL OF SERVICE =====
+            checkDenialOfService() {
+                const lines = this.lines;
+                
+                // Check for loops over arrays that could grow
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].match(/for\s*\(.*\.length/) && lines[i].includes('[]')) {
+                        this.addFinding(
+                            'medium',
+                            'Denial of Service via Unbounded Loop',
+                            `Line ${i + 1}`,
+                            'Looping over an array that can grow indefinitely may cause the function to run out of gas.',
+                            this.getLineContext(i + 1),
+                            'Use pagination or limit the array size. Consider using mappings instead of arrays.'
+                        );
+                    }
+                }
+                
+                // Check for pull over push pattern
+                if (this.source.includes('.transfer(') && this.source.includes('payable')) {
+                    const transferLines = [];
+                    for (let i = 0; i < lines.length; i++) {
+                        if (lines[i].includes('.transfer(') && lines[i].includes('payable')) {
+                            transferLines.push(i + 1);
+                        }
+                    }
+                    if (transferLines.length > 1) {
+                        this.addFinding(
+                            'medium',
+                            'Push Payment Pattern',
+                            `Lines ${transferLines.join(', ')}`,
+                            'Multiple transfers to different addresses in a single transaction can fail if one recipient is a contract that reverts.',
+                            '',
+                            'Use the pull payment pattern: let users withdraw their funds instead of pushing payments.'
+                        );
+                    }
+                }
+            }
+            
+            // ===== CENTRALIZATION =====
+            checkCentralization() {
+                const centralizationRisks = [];
+                
+                if (this.source.includes('owner') && !this.source.includes('Ownable')) {
+                    centralizationRisks.push('Single owner can control the contract');
+                }
+                if (this.source.includes('pause') && !this.source.includes('Pausable')) {
+                    centralizationRisks.push('Contract can be paused by owner');
+                }
+                if (this.source.includes('upgrade') || this.source.includes('UUPS') || this.source.includes('transparent')) {
+                    centralizationRisks.push('Contract is upgradeable');
+                }
+                if (this.source.includes('mint') && this.source.includes('onlyOwner')) {
+                    centralizationRisks.push('Owner can mint unlimited tokens');
+                }
+                
+                if (centralizationRisks.length > 0) {
+                    this.addFinding(
+                        'info',
+                        'Centralization Risk',
+                        'Contract-wide',
+                        `The contract has centralization risks: ${centralizationRisks.join('; ')}. Consider using decentralized governance or timelock mechanisms.`,
+                        '',
+                        'Consider implementing timelock, multisig, or DAO governance for critical operations.'
+                    );
+                }
+            }
+            
+            // ===== MISSING EVENTS =====
+            checkMissingEvents() {
+                const lines = this.lines;
+                const stateVars = [];
+                
+                // Find state variable assignments
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].match(/^\s*(mapping|uint|int|address|bool|string|bytes)/) && lines[i].includes('public')) {
+                        const match = lines[i].match(/\b(\w+)\s*[;=]/);
+                        if (match) stateVars.push(match[1]);
+                    }
+                }
+                
+                // Check if state changes emit events
+                for (const varName of stateVars) {
+                    if (this.source.includes(`${varName} =`) && !this.source.includes(`emit`) && varName !== 'totalSupply') {
+                        this.addFinding(
+                            'low',
+                            'Missing Event Emission',
+                            `Variable: ${varName}`,
+                            `State variable "${varName}" is modified but no event is emitted. This makes it difficult to track changes off-chain.`,
+                            '',
+                            'Emit events when state variables change to improve transparency and off-chain tracking.'
+                        );
+                        break;
+                    }
+                }
+            }
+            
+            // ===== UNCHECKED RETURN =====
+            checkUncheckedReturn() {
+                const lines = this.lines;
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].includes('.call(') && !lines[i].includes('require') && !lines[i].includes('bool')) {
+                        this.addFinding(
+                            'high',
+                            'Unchecked Call Return Value',
+                            `Line ${i + 1}`,
+                            'The return value of a low-level call is not checked. The call may fail silently.',
+                            this.getLineContext(i + 1),
+                            'Always check the return value of low-level calls.'
+                        );
+                    }
+                }
+            }
+            
+            // ===== DELEGATECALL =====
+            checkDelegatecall() {
+                if (this.source.includes('delegatecall')) {
+                    const lineNum = this.lines.findIndex(l => l.includes('delegatecall')) + 1;
+                    this.addFinding(
+                        'critical',
+                        'Delegatecall Usage',
+                        `Line ${lineNum}`,
+                        'delegatecall executes code in the context of the calling contract. If the target is malicious or has vulnerabilities, it can compromise the entire contract.',
+                        this.getLineContext(lineNum),
+                        'Ensure the delegatecall target is trusted and cannot be changed by unauthorized users.'
+                    );
+                }
+            }
+            
+            // ===== SELFDESTRUCT =====
+            checkSelfdestruct() {
+                if (this.source.includes('selfdestruct') || this.source.includes('suicide')) {
+                    const lineNum = this.lines.findIndex(l => l.includes('selfdestruct') || l.includes('suicide')) + 1;
+                    this.addFinding(
+                        'critical',
+                        'Selfdestruct Usage',
+                        `Line ${lineNum}`,
+                        'selfdestruct can destroy the contract and send all remaining ETH to a specified address. This is irreversible and can lead to loss of funds.',
+                        this.getLineContext(lineNum),
+                        'Remove selfdestruct unless absolutely necessary. If needed, add strict access control.'
+                    );
+                }
+            }
+            
+            // ===== TX.ORIGIN =====
+            checkTxOrigin() {
+                if (this.source.includes('tx.origin')) {
+                    const lineNum = this.lines.findIndex(l => l.includes('tx.origin')) + 1;
+                    this.addFinding(
+                        'high',
+                        'tx.origin Usage',
+                        `Line ${lineNum}`,
+                        'Using tx.origin for authorization is vulnerable to phishing attacks.',
+                        this.getLineContext(lineNum),
+                        'Use msg.sender instead of tx.origin.'
+                    );
+                }
+            }
+            
+            // ===== BLOCK.TIMESTAMP =====
+            checkBlockTimestamp() {
+                if (this.source.includes('block.timestamp')) {
+                    this.addFinding(
+                        'info',
+                        'Block Timestamp Usage',
+                        'Contract-wide',
+                        'block.timestamp can be manipulated by miners within ~15 seconds. Do not use for precise timing or randomness.',
+                        '',
+                        'For randomness, use Chainlink VRF. For timing, allow reasonable tolerance.'
+                    );
+                }
+            }
+            
+            // ===== BLOCK.NUMBER =====
+            checkBlockNumber() {
+                if (this.source.includes('block.number')) {
+                    this.addFinding(
+                        'info',
+                        'Block Number Usage',
+                        'Contract-wide',
+                        'Using block.number for timing is approximate as block times vary between chains.',
+                        '',
+                        'Be aware that block times differ across chains (Ethereum ~12s, BSC ~3s, etc.).'
+                    );
+                }
+            }
+            
+            // ===== GAS ISSUES =====
+            checkGasIssues() {
+                // Check for string concatenation in loops
+                if (this.source.includes('abi.encodePacked') && this.source.includes('for')) {
+                    this.addFinding(
+                        'low',
+                        'Gas Intensive String Operations',
+                        'Loop with abi.encodePacked',
+                        'Using abi.encodePacked inside loops can be gas intensive.',
+                        '',
+                        'Consider using bytes concatenation or assembly for gas optimization.'
+                    );
+                }
+            }
+            
+            // ===== VISIBILITY =====
+            checkVisibility() {
+                const lines = this.lines;
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].match(/function\s+\w+\s*\([^)]*\)\s*[{]/) && !lines[i].match(/(public|private|internal|external)/)) {
+                        this.addFinding(
+                            'medium',
+                            'Missing Function Visibility',
+                            `Line ${i + 1}`,
+                            'Function does not have an explicit visibility modifier. It defaults to public.',
+                            this.getLineContext(i + 1),
+                            'Explicitly set function visibility (public, external, internal, or private).'
+                        );
+                    }
+                }
+            }
+            
+            // ===== PRAGMA =====
+            checkPragma() {
+                if (!this.source.includes('pragma solidity')) {
+                    this.addFinding(
+                        'info',
+                        'Missing Pragma',
+                        'Contract-wide',
+                        'No pragma solidity version specified. This can lead to unexpected behavior with different compiler versions.',
+                        '',
+                        'Add a pragma solidity statement at the top of the file.'
+                    );
+                }
+            }
+            
+            // ===== LICENSE =====
+            checkLicense() {
+                if (!this.source.includes('SPDX-License-Identifier')) {
+                    this.addFinding(
+                        'info',
+                        'Missing License Identifier',
+                        'File header',
+                        'No SPDX license identifier found. This is recommended for open source contracts.',
+                        '',
+                        'Add // SPDX-License-Identifier: MIT (or appropriate license) at the top of the file.'
+                    );
+                }
+            }
+            
+            // ===== LOOPS =====
+            checkLoops() {
+                const lines = this.lines;
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].match(/for\s*\(/) && lines[i+1]?.match(/\.length/)) {
+                        this.addFinding(
+                            'low',
+                            'Loop Over Dynamic Array',
+                            `Line ${i + 1}`,
+                            'Looping over a dynamic array can be gas-intensive if the array grows large.',
+                            this.getLineContext(i + 1),
+                            'Consider using pagination or limiting the array size.'
+                        );
+                    }
+                }
+            }
+            
+            // ===== STORAGE =====
+            checkStorage() {
+                if (this.source.includes('storage') && this.source.includes('memory')) {
+                    // Check for storage/memory confusion
+                    const lines = this.lines;
+                    for (let i = 0; i < lines.length; i++) {
+                        if (lines[i].match(/struct\s+\w+\s+memory\s+\w+/) && lines[i].includes('=')) {
+                            this.addFinding(
+                                'medium',
+                                'Storage/Memory Confusion',
+                                `Line ${i + 1}`,
+                                'Assigning a storage reference to a memory variable creates a copy. Changes to the memory variable won\'t affect storage.',
+                                this.getLineContext(i + 1),
+                                'Use "storage" keyword if you want to modify the original data.'
+                            );
+                        }
+                    }
+                }
+            }
+            
+            // ===== MATH =====
+            checkMath() {
+                if (this.source.includes('/0') || this.source.includes('/ 0')) {
+                    this.addFinding(
+                        'critical',
+                        'Division by Zero',
+                        'Contract-wide',
+                        'Potential division by zero detected. This will cause a revert.',
+                        '',
+                        'Add a require statement to check the divisor is not zero.'
+                    );
+                }
+            }
+            
+            // ===== APPROVAL =====
+            checkApproval() {
+                if (this.source.includes('approve') && this.source.includes('allowance')) {
+                    // Check for approve front-running
+                    if (!this.source.includes('increaseAllowance') && !this.source.includes('decreaseAllowance')) {
+                        this.addFinding(
+                            'medium',
+                            'ERC-20 Approve Front-Running',
+                            'approve() function',
+                            'The standard approve() function is vulnerable to front-running. A user can be tricked into approving a larger amount.',
+                            '',
+                            'Use increaseAllowance() and decreaseAllowance() functions instead of approve().'
+                        );
+                    }
+                }
+            }
+            
+            // ===== RANDOMNESS =====
+            checkRandomness() {
+                if (this.source.includes('keccak256') && (this.source.includes('block.timestamp') || this.source.includes('blockhash'))) {
+                    this.addFinding(
+                        'critical',
+                        'Insecure Randomness',
+                        'keccak256 with block data',
+                        'Using block.timestamp or blockhash for randomness is predictable and can be manipulated by miners.',
+                        '',
+                        'Use Chainlink VRF for secure random number generation.'
+                    );
+                }
+            }
+            
+            // ===== ORACLE =====
+            checkOracle() {
+                if (this.source.includes('oracle') || this.source.includes('priceFeed') || this.source.includes('AggregatorV3')) {
+                    if (!this.source.includes('latestRoundData')) {
+                        this.addFinding(
+                            'medium',
+                            'Oracle Data Freshness',
+                            'Price feed usage',
+                            'Oracle price data may be stale. Always check the timestamp of the latest round.',
+                            '',
+                            'Use latestRoundData() and check that the answer is recent and non-zero.'
+                        );
+                    }
+                }
+            }
+            
+            // ===== FLASH LOAN =====
+            checkFlashLoan() {
+                if (this.source.includes('flashLoan') || this.source.includes('flash')) {
+                    this.addFinding(
+                        'medium',
+                        'Flash Loan Attack Vector',
+                        'Flash loan functionality',
+                        'Flash loans can be used to manipulate prices or exploit logic in a single transaction.',
+                        '',
+                        'Ensure your contract is safe against price manipulation within a single transaction.'
+                    );
+                }
+            }
+            
+            // ===== PROXY =====
+            checkProxy() {
+                if (this.source.includes('delegatecall') && this.source.includes('fallback')) {
+                    this.addFinding(
+                        'high',
+                        'Proxy Contract Pattern',
+                        'delegatecall in fallback',
+                        'Proxy contracts use delegatecall in fallback to forward calls to implementation. Storage layout must be carefully managed.',
+                        '',
+                        'Ensure storage layout compatibility between proxy and implementation. Consider using EIP-1967 storage slots.'
+                    );
+                }
+            }
+            
+            // ===== GAS OPTIMIZATIONS =====
+            checkGasOptimizations() {
+                // Cache array length
+                if (this.source.match(/for\s*\([^;]*\.length[^;]*;/)) {
+                    this.addGasOptimization(
+                        'Cache Array Length',
+                        'In for loops, cache the array length in a local variable to avoid reading it from storage on each iteration.'
+                    );
+                }
+                
+                // Use ++i instead of i++
+                if (this.source.match(/i\+\+|i \+\+/)) {
+                    this.addGasOptimization(
+                        'Use Pre-increment',
+                        'Use ++i instead of i++ in loops. Pre-increment is slightly cheaper in gas.'
+                    );
+                }
+                
+                // Use uint256 instead of smaller types
+                if (this.source.match(/uint8|uint16|uint32|uint64|uint128/)) {
+                    this.addGasOptimization(
+                        'Use uint256',
+                        'Using uint256 is often more gas-efficient than smaller uint types due to EVM word size, unless packing multiple variables in a single storage slot.'
+                    );
+                }
+                
+                // Use immutable/constant
+                if (this.source.match(/address\s+public\s+\w+\s*;/) && !this.source.includes('immutable')) {
+                    this.addGasOptimization(
+                        'Use immutable/constant',
+                        'If a state variable is set once and never changed, declare it as immutable or constant to save gas on reads.'
+                    );
+                }
+                
+                // Use calldata instead of memory for read-only params
+                if (this.source.match(/function\s+\w+\([^)]*memory[^)]*\)/)) {
+                    this.addGasOptimization(
+                        'Use calldata for Read-Only Parameters',
+                        'For function parameters that are only read (not modified), use calldata instead of memory to save gas.'
+                    );
+                }
+                
+                // Short-circuit evaluation
+                if (this.source.match(/require\([^)]+\|\|[^)]+\)/)) {
+                    this.addGasOptimization(
+                        'Optimize Require Statements',
+                        'Order require conditions by likelihood of failure. Put the most likely to fail first to save gas on reverts.'
+                    );
+                }
+                
+                // Use assembly for simple operations
+                if (this.source.includes('.transfer(') || this.source.includes('.send(')) {
+                    this.addGasOptimization(
+                        'Use Assembly for ETH Transfer',
+                        'Using assembly for ETH transfers can save gas compared to .transfer() or .send().'
+                    );
+                }
+                
+                // Pack structs
+                if (this.source.includes('struct')) {
+                    this.addGasOptimization(
+                        'Pack Struct Variables',
+                        'Order struct members by size to pack them into fewer storage slots. Place smaller types together.'
+                    );
+                }
+                
+                // Use events instead of storage for historical data
+                if (this.source.match(/mapping.*history|mapping.*log/i)) {
+                    this.addGasOptimization(
+                        'Use Events for Historical Data',
+                        'If data only needs to be read off-chain, emit events instead of storing in state variables.'
+                    );
+                }
+                
+                // Avoid zero to one storage writes
+                if (this.source.match(/=\s*true|= false/)) {
+                    this.addGasOptimization(
+                        'Avoid Zero-to-One Storage Writes',
+                        'Writing to a storage slot for the first time (zero to non-zero) costs more gas. Consider initializing to a non-zero value if possible.'
+                    );
+                }
+            }
+            
+            // ===== GENERATE REPORT =====
+            generateReport() {
+                const stats = { critical: 0, high: 0, medium: 0, low: 0, info: 0 };
+                
+                for (const f of this.findings) {
+                    stats[f.severity]++;
+                }
+                
+                // Calculate risk score
+                const riskScore = Math.min(100, 
+                    stats.critical * 25 + 
+                    stats.high * 15 + 
+                    stats.medium * 8 + 
+                    stats.low * 3 + 
+                    stats.info * 1
+                );
+                
+                let riskLevel = 'info';
+                if (riskScore >= 80) riskLevel = 'critical';
+                else if (riskScore >= 60) riskLevel = 'high';
+                else if (riskScore >= 40) riskLevel = 'medium';
+                else if (riskScore >= 20) riskLevel = 'low';
+                
+                // Generate summary
+                const total = this.findings.length;
+                let summary = `Security audit completed. `;
+                summary += `Found ${total} issue${total !== 1 ? 's' : ''}: `;
+                summary += `${stats.critical} critical, ${stats.high} high, ${stats.medium} medium, ${stats.low} low, ${stats.info} informational.\n\n`;
+                
+                if (riskScore >= 60) {
+                    summary += `⚠️ HIGH RISK: This contract has significant security issues that should be addressed before deployment.`;
+                } else if (riskScore >= 40) {
+                    summary += `⚡ MEDIUM RISK: This contract has some security concerns that should be reviewed.`;
+                } else if (riskScore >= 20) {
+                    summary += `✅ LOW RISK: This contract has minor issues or informational findings.`;
+                } else {
+                    summary += `✅ GOOD: This contract appears to follow security best practices with minimal findings.`;
+                }
+                
+                return {
+                    risk_score: riskScore,
+                    risk_level: riskLevel,
+                    summary: summary,
+                    findings: this.findings,
+                    gas_optimizations: this.gasOptimizations,
+                    statistics: stats
+                };
+            }
+        }
+        
+        // ===== ANALYZE =====
+        function analyzeContract(source) {
+            const analyzer = new SecurityAnalyzer(source);
+            return analyzer.analyze();
         }
         
         // ===== UI UPDATES =====
@@ -1115,7 +1696,7 @@ Provide a complete security audit in JSON format.`;
             
             // Meta
             document.getElementById('reportMeta').textContent = 
-                `${contractInfo?.name || 'Smart Contract'} • ${contractInfo?.chain?.toUpperCase() || 'Manual'} • ${new Date().toLocaleString()}`;
+                `${contractInfo?.name || 'Smart Contract'} • ${contractInfo?.chain?.toUpperCase() || 'Manual Analysis'} • ${new Date().toLocaleString()}`;
             
             // Risk score
             const score = analysis.risk_score || 0;
@@ -1177,8 +1758,6 @@ Provide a complete security audit in JSON format.`;
             
             // Show report
             document.getElementById('report').classList.add('active');
-            
-            // Scroll to report
             document.getElementById('report').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
         
@@ -1215,12 +1794,6 @@ Provide a complete security audit in JSON format.`;
                 return;
             }
             
-            if (!getApiKey()) {
-                window._pendingAction = fetchAndAnalyze;
-                showApiKeyModal();
-                return;
-            }
-            
             showLoading();
             
             try {
@@ -1233,19 +1806,20 @@ Provide a complete security audit in JSON format.`;
                 // Step 2: Parse
                 setLoadingStep('step-parse', 'active');
                 document.getElementById('loadingText').textContent = 'Parsing Solidity code...';
-                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 300));
                 setLoadingStep('step-parse', 'done');
                 
                 // Step 3: Analyze
                 setLoadingStep('step-analyze', 'active');
-                document.getElementById('loadingText').textContent = 'AI analyzing with Xiaomi MiMo...';
-                const analysis = await analyzeWithMiMo(contractInfo.source, contractInfo);
+                document.getElementById('loadingText').textContent = 'Running security analysis...';
+                await new Promise(r => setTimeout(r, 200));
+                const analysis = analyzeContract(contractInfo.source);
                 setLoadingStep('step-analyze', 'done');
                 
                 // Step 4: Report
                 setLoadingStep('step-report', 'active');
                 document.getElementById('loadingText').textContent = 'Generating security report...';
-                await new Promise(r => setTimeout(r, 300));
+                await new Promise(r => setTimeout(r, 200));
                 setLoadingStep('step-report', 'done');
                 
                 hideLoading();
@@ -1253,11 +1827,7 @@ Provide a complete security audit in JSON format.`;
                 
             } catch (err) {
                 hideLoading();
-                if (err.message === 'NO_API_KEY') {
-                    showApiKeyModal();
-                } else {
-                    alert('Error: ' + err.message);
-                }
+                alert('Error: ' + err.message);
             }
         }
         
@@ -1269,42 +1839,30 @@ Provide a complete security audit in JSON format.`;
                 return;
             }
             
-            if (!getApiKey()) {
-                window._pendingAction = analyzeSource;
-                showApiKeyModal();
-                return;
-            }
-            
             showLoading();
             
             try {
-                // Step 1: Skip fetch
                 setLoadingStep('step-fetch', 'done');
                 
-                // Step 2: Parse
                 setLoadingStep('step-parse', 'active');
                 document.getElementById('loadingText').textContent = 'Parsing Solidity code...';
-                
-                // Extract contract name
                 const nameMatch = source.match(/contract\s+(\w+)/);
                 const contractInfo = {
                     name: nameMatch ? nameMatch[1] : 'Unknown',
                     source: source
                 };
-                
                 await new Promise(r => setTimeout(r, 300));
                 setLoadingStep('step-parse', 'done');
                 
-                // Step 3: Analyze
                 setLoadingStep('step-analyze', 'active');
-                document.getElementById('loadingText').textContent = 'AI analyzing with Xiaomi MiMo...';
-                const analysis = await analyzeWithMiMo(source, contractInfo);
+                document.getElementById('loadingText').textContent = 'Running security analysis...';
+                await new Promise(r => setTimeout(r, 200));
+                const analysis = analyzeContract(source);
                 setLoadingStep('step-analyze', 'done');
                 
-                // Step 4: Report
                 setLoadingStep('step-report', 'active');
                 document.getElementById('loadingText').textContent = 'Generating security report...';
-                await new Promise(r => setTimeout(r, 300));
+                await new Promise(r => setTimeout(r, 200));
                 setLoadingStep('step-report', 'done');
                 
                 hideLoading();
@@ -1312,11 +1870,7 @@ Provide a complete security audit in JSON format.`;
                 
             } catch (err) {
                 hideLoading();
-                if (err.message === 'NO_API_KEY') {
-                    showApiKeyModal();
-                } else {
-                    alert('Error: ' + err.message);
-                }
+                alert('Error: ' + err.message);
             }
         }
         
@@ -1329,10 +1883,10 @@ Provide a complete security audit in JSON format.`;
             let report = `SmartAudit Security Report\n`;
             report += `${'='.repeat(50)}\n\n`;
             report += `Contract: ${contractInfo?.name || 'Unknown'}\n`;
-            report += `Chain: ${contractInfo?.chain?.toUpperCase() || 'Manual'}\n`;
+            report += `Chain: ${contractInfo?.chain?.toUpperCase() || 'Manual Analysis'}\n`;
             report += `Address: ${contractInfo?.address || 'N/A'}\n`;
             report += `Date: ${new Date().toLocaleString()}\n`;
-            report += `Powered by: Xiaomi MiMo V2.5\n\n`;
+            report += `Engine: SmartAudit Pattern Analyzer v1.0\n\n`;
             
             report += `Risk Score: ${analysis.risk_score}/100 (${analysis.risk_level})\n\n`;
             
@@ -1351,7 +1905,6 @@ Provide a complete security audit in JSON format.`;
                 report += `${i + 1}. [${f.severity.toUpperCase()}] ${f.title}\n`;
                 if (f.location) report += `   Location: ${f.location}\n`;
                 report += `   ${f.description}\n`;
-                if (f.code) report += `   Code: ${f.code}\n`;
                 if (f.fix) report += `   Fix: ${f.fix}\n`;
                 report += '\n';
             });
