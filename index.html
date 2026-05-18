@@ -844,7 +844,7 @@ contract ReentrancyExample {
             else if(score>=20) sum+='LOW RISK — Minor issues, consider fixing.';
             else sum+='GOOD — Contract follows best practices.';
             
-            return {score,level:lvl,summary:s,findings:this.findings,gas:this.gas,stats:s};
+            return {score,level:lvl,summary:sum,findings:this.findings,gas:this.gas,stats:s};
         }
     }
     
