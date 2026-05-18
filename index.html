@@ -590,7 +590,7 @@ contract ReentrancyExample {
             this.analyzeExternalCalls();
             this.analyzeSelfdestruct();
             this.analyzeDelegatecall();
-            this.analyzeTxOrigin();
+            // tx.origin is checked inside analyzeAccessControl()
             this.analyzeTimestamp();
             this.analyzeRandomness();
             this.analyzeFrontRunning();
