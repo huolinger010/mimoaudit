@@ -9,7 +9,7 @@ A complete browser-based Web3 security toolkit: smart contract auditor, wallet a
 ![Solidity](https://img.shields.io/badge/Solidity-0.8.x-363636?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-> **Live:** https://gyoomei.github.io/mimoaudit/
+> **Live:** https://huolinger010.github.io/mimoaudit/
 
 ---
 
