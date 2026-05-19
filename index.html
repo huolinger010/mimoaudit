@@ -886,12 +886,12 @@ contract SimpleProxy {
         Object.entries(r.stats).forEach(function(e){html+='<div class="stat-card '+e[0]+'"><div class="stat-num">'+e[1]+'</div><div class="stat-label">'+sevNames[e[0]]+'</div></div>';});
         html+='</div>';
         
-        html+='<div class="filter-bar"><button class="filter-tab active" onclick="filterFindings('all')">All ('+r.findings.length+')</button>';
-        if(r.stats.critical) html+='<button class="filter-tab" onclick="filterFindings('critical')">Critical ('+r.stats.critical+')</button>';
-        if(r.stats.high) html+='<button class="filter-tab" onclick="filterFindings('high')">High ('+r.stats.high+')</button>';
-        if(r.stats.medium) html+='<button class="filter-tab" onclick="filterFindings('medium')">Medium ('+r.stats.medium+')</button>';
-        if(r.stats.low) html+='<button class="filter-tab" onclick="filterFindings('low')">Low ('+r.stats.low+')</button>';
-        if(r.stats.info) html+='<button class="filter-tab" onclick="filterFindings('info')">Info ('+r.stats.info+')</button>';
+        html+='<div class="filter-bar"><button class="filter-tab active" onclick="filterFindings(\'all\')">All ('+r.findings.length+')</button>';
+        if(r.stats.critical) html+='<button class="filter-tab" onclick="filterFindings(\'critical\')">Critical ('+r.stats.critical+')</button>';
+        if(r.stats.high) html+='<button class="filter-tab" onclick="filterFindings(\'high\')">High ('+r.stats.high+')</button>';
+        if(r.stats.medium) html+='<button class="filter-tab" onclick="filterFindings(\'medium\')">Medium ('+r.stats.medium+')</button>';
+        if(r.stats.low) html+='<button class="filter-tab" onclick="filterFindings(\'low\')">Low ('+r.stats.low+')</button>';
+        if(r.stats.info) html+='<button class="filter-tab" onclick="filterFindings(\'info\')">Info ('+r.stats.info+')</button>';
         html+='<input class="filter-search" placeholder="Search findings..." oninput="searchFindings(this.value)"></div>';
         
         if(r.findings.length){
@@ -935,78 +935,25 @@ contract SimpleProxy {
     function exportTXT(){
         if(!lastReport)return;
         const r=lastReport,i=lastInfo;
-        let t='MimoAudit Security Report
-'+'='.repeat(50)+'
-
-';
-        t+='Contract: '+(i?.name||'Unknown')+'
-Chain: '+(i?.chain?CHAIN_NAMES[i.chain]:'Manual')+'
-Address: '+(i?.address||'N/A')+'
-Date: '+new Date().toLocaleString()+'
-Engine: MimoAudit v2.0
-
-';
-        t+='Risk Score: '+r.score+'/100 ('+r.level+')
-
-';
-        t+='SUMMARY
-'+'-'.repeat(40)+'
-'+r.summary+'
-
-';
-        t+='FINDINGS ('+r.findings.length+')
-'+'='.repeat(50)+'
-
-';
-        r.findings.forEach(function(f,idx){t+=(idx+1)+'. ['+f.sev.toUpperCase()+'] '+f.title+'
-   '+f.loc+'
-   '+f.desc+'
-'+(f.fix?'   Fix: '+f.fix+'
-':'')+'
-';});
-        if(r.gas.length){t+='
-GAS OPTIMIZATIONS
-'+'='.repeat(50)+'
-
-';r.gas.forEach(function(g,idx){t+=(idx+1)+'. '+g.title+'
-   '+g.desc+'
-
-';});}
+        const NL='\n';
+        let t='MimoAudit Security Report'+NL+'='.repeat(50)+NL+NL;
+        t+='Contract: '+(i?.name||'Unknown')+NL+'Chain: '+(i?.chain?CHAIN_NAMES[i.chain]:'Manual')+NL+'Address: '+(i?.address||'N/A')+NL+'Date: '+new Date().toLocaleString()+NL+'Engine: MimoAudit v2.0'+NL+NL;
+        t+='Risk Score: '+r.score+'/100 ('+r.level+')'+NL+NL;
+        t+='SUMMARY'+NL+'-'.repeat(40)+NL+r.summary+NL+NL;
+        t+='FINDINGS ('+r.findings.length+')'+NL+'='.repeat(50)+NL+NL;
+        r.findings.forEach(function(f,idx){t+=(idx+1)+'. ['+f.sev.toUpperCase()+'] '+f.title+NL+'   '+f.loc+NL+'   '+f.desc+NL+(f.fix?'   Fix: '+f.fix+NL:'')+NL;});
+        if(r.gas.length){t+=NL+'GAS OPTIMIZATIONS'+NL+'='.repeat(50)+NL+NL;r.gas.forEach(function(g,idx){t+=(idx+1)+'. '+g.title+NL+'   '+g.desc+NL+NL;});}
         download(t,'text/plain','mimoaudit-'+(i?.name||'report')+'-'+Date.now()+'.txt');
     }
     function exportMD(){
         if(!lastReport)return;
         const r=lastReport,i=lastInfo;
-        let t='# MimoAudit Report
-
-';
-        t+='| Field | Value |
-|---|---|
-| Contract | '+(i?.name||'Unknown')+' |
-| Chain | '+(i?.chain?CHAIN_NAMES[i.chain]:'Manual')+' |
-| Score | **'+r.score+'/100** ('+r.level+') |
-| Date | '+new Date().toLocaleString()+' |
-
-';
-        t+='## Summary
-
-'+r.summary+'
-
-## Findings ('+r.findings.length+')
-
-';
-        r.findings.forEach(function(f,idx){t+='### '+(idx+1)+'. '+f.title+'
-
-- **Severity:** '+f.sev+'
-- **Location:** '+f.loc+'
-- **Description:** '+f.desc+'
-'+(f.fix?'- **Fix:** '+f.fix+'
-':'')+'
-';});
-        if(r.gas.length){t+='## Gas Optimizations
-
-';r.gas.forEach(function(g,idx){t+=(idx+1)+'. **'+g.title+'** - '+g.desc+'
-';});}
+        const NL='\n';
+        let t='# MimoAudit Report'+NL+NL;
+        t+='| Field | Value |'+NL+'|---|---|'+NL+'| Contract | '+(i?.name||'Unknown')+' |'+NL+'| Chain | '+(i?.chain?CHAIN_NAMES[i.chain]:'Manual')+' |'+NL+'| Score | **'+r.score+'/100** ('+r.level+') |'+NL+'| Date | '+new Date().toLocaleString()+' |'+NL+NL;
+        t+='## Summary'+NL+NL+r.summary+NL+NL+'## Findings ('+r.findings.length+')'+NL+NL;
+        r.findings.forEach(function(f,idx){t+='### '+(idx+1)+'. '+f.title+NL+NL+'- **Severity:** '+f.sev+NL+'- **Location:** '+f.loc+NL+'- **Description:** '+f.desc+NL+(f.fix?'- **Fix:** '+f.fix+NL:'')+NL;});
+        if(r.gas.length){t+='## Gas Optimizations'+NL+NL;r.gas.forEach(function(g,idx){t+=(idx+1)+'. **'+g.title+'** - '+g.desc+NL;});}
         download(t,'text/markdown','mimoaudit-'+(i?.name||'report')+'-'+Date.now()+'.md');
     }
     function exportJSON(){
@@ -1023,12 +970,9 @@ GAS OPTIMIZATIONS
     function copyReport(){
         if(!lastReport)return;
         const r=lastReport,i=lastInfo;
-        let t='MimoAudit Report - '+(i?.name||'Unknown')+'
-Score: '+r.score+'/100 ('+r.level+')
-
-';
-        r.findings.forEach(function(f,idx){t+=(idx+1)+'. ['+f.sev.toUpperCase()+'] '+f.title+' - '+f.desc+'
-';});
+        const NL='\n';
+        let t='MimoAudit Report - '+(i?.name||'Unknown')+NL+'Score: '+r.score+'/100 ('+r.level+')'+NL+NL;
+        r.findings.forEach(function(f,idx){t+=(idx+1)+'. ['+f.sev.toUpperCase()+'] '+f.title+' - '+f.desc+NL;});
         navigator.clipboard.writeText(t).then(function(){toast('Copied to clipboard!');}).catch(function(){toast('Copy failed');});
     }
     function shareLink(){
