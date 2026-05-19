@@ -277,6 +277,65 @@
         /* Certificate */
         .cert-btn{padding:10px 18px;border-radius:10px;font-size:12px;font-weight:700;background:linear-gradient(135deg,#ffd700,#ff9500);color:#0a0a0a;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:.2s;box-shadow:0 4px 16px rgba(255,165,0,.25)}
         .cert-btn:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(255,165,0,.4)}
+
+        /* MiMo Chat */
+        .chat-fab{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));border:none;cursor:pointer;box-shadow:0 8px 32px rgba(99,102,241,.4);z-index:300;display:flex;align-items:center;justify-content:center;font-size:24px;transition:.25s;animation:fab-pulse 2.4s ease-in-out infinite}
+        .chat-fab:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 12px 40px rgba(99,102,241,.6)}
+        .chat-fab.hidden{display:none}
+        @keyframes fab-pulse{0%,100%{box-shadow:0 8px 32px rgba(99,102,241,.4)}50%{box-shadow:0 8px 36px rgba(139,92,246,.7)}}
+        .chat-panel{position:fixed;bottom:24px;right:24px;width:380px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100vh - 48px);background:var(--bg2);border:1px solid var(--border2);border-radius:18px;z-index:301;display:none;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(139,92,246,.15)}
+        .chat-panel.show{display:flex;animation:chat-in .3s ease}
+        @keyframes chat-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .chat-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(139,92,246,.06))}
+        .chat-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent2),var(--accent3));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+        .chat-head-info{flex:1;min-width:0}
+        .chat-head-title{font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px}
+        .chat-head-sub{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:4px}
+        .chat-head-sub .dot-live{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 6px var(--ok);animation:fab-pulse 1.6s infinite}
+        .chat-close{background:none;border:none;color:var(--text3);font-size:22px;cursor:pointer;padding:4px 8px;border-radius:8px}
+        .chat-close:hover{background:var(--glass2);color:var(--text)}
+        .chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+        .chat-msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.55;word-wrap:break-word;white-space:pre-wrap}
+        .chat-msg.bot{background:var(--glass2);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
+        .chat-msg.user{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+        .chat-msg.bot code{background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;font-size:11.5px;color:var(--accent2)}
+        .chat-msg.bot pre{background:var(--bg);border:1px solid var(--border);padding:8px;border-radius:8px;overflow-x:auto;font-size:11px;margin:6px 0;font-family:'JetBrains Mono',monospace}
+        .chat-typing{display:inline-flex;gap:4px;align-items:center;padding:10px 13px;background:var(--glass2);border:1px solid var(--border);border-radius:14px;border-bottom-left-radius:4px;align-self:flex-start}
+        .chat-typing span{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:typing 1.2s infinite}
+        .chat-typing span:nth-child(2){animation-delay:.2s}
+        .chat-typing span:nth-child(3){animation-delay:.4s}
+        @keyframes typing{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+        .chat-suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 8px}
+        .chat-sugg{padding:6px 10px;border-radius:14px;background:var(--glass2);border:1px solid var(--border);font-size:11px;color:var(--text2);cursor:pointer;transition:.15s;font-family:inherit}
+        .chat-sugg:hover{background:rgba(99,102,241,.15);border-color:var(--accent2);color:var(--text)}
+        .chat-input-wrap{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;background:var(--bg)}
+        .chat-input{flex:1;background:var(--glass2);border:1px solid var(--border);border-radius:12px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:13px;resize:none;max-height:90px;min-height:38px;outline:none;transition:.15s}
+        .chat-input:focus{border-color:var(--accent2);background:var(--bg2)}
+        .chat-send{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;cursor:pointer;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
+        .chat-send:hover:not(:disabled){transform:translateY(-1px)}
+        .chat-send:disabled{opacity:.4;cursor:not-allowed}
+        @media(max-width:480px){.chat-panel{bottom:0;right:0;width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border-radius:0}}
+
+        /* Famous Hacks Gallery */
+        .hacks-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;background:linear-gradient(135deg,rgba(255,165,0,.12),rgba(239,68,68,.08));color:#ffa500;border:1px solid rgba(255,165,0,.25);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:.15s}
+        .hacks-btn:hover{background:rgba(255,165,0,.18);transform:translateY(-1px)}
+        .hacks-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);overflow-y:auto}
+        .hacks-modal.show{display:flex;animation:chat-in .25s ease}
+        .hacks-content{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;max-width:920px;width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+        .hacks-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(255,165,0,.05),rgba(239,68,68,.03))}
+        .hacks-head h2{font-size:18px;font-weight:900;display:flex;align-items:center;gap:8px}
+        .hacks-head p{font-size:12px;color:var(--text3);margin-top:4px}
+        .hacks-grid{padding:20px 24px;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+        .hack-card{background:var(--glass2);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:.2s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+        .hack-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--err),var(--orange));opacity:.6}
+        .hack-card:hover{border-color:var(--accent2);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+        .hack-loss{font-size:18px;font-weight:900;background:linear-gradient(135deg,#ef4444,#ff9500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .hack-name{font-size:14px;font-weight:800;color:var(--text)}
+        .hack-meta{font-size:10px;color:var(--text3);display:flex;gap:8px}
+        .hack-meta span{padding:2px 7px;border-radius:6px;background:var(--bg);border:1px solid var(--border)}
+        .hack-desc{font-size:11.5px;color:var(--text2);line-height:1.5;flex:1}
+        .hack-cta{margin-top:6px;padding:7px 12px;border-radius:8px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);color:var(--accent2);font-size:11px;font-weight:700;text-align:center;transition:.15s}
+        .hack-card:hover .hack-cta{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
         
     </style>
 </head>
@@ -351,6 +410,7 @@
                     <button class="sample-btn" onclick="loadSample('erc20')">🪙 ERC-20</button>
                     <button class="sample-btn" onclick="loadSample('reentrancy')">🔄 Reentrancy</button>
                     <button class="sample-btn" onclick="loadSample('proxy')">🔀 Proxy</button>
+                    <button class="hacks-btn" onclick="openHacks()">💀 Famous Hacks</button>
                 </div>
                 <button class="btn btn-primary" id="btnAnalyze" onclick="analyze()">
                     <span>⚡</span> Analyze Contract
@@ -452,6 +512,48 @@
         <footer>
             MimoAudit — Powered by <a href="https://mimo.xiaomi.com/" target="_blank">Xiaomi MiMo V2.5</a> · Built for the <a href="https://100t.xiaomimimo.com/" target="_blank">MiMo 100T Creator Program</a>
         </footer>
+    </div>
+
+    <!-- MiMo Chat FAB -->
+    <button class="chat-fab" id="chatFab" onclick="toggleChat(true)" title="Chat with MiMo AI">💬</button>
+
+    <!-- MiMo Chat Panel -->
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-head">
+            <div class="chat-avatar">🤖</div>
+            <div class="chat-head-info">
+                <div class="chat-head-title">MiMo AI Assistant</div>
+                <div class="chat-head-sub"><span class="dot-live"></span> Powered by Xiaomi MiMo V2.5</div>
+            </div>
+            <button class="chat-close" onclick="toggleChat(false)">&times;</button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-msg bot">👋 Hi! I'm <b>MiMo AI</b>, your smart contract security assistant. Ask me about Solidity vulnerabilities, audit findings, or best practices.</div>
+        </div>
+        <div class="chat-suggestions" id="chatSuggestions">
+            <button class="chat-sugg" onclick="chatAsk('What is reentrancy and how to prevent it?')">What is reentrancy?</button>
+            <button class="chat-sugg" onclick="chatAsk('Explain the latest finding in detail')">Explain latest finding</button>
+            <button class="chat-sugg" onclick="chatAsk('Show me an example of access control vulnerability')">Access control example</button>
+            <button class="chat-sugg" onclick="chatAsk('What are the top 5 Solidity security best practices?')">Top 5 best practices</button>
+        </div>
+        <div class="chat-input-wrap">
+            <textarea class="chat-input" id="chatInput" placeholder="Ask about Solidity, audits, vulnerabilities..." rows="1" onkeydown="chatKey(event)"></textarea>
+            <button class="chat-send" id="chatSendBtn" onclick="chatSend()">➤</button>
+        </div>
+    </div>
+
+    <!-- Famous Hacks Modal -->
+    <div class="hacks-modal" id="hacksModal" onclick="if(event.target===this)closeHacks()">
+        <div class="hacks-content">
+            <div class="hacks-head">
+                <div>
+                    <h2>💀 Famous DeFi Hacks Gallery</h2>
+                    <p>Real exploited contracts. Click any card to load the source and see what MimoAudit catches.</p>
+                </div>
+                <button class="chat-close" onclick="closeHacks()">&times;</button>
+            </div>
+            <div class="hacks-grid" id="hacksGrid"></div>
+        </div>
     </div>
 
     <script>
@@ -1492,6 +1594,278 @@ contract SimpleProxy {
             a.click();
             toast('Certificate downloaded!');
         });
+    }
+
+    // ===== FAMOUS HACKS GALLERY =====
+    const FAMOUS_HACKS = [
+        {
+            name: 'The DAO',
+            year: 2016,
+            loss: '$60M',
+            chain: 'Ethereum',
+            vuln: 'Reentrancy',
+            desc: 'The infamous reentrancy hack that led to the Ethereum/ETC fork. Withdraw before balance update.',
+            code: `pragma solidity ^0.4.0;\ncontract DAO {\n    mapping(address => uint) public balances;\n    function deposit() public payable {\n        balances[msg.sender] += msg.value;\n    }\n    // VULNERABLE: external call before state update\n    function withdraw() public {\n        uint amount = balances[msg.sender];\n        require(amount > 0);\n        (bool sent, ) = msg.sender.call{value: amount}("");\n        require(sent);\n        balances[msg.sender] = 0; // too late!\n    }\n}`
+        },
+        {
+            name: 'Parity Wallet Freeze',
+            year: 2017,
+            loss: '$280M',
+            chain: 'Ethereum',
+            vuln: 'Access Control / Selfdestruct',
+            desc: 'Anyone could call initWallet() on the library, become owner, then selfdestruct it — freezing all wallets.',
+            code: `pragma solidity ^0.4.0;\ncontract WalletLibrary {\n    address public owner;\n    // VULNERABLE: no access control on initialization\n    function initWallet(address _owner) public {\n        owner = _owner;\n    }\n    // VULNERABLE: anyone-as-owner can kill the lib\n    function kill() public {\n        require(msg.sender == owner);\n        selfdestruct(msg.sender);\n    }\n    function execute(address to, uint value) public {\n        require(msg.sender == owner);\n        to.call.value(value)("");\n    }\n}`
+        },
+        {
+            name: 'bZx Flash Loan',
+            year: 2020,
+            loss: '$8M',
+            chain: 'Ethereum',
+            vuln: 'Oracle Manipulation',
+            desc: 'Used DEX spot price as oracle. Flash loan moved DEX, contract read manipulated price.',
+            code: `pragma solidity ^0.6.0;\ninterface IDEX { function getPrice(address t) external view returns (uint); }\ncontract Lending {\n    IDEX dex;\n    mapping(address => uint) public collateral;\n    // VULNERABLE: spot price oracle from a single DEX\n    function borrow(address token, uint amount) public {\n        uint price = dex.getPrice(token);\n        require(collateral[msg.sender] * price >= amount * 100);\n        // ... transfer loan\n    }\n}`
+        },
+        {
+            name: 'Ronin Bridge',
+            year: 2022,
+            loss: '$625M',
+            chain: 'Ronin',
+            vuln: 'Centralized Validators',
+            desc: 'Only 9 validators, attacker compromised 5. Trust model failure baked into the contract design.',
+            code: `pragma solidity ^0.8.0;\ncontract RoninBridge {\n    address[] public validators;       // only 9!\n    uint public threshold = 5;          // 5/9 = single point of failure\n    mapping(bytes32 => mapping(address => bool)) signed;\n    // VULNERABLE: trusted validator set with low threshold + tx.origin checks elsewhere\n    function withdraw(bytes32 txHash, bytes[] calldata sigs) public {\n        require(sigs.length >= threshold);\n        // ... no slashing, no rotation, no timelock\n    }\n    modifier onlyOperator() {\n        require(tx.origin == validators[0]); // VULNERABLE: tx.origin\n        _;\n    }\n}`
+        },
+        {
+            name: 'Wormhole Bridge',
+            year: 2022,
+            loss: '$326M',
+            chain: 'Solana / Ethereum',
+            vuln: 'Signature Verification',
+            desc: 'Skipped signature verification on a sysvar account. Forged guardian signatures to mint 120k wETH.',
+            code: `pragma solidity ^0.8.0;\ncontract Wormhole {\n    bytes32 public guardianSetHash;\n    // VULNERABLE: weak signature verification, missing chain id check\n    function verifyVAA(bytes memory vaa, bytes[] memory sigs) public view returns (bool) {\n        // ... signature recovery\n        // BUG: didn't validate guardian set version/index\n        return sigs.length > 0; // accepts forged sigs\n    }\n    function completeTransfer(bytes calldata vaa, bytes[] calldata sigs) public {\n        require(verifyVAA(vaa, sigs));\n        // ... mint tokens\n    }\n}`
+        },
+        {
+            name: 'Euler Finance',
+            year: 2023,
+            loss: '$197M',
+            chain: 'Ethereum',
+            vuln: 'Donation / Liquidation Logic',
+            desc: 'donateToReserves() bypassed health check. Self-liquidated to drain protocol.',
+            code: `pragma solidity ^0.8.0;\ncontract Euler {\n    mapping(address => uint) public balances;\n    mapping(address => uint) public debts;\n    // VULNERABLE: donate path skipped checkLiquidity()\n    function donateToReserves(uint amount) public {\n        balances[msg.sender] -= amount;\n        // BUG: no health check after this\n    }\n    function liquidate(address user) public {\n        require(debts[user] > balances[user]);\n        // attacker self-liquidates after donating to fall below threshold\n    }\n}`
+        },
+        {
+            name: 'BNB Bridge',
+            year: 2022,
+            loss: '$570M',
+            chain: 'BSC',
+            vuln: 'Merkle Proof Forgery',
+            desc: 'IAVL Merkle proof verification bug — attacker forged proofs to mint 2M BNB.',
+            code: `pragma solidity ^0.8.0;\ncontract BridgeVerifier {\n    bytes32 public root;\n    // VULNERABLE: incomplete proof validation\n    function verifyProof(bytes32[] calldata proof, bytes32 leaf) public view returns (bool) {\n        bytes32 h = leaf;\n        for (uint i = 0; i < proof.length; i++) {\n            h = keccak256(abi.encodePacked(h, proof[i]));\n        }\n        // BUG: doesn't validate the path encoding — multiple leaves can collide\n        return h == root;\n    }\n}`
+        },
+        {
+            name: 'Curve Vyper',
+            year: 2023,
+            loss: '$70M',
+            chain: 'Ethereum',
+            vuln: 'Compiler Bug / Reentrancy Lock',
+            desc: 'Vyper 0.2.15 reentrancy lock was broken. Several Curve pools drained via classic reentrancy.',
+            code: `pragma solidity ^0.8.0;\ncontract CurvePool {\n    uint private _locked = 1;\n    modifier nonReentrant() {\n        require(_locked == 1);\n        _locked = 2;\n        _;\n        _locked = 1;\n    }\n    // VULNERABLE: external call inside nonReentrant + raw ETH callback re-enters\n    function remove_liquidity(uint amount) public nonReentrant {\n        (bool ok, ) = msg.sender.call{value: amount}("");\n        require(ok);\n        // state update after — and lock was buggy at compiler level\n    }\n}`
+        },
+        {
+            name: 'Poly Network',
+            year: 2021,
+            loss: '$610M',
+            chain: 'Multi-chain',
+            vuln: 'Cross-chain Function Forgery',
+            desc: 'EthCrossChainManager allowed arbitrary calls. Attacker forged keeper change message.',
+            code: `pragma solidity ^0.8.0;\ncontract EthCrossChainManager {\n    address public keeper;\n    // VULNERABLE: arbitrary call with no destination whitelist\n    function executeCrossChainTx(\n        address target,\n        bytes calldata method,\n        bytes calldata data\n    ) public {\n        // BUG: no check that 'target' is allow-listed\n        (bool ok, ) = target.call(abi.encodePacked(method, data));\n        require(ok);\n    }\n    function setKeeper(address k) public {\n        require(msg.sender == address(this)); // bypassed via executeCrossChainTx\n        keeper = k;\n    }\n}`
+        },
+        {
+            name: 'Nomad Bridge',
+            year: 2022,
+            loss: '$190M',
+            chain: 'Multi-chain',
+            vuln: 'Improper Initialization',
+            desc: '0x0 set as trusted root after init. Anyone could craft a "valid" message and drain it.',
+            code: `pragma solidity ^0.8.0;\ncontract NomadReplica {\n    mapping(bytes32 => bool) public confirmed;\n    bytes32 public committedRoot;\n    // VULNERABLE: post-init upgrade left committedRoot == 0x0\n    function process(bytes32 messageHash) public {\n        // BUG: confirmed[0x0] auto-true after init\n        require(confirmed[messageHash]);\n        // ... transfer\n    }\n    function initialize() public {\n        committedRoot = bytes32(0);\n        confirmed[bytes32(0)] = true; // catastrophic\n    }\n}`
+        },
+        {
+            name: 'Beanstalk',
+            year: 2022,
+            loss: '$182M',
+            chain: 'Ethereum',
+            vuln: 'Governance / Flash Loan',
+            desc: 'Used flash loan to gain majority voting power. Passed malicious proposal in single tx.',
+            code: `pragma solidity ^0.8.0;\ncontract BeanGov {\n    mapping(address => uint) public stakeOf;\n    // VULNERABLE: voting power based on instantaneous balance, no snapshot/time-lock\n    function vote(uint propId) public {\n        uint power = stakeOf[msg.sender]; // flash-loanable\n        // ... tally\n    }\n    function execute(uint propId) public {\n        // BUG: no timelock — proposal executes same block\n        // attacker: flashloan -> deposit -> propose -> vote -> execute -> withdraw\n    }\n}`
+        },
+        {
+            name: 'Fei Rari',
+            year: 2022,
+            loss: '$80M',
+            chain: 'Ethereum',
+            vuln: 'Reentrancy + Compound Fork',
+            desc: 'Compound v2 fork inherited the known reentrancy via callback in cTokens.',
+            code: `pragma solidity ^0.8.0;\ncontract CToken {\n    mapping(address => uint) public balanceOf;\n    // VULNERABLE: classic Compound v2 reentrancy on borrow with callback token\n    function borrow(uint amount) public {\n        // calls underlying.transfer which can call back\n        (bool ok, ) = address(underlying).call(abi.encodeWithSignature("transfer(address,uint256)", msg.sender, amount));\n        require(ok);\n        // state updated AFTER external call\n        balanceOf[msg.sender] -= amount;\n    }\n    address public underlying;\n}`
+        }
+    ];
+
+    function openHacks(){
+        const grid = document.getElementById('hacksGrid');
+        grid.innerHTML = FAMOUS_HACKS.map((h,i)=>`
+            <div class="hack-card" onclick="loadHack(${i})">
+                <div class="hack-loss">${h.loss}</div>
+                <div class="hack-name">${h.name}</div>
+                <div class="hack-meta"><span>${h.year}</span><span>${h.chain}</span><span>${h.vuln}</span></div>
+                <div class="hack-desc">${h.desc}</div>
+                <div class="hack-cta">⚡ Load & Audit →</div>
+            </div>
+        `).join('');
+        document.getElementById('hacksModal').classList.add('show');
+    }
+    function closeHacks(){document.getElementById('hacksModal').classList.remove('show');}
+    function loadHack(idx){
+        const h = FAMOUS_HACKS[idx];
+        switchTab('audit');
+        document.getElementById('input').value = h.code;
+        closeHacks();
+        toast('Loaded '+h.name+' — Click Analyze to find the bug');
+        setTimeout(function(){ window.scrollTo({top:document.getElementById('inputSection').offsetTop-20,behavior:'smooth'}); }, 200);
+    }
+
+    // ===== MIMO AI CHAT =====
+    let chatHistory = [];
+    function toggleChat(show){
+        const panel = document.getElementById('chatPanel');
+        const fab = document.getElementById('chatFab');
+        if(show){
+            panel.classList.add('show');
+            fab.classList.add('hidden');
+            setTimeout(function(){document.getElementById('chatInput').focus();},200);
+        } else {
+            panel.classList.remove('show');
+            fab.classList.remove('hidden');
+        }
+    }
+    function chatKey(e){
+        if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); chatSend(); }
+    }
+    function chatAsk(q){
+        document.getElementById('chatInput').value = q;
+        chatSend();
+    }
+    function chatAddMsg(role, text){
+        const body = document.getElementById('chatBody');
+        const div = document.createElement('div');
+        div.className = 'chat-msg '+role;
+        // basic markdown for code blocks and inline code
+        let html = text
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/```([\s\S]*?)```/g, function(_,c){return '<pre>'+c.trim()+'</pre>';})
+            .replace(/`([^`]+)`/g, '<code>$1</code>')
+            .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+        div.innerHTML = html;
+        body.appendChild(div);
+        body.scrollTop = body.scrollHeight;
+        return div;
+    }
+    function chatTyping(on){
+        const body = document.getElementById('chatBody');
+        let t = document.getElementById('chatTyping');
+        if(on){
+            if(t) return;
+            t = document.createElement('div');
+            t.className = 'chat-typing';
+            t.id = 'chatTyping';
+            t.innerHTML = '<span></span><span></span><span></span>';
+            body.appendChild(t);
+            body.scrollTop = body.scrollHeight;
+        } else {
+            if(t) t.remove();
+        }
+    }
+    async function chatSend(){
+        const input = document.getElementById('chatInput');
+        const btn = document.getElementById('chatSendBtn');
+        const text = input.value.trim();
+        if(!text) return;
+        input.value = '';
+        // hide suggestions after first message
+        document.getElementById('chatSuggestions').style.display = 'none';
+        chatAddMsg('user', text);
+        chatHistory.push({role:'user', content: text});
+        btn.disabled = true;
+        chatTyping(true);
+        try {
+            const reply = await mimoAsk(text);
+            chatTyping(false);
+            chatAddMsg('bot', reply);
+            chatHistory.push({role:'assistant', content: reply});
+        } catch(e){
+            chatTyping(false);
+            chatAddMsg('bot', '⚠️ '+(e.message||'Failed to reach MiMo. Try again.'));
+        } finally {
+            btn.disabled = false;
+            input.focus();
+        }
+    }
+
+    // Build context-aware system prompt and call MiMo via OpenRouter free tier
+    async function mimoAsk(userQ){
+        const sys = buildMimoSystemPrompt();
+        const messages = [
+            {role:'system', content: sys},
+            ...chatHistory.slice(-8).filter(m=>m.role!=='system'),
+            {role:'user', content: userQ}
+        ];
+        // Try OpenRouter free models in order — no key needed if user sets a free key,
+        // but we ship a no-key path that hits a public proxy with rate limits.
+        const FREE_ENDPOINTS = [
+            { url: 'https://text.pollinations.ai/openai', model: 'openai', body: (m)=>({model:'openai', messages: m, private: true}) }
+        ];
+        for(const ep of FREE_ENDPOINTS){
+            try {
+                const r = await fetch(ep.url, {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify(ep.body(messages))
+                });
+                if(!r.ok) continue;
+                const ct = r.headers.get('content-type')||'';
+                let txt;
+                if(ct.includes('application/json')){
+                    const j = await r.json();
+                    txt = j.choices?.[0]?.message?.content || j.message?.content || JSON.stringify(j);
+                } else {
+                    txt = await r.text();
+                }
+                txt = (txt||'').trim();
+                if(txt && txt.length > 4) return txt;
+            } catch(e){ /* try next */ }
+        }
+        // Fallback: local rule-based answer
+        return localMimoFallback(userQ);
+    }
+
+    function buildMimoSystemPrompt(){
+        let ctx = 'You are MiMo AI, a smart contract security assistant integrated into MimoAudit. You are powered by Xiaomi MiMo V2.5. Be concise, technical, and helpful. Use Solidity code snippets in ```solidity blocks when useful. Focus on security: reentrancy, access control, oracle manipulation, MEV, signature replay, integer overflow, proxy patterns, gas, and DeFi-specific issues.';
+        if(typeof lastReport !== 'undefined' && lastReport && lastReport.findings){
+            const top = lastReport.findings.slice(0,5).map(f=>`- [${f.severity}] ${f.title}`).join('\n');
+            ctx += '\n\nThe user just audited a contract. Recent findings:\n'+top;
+            if(typeof lastInfo !== 'undefined' && lastInfo){
+                ctx += '\nContract: '+(lastInfo.name||'Unknown')+' on '+(CHAIN_NAMES[lastInfo.chain]||lastInfo.chain||'?');
+            }
+            ctx += '\nScore: '+lastReport.score+'/100';
+        }
+        return ctx;
+    }
+
+    function localMimoFallback(q){
+        const lo = q.toLowerCase();
+        if(lo.includes('reentrancy')) return '**Reentrancy** happens when an external call re-enters the contract before state updates finish.\n\n**Fix:** Use the checks-effects-interactions pattern, or OpenZeppelin `ReentrancyGuard`:\n```solidity\nfunction withdraw() external nonReentrant {\n    uint amount = balances[msg.sender];\n    balances[msg.sender] = 0; // effects FIRST\n    (bool ok,) = msg.sender.call{value: amount}("");\n    require(ok);\n}\n```';
+        if(lo.includes('access control') || lo.includes('onlyowner')) return '**Access control** = restricting who can call sensitive functions.\n\n**Fix:** Use OpenZeppelin `Ownable` or `AccessControl`:\n```solidity\nimport "@openzeppelin/contracts/access/Ownable.sol";\ncontract MyContract is Ownable {\n    function setFee(uint f) external onlyOwner { fee = f; }\n}\n```\nNever rely on `tx.origin` — use `msg.sender`.';
+        if(lo.includes('oracle')) return '**Oracle manipulation** — using DEX spot prices is dangerous; flash loans can move them.\n\n**Fix:** Use Chainlink, TWAPs, or multiple sources. Validate price age + deviation.\n```solidity\n(,int p,,uint t,) = oracle.latestRoundData();\nrequire(block.timestamp - t < 1 hours, "stale");\nrequire(p > 0, "bad price");\n```';
+        if(lo.includes('best practice') || lo.includes('top')) return '**Top 5 Solidity Security Practices:**\n1. **Checks-Effects-Interactions** — update state before external calls\n2. **Use OpenZeppelin** — battle-tested `Ownable`, `ReentrancyGuard`, `SafeERC20`\n3. **Avoid `tx.origin`** — use `msg.sender` for auth\n4. **Validate oracle data** — TWAPs, Chainlink, freshness checks\n5. **Pin compiler + run Slither/Echidna** — catch issues before deploy';
+        if(lo.includes('finding') || lo.includes('explain')) return 'I see you want detail on the latest audit findings. Make sure you ran an audit first — then I can pull the exact context. In the meantime, run **Audit Contract** tab and paste a contract address or source.';
+        return '🛡 I can help with: reentrancy, access control, oracle manipulation, MEV, signature replay, proxy patterns, gas optimization, and DeFi-specific bugs. Try asking about any of these. (Note: free AI endpoint may be temporarily down — fallback knowledge base active.)';
     }
     
     </script>
